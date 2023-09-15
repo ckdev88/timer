@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="style.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<button id="task_new_btn">New task</button>
+		<form id="task_new_form" class="dnone">
+			<h2>New task</h2>
+			<input
+				name="task_name"
+				type="text"
+				placeholder="Task name..."
+				required
+			/>
+			<textarea
+				name="task_description"
+				placeholder="Description..."
+			></textarea>
+			<input
+				name="task_interval"
+				type="number"
+				placeholder="Interval (minutes)..."
+			/>
+			<label for="task_start_now"
+				><input
+					id="task_start_now"
+					name="task_start_now"
+					type="checkbox"
+					checked
+				/>Start task now</label
+			>
+			<input type="submit" value="Create task" />
+		</form>
+		<button id="task_new_quick">Quick new intervalling task</button>
+		<div id="task_container"></div>
+		<script src="script.js"></script>
+	</body>
+</html>
