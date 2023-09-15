@@ -6,6 +6,7 @@ const task_new_form = document.getElementById("task_new_form");
 const task_new_quick = document.getElementById("task_new_quick");
 const task_container = document.getElementById("task_container");
 /*
+html element id's:
 task_new_form
 task_id
 task_name
@@ -15,6 +16,13 @@ task_start_now
 task_new_quick
 task_container
 */
+
+function detectQuickTask() {
+	if (document.getElementById("tag-quick")) {
+		task_new_quick.className = "dnone";
+	}
+	else task_new_quick.className = "dblock";
+}
 
 let startArr = [];
 localStorage.setItem("timerTasks", JSON.stringify(startArr));
@@ -36,6 +44,7 @@ localStorage.setItem("taken", JSON.stringify(tasks));
 // use quick add function so have a base setup, using all basic fields and characteristics
 task_new_quick.addEventListener("click", () => {
 	addQuickTask();
+	detectQuickTask();
 
 	// TODO: check on name if not exists to prevent duplicates
 	// getTimerTasksArr.push({
@@ -53,7 +62,10 @@ task_new_quick.addEventListener("click", () => {
 	// TODO: verwijs naar functie die de update uitvoert, ipv bovenstaand
 });
 
+//hide quick add button when there a quickly addes task already exists
+
 function renderTasks(getTimerTasksArr) {
+	task_container.innerHTML = '';
 	for (const i of getTimerTasksArr) {
 		task_container.appendChild(renderTask(i));
 	}
@@ -62,15 +74,15 @@ function renderTasks(getTimerTasksArr) {
 function renderTask(i) {
 	let el = document.createElement("div");
 	el.className = "task";
-
-	el.appendChild(renderTaskElement('div', 'task-name', i.name));
-	el.appendChild(renderTaskElement('div', 'task-description', i.description));
-	el.appendChild(renderTaskElement('div', 'task-countdown', i.interval));
-
+	el.id = i.tag ? "tag-" + i.tag : "";
+	el.appendChild(renderTaskElement("div", "task-name", i.name));
+	el.appendChild(renderTaskElement("div", "task-description", i.description));
+	el.appendChild(renderTaskElement("div", "task-countdown", i.interval));
+	el.appendChild(removeTaskLink());
 	return el;
 }
 
-function renderTaskElement(node = 'div', className, content) {
+function renderTaskElement(node = "div", className, content) {
 	let taskEl = document.createElement(node);
 	taskEl.className = className;
 	taskEl.innerHTML = content;
@@ -81,21 +93,49 @@ function addQuickTask() {
 	// get item timerTasks
 	let timerArr = [];
 	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-	console.log(timerArr);
+	// console.log(timerArr);
 
 	// push into item timerTasks
 	timerArr.push({
-		name: "stretch",
-		description: "Even lopen, strekken, eten, niets superactiefs",
+		name: "Stretch",
+		description: "Quick timer",
 		interval: 35,
+		tag: "quick",
 	});
 
 	// set item timerTasks
 	localStorage.setItem("timerTasks", JSON.stringify(timerArr));
-
 	let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
-
 	renderTasks(timerArr2);
+}
+
+function removeTaskLink() {
+	let el = document.createElement("button");
+	el.innerHTML = "remove task";
+	el.className = "text";
+	el.addEventListener("click", () => {
+		removeQuickTask();
+	});
+	return el;
+}
+removeTaskLink();
+
+function removeQuickTask() {
+	let timerArr = JSON.parse(localStorage.getItem("timerTasks"));
+	let newArr = timerArr.filter(function(el) {
+		return el.tag !== 'quick';
+	});
+	localStorage.setItem("timerTasks", JSON.stringify(newArr));
+
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+
+	console.log('newarray: ');
+	console.log(newArr);
 }
 
 function updateTasks(from, to) {
@@ -111,7 +151,8 @@ updateTasks(JSON.parse(localStorage.getItem("timerTasks")));
 // - Description (optional)
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
-console.log(getTimerTasksArr.length);
+
+//console.log(getTimerTasksArr.length);
 
 //// converting an object value to a string
 localStorage.setItem("ourObject", JSON.stringify({ testKey: "testValue" }));
@@ -125,6 +166,8 @@ task_new_btn.addEventListener("click", () => {
 		? (task_new_form.className = "dblock")
 		: (task_new_form.className = "dnone");
 });
+
+// create a countdown
 
 // Remove task
 //
