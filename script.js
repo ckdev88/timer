@@ -54,21 +54,27 @@ task_new_quick.addEventListener("click", () => {
 });
 
 function renderTasks(getTimerTasksArr) {
-	console.log(getTimerTasksArr.length);
-	task_container.innerHTML = "";
-	for (i = 0; i < getTimerTasksArr.length; i += 1) {
-		let el = document.createElement("div");
-		let elName = document.createElement("div");
-		let elDescription = document.createElement("div");
-		el.className = "task";
-		elName.className = "task-name";
-		elName.innerHTML = getTimerTasksArr[i].name;
-		elDescription.className = "task-description";
-		elDescription.innerHTML += getTimerTasksArr[i].description;
-		el.appendChild(elName);
-		el.appendChild(elDescription);
-		task_container.appendChild(el);
+	for (const i of getTimerTasksArr) {
+		task_container.appendChild(renderTask(i));
 	}
+}
+
+function renderTask(i) {
+	let el = document.createElement("div");
+	el.className = "task";
+
+	el.appendChild(renderTaskElement('div', 'task-name', i.name));
+	el.appendChild(renderTaskElement('div', 'task-description', i.description));
+	el.appendChild(renderTaskElement('div', 'task-countdown', i.interval));
+
+	return el;
+}
+
+function renderTaskElement(node = 'div', className, content) {
+	let taskEl = document.createElement(node);
+	taskEl.className = className;
+	taskEl.innerHTML = content;
+	return taskEl;
 }
 
 function addQuickTask() {
@@ -122,3 +128,4 @@ task_new_btn.addEventListener("click", () => {
 
 // Remove task
 //
+// 024 20 90 363
