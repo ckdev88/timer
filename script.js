@@ -9,19 +9,57 @@ const task_container = document.getElementById("task_container");
 html element id's:
 task_new_form
 task_id
-task_name
-task_description
-task_interval
+new_task_name
+new_task_description
+new_task_interval
 task_start_now
 task_new_quick
 task_container
 */
 
+function newTaskSubmit() {
+	task_new_form.addEventListener("submit", (e) => {
+		e.preventDefault();
+		var data = new FormData(document.getElementById("task_new_form"));
+		// console.log(data.get('task_start_now'));
+		addTask(
+			data.get("task_name"),
+			data.get("task_description"),
+			data.get("task_interval"),
+		);
+
+		document.getElementById("new_task_name").value = "";
+		document.getElementById("new_task_description").value = "";
+		document.getElementById("new_task_interval").value = "";
+		// data.delete('task_name');
+	});
+}
+newTaskSubmit();
+
+function addTask(name, description, interval) {
+	// get item timerTasks
+	let timerArr = [];
+	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
+	// console.log(timerArr);
+
+	// push into item timerTasks
+	timerArr.push({
+		name: name,
+		description: description,
+		interval: interval,
+		tag: "tag-" + name.trim(),
+	});
+
+	// set item timerTasks
+	localStorage.setItem("timerTasks", JSON.stringify(timerArr));
+	let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
+	renderTasks(timerArr2);
+}
+
 function detectQuickTask() {
 	if (document.getElementById("tag-quick")) {
 		task_new_quick.className = "dnone";
-	}
-	else task_new_quick.className = "dblock";
+	} else task_new_quick.className = "dblock";
 }
 
 let startArr = [];
@@ -65,7 +103,7 @@ task_new_quick.addEventListener("click", () => {
 //hide quick add button when there a quickly addes task already exists
 
 function renderTasks(getTimerTasksArr) {
-	task_container.innerHTML = '';
+	task_container.innerHTML = "";
 	for (const i of getTimerTasksArr) {
 		task_container.appendChild(renderTask(i));
 	}
@@ -74,7 +112,7 @@ function renderTasks(getTimerTasksArr) {
 function renderTask(i) {
 	let el = document.createElement("div");
 	el.className = "task";
-	el.id = i.tag ? "tag-" + i.tag : "";
+	i.tag !== undefined ? (el.id = i.tag) : "";
 	el.appendChild(renderTaskElement("div", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
 	el.appendChild(renderTaskElement("div", "task-countdown", i.interval));
@@ -100,7 +138,7 @@ function addQuickTask() {
 		name: "Stretch",
 		description: "Quick timer",
 		interval: 35,
-		tag: "quick",
+		tag: "tag-quick",
 	});
 
 	// set item timerTasks
@@ -115,27 +153,19 @@ function removeTaskLink() {
 	el.className = "text";
 	el.addEventListener("click", () => {
 		removeQuickTask();
+		detectQuickTask();
 	});
 	return el;
 }
 removeTaskLink();
 
 function removeQuickTask() {
-	let timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-	let newArr = timerArr.filter(function(el) {
-		return el.tag !== 'quick';
+	let arr = JSON.parse(localStorage.getItem("timerTasks"));
+	arr = arr.filter(function(el) {
+		return el.tag !== "tag-quick";
 	});
-	localStorage.setItem("timerTasks", JSON.stringify(newArr));
-
-	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
-	detectQuickTask();
-	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
-	detectQuickTask();
-	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
-	detectQuickTask();
-
-	console.log('newarray: ');
-	console.log(newArr);
+	localStorage.setItem("timerTasks", JSON.stringify(arr));
+	renderTasks(arr);
 }
 
 function updateTasks(from, to) {
