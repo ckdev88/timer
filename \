@@ -9,59 +9,34 @@ const task_container = document.getElementById("task_container");
 html element id's:
 task_new_form
 task_id
-new_task_name
-new_task_description
-new_task_interval
+task_name
+task_description
+task_interval
 task_start_now
 task_new_quick
 task_container
 */
 
-function newTaskSubmit() {
-	task_new_form.addEventListener("submit", (e) => {
-		e.preventDefault();
-		var data = new FormData(document.getElementById("task_new_form"));
-		// console.log(data.get('task_start_now'));
-		addTask(
-			data.get("task_name"),
-			data.get("task_description"),
-			data.get("task_interval"),
-		);
+task_new_form.addEventListener('submit', (e) => {
+	e.preventDefault();
+	console.log(e.target.value);
+	const formData = document.getElementById('task_new_form');
+	var data = new FormData(document.getElementById("task_new_form"));
+	console.log('data:', data);
+});
 
-		document.getElementById("new_task_name").value = "";
-		document.getElementById("new_task_description").value = "";
-		document.getElementById("new_task_interval").value = "";
-		// data.delete('task_name');
-	});
+
+function newTaskSubmit() {
+
 }
 newTaskSubmit();
 
-function addTask(name, description, interval) {
-	if (name) {
-		// get item timerTasks
-		let timerArr = [];
-		timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-		// console.log(timerArr);
-
-		// push into item timerTasks
-		timerArr.push({
-			name: name,
-			description: description,
-			interval: interval,
-			task: "task-" + name.replaceAll(' ', ''),
-		});
-
-		// set item timerTasks
-		localStorage.setItem("timerTasks", JSON.stringify(timerArr));
-		let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
-		renderTasks(timerArr2);
-	}
-}
 
 function detectQuickTask() {
-	if (document.getElementById("task-Stretch")) {
+	if (document.getElementById("tag-quick")) {
 		task_new_quick.className = "dnone";
-	} else task_new_quick.className = "dblock";
+	}
+	else task_new_quick.className = "dblock";
 }
 
 let startArr = [];
@@ -105,34 +80,27 @@ task_new_quick.addEventListener("click", () => {
 //hide quick add button when there a quickly addes task already exists
 
 function renderTasks(getTimerTasksArr) {
-	task_container.innerHTML = "";
-	// for (const i of getTimerTasksArr) {
-	// 	console.log(i);
-	// 	task_container.appendChild(renderTask(i));
-	// }
-	for (let i = 0; i < getTimerTasksArr.length; i++) {
-		console.log(getTimerTasksArr[i]);
-		task_container.appendChild(renderTask(getTimerTasksArr[i], i));
+	task_container.innerHTML = '';
+	for (const i of getTimerTasksArr) {
+		task_container.appendChild(renderTask(i));
 	}
 }
 
-function renderTask(i, key) {
+function renderTask(i) {
 	let el = document.createElement("div");
 	el.className = "task";
-	el.id = i.task;
-	el.appendChild(renderTaskElement("h3", "task-name", i.name));
+	el.id = i.tag ? "tag-" + i.tag : "";
+	el.appendChild(renderTaskElement("div", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
-	el.appendChild(renderTaskElement("div", "task-countdown-total", i.interval));
-	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, 'countdown-' + i.task), 'countdown-' + el.id));
-	el.appendChild(removeTaskLink(i.name.replaceAll(' ', '')));
+	el.appendChild(renderTaskElement("div", "task-countdown", i.interval));
+	el.appendChild(removeTaskLink());
 	return el;
 }
 
-function renderTaskElement(node = "div", className, content, id = '') {
+function renderTaskElement(node = "div", className, content) {
 	let taskEl = document.createElement(node);
 	taskEl.className = className;
 	taskEl.innerHTML = content;
-	taskEl.id = id;
 	return taskEl;
 }
 
@@ -142,11 +110,12 @@ function addQuickTask() {
 	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
 	// console.log(timerArr);
 
+	// push into item timerTasks
 	timerArr.push({
 		name: "Stretch",
 		description: "Quick timer",
 		interval: 35,
-		task: "task-Stretch",
+		tag: "quick",
 	});
 
 	// set item timerTasks
@@ -155,27 +124,45 @@ function addQuickTask() {
 	renderTasks(timerArr2);
 }
 
-function removeTaskLink(id) {
+function removeTaskLink() {
 	let el = document.createElement("button");
 	el.innerHTML = "remove task";
 	el.className = "text";
-	el.className += " teeee";
-	el.id = 'del-' + id;
-	console.log(el.id);
 	el.addEventListener("click", () => {
-		removeTask('task-' + id);
-		detectQuickTask();
+		removeQuickTask();
 	});
 	return el;
 }
+removeTaskLink();
 
-function removeTask(task) {
-	let arr = JSON.parse(localStorage.getItem("timerTasks"));
-	arr = arr.filter(function(el) {
-		return el.task !== task;
+function removeQuickTask() {
+	let timerArr = JSON.parse(localStorage.getItem("timerTasks"));
+	let newArr = timerArr.filter(function(el) {
+		return el.tag !== 'quick';
 	});
-	localStorage.setItem("timerTasks", JSON.stringify(arr));
-	renderTasks(arr);
+	localStorage.setItem("timerTasks", JSON.stringify(newArr));
+
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+	renderTasks(JSON.parse(localStorage.getItem('timerTasks')));
+	detectQuickTask();
+
+	console.log('newarray: ');
+	console.log(newArr);
 }
 
 function updateTasks(from, to) {
@@ -184,37 +171,31 @@ function updateTasks(from, to) {
 
 updateTasks(JSON.parse(localStorage.getItem("timerTasks")));
 
+// let getTimerTasksArr = JSON.parse(localStorage.getItem("timerTasks"));
+
+// Show tasks in a loop, constaining the following:
+// - Name
+// - Description (optional)
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
+
+//console.log(getTimerTasksArr.length);
+
+//// converting an object value to a string
+localStorage.setItem("ourObject", JSON.stringify({ testKey: "testValue" }));
 
 // Show New task-form if tasks array is empty
 if (getTimerTasksArr.length === 0) task_new_form.className = "dblock";
 
 // let button #new_task_btn toggle the form #new_task_form
-// TODO: temporarily commented 
-// task_new_btn.addEventListener("click", () => {
+task_new_btn.addEventListener("click", () => {
+	!task_new_form.checkVisibility()
+		? (task_new_form.className = "dblock")
+		: (task_new_form.className = "dnone");
+});
+
+// create a countdown
+
+// Remove task
 //
-// 	!task_new_form.checkVisibility()
-// 		? (task_new_form.className = "dblock")
-// 		: (task_new_form.className = "dnone");
-// });
-
-function countdownTimer(limit, id, currentCount = 0) {
-
-	let trigger = setInterval((sec = limit, id = '') => {
-		currentCount = timer(currentCount);
-		if (currentCount === sec) { stopIntervalObj(trigger); }
-	}, 1000);
-
-	function timer(next = 0) {
-		next += 1;
-		document.getElementById(id).innerHTML = next;
-		console.log(id);
-		return next;
-	}
-	// return 0; // default value
-}
-
-function stopIntervalObj(obj) {
-	clearInterval(obj);
-}
+// 024 20 90 363
