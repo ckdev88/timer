@@ -37,27 +37,29 @@ function newTaskSubmit() {
 newTaskSubmit();
 
 function addTask(name, description, interval) {
-	// get item timerTasks
-	let timerArr = [];
-	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-	// console.log(timerArr);
+	if (name) {
+		// get item timerTasks
+		let timerArr = [];
+		timerArr = JSON.parse(localStorage.getItem("timerTasks"));
+		// console.log(timerArr);
 
-	// push into item timerTasks
-	timerArr.push({
-		name: name,
-		description: description,
-		interval: interval,
-		tag: "tag-" + name.trim(),
-	});
+		// push into item timerTasks
+		timerArr.push({
+			name: name,
+			description: description,
+			interval: interval,
+			tag: "tag-" + name.replaceAll(' ', ''),
+		});
 
-	// set item timerTasks
-	localStorage.setItem("timerTasks", JSON.stringify(timerArr));
-	let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
-	renderTasks(timerArr2);
+		// set item timerTasks
+		localStorage.setItem("timerTasks", JSON.stringify(timerArr));
+		let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
+		renderTasks(timerArr2);
+	}
 }
 
 function detectQuickTask() {
-	if (document.getElementById("tag-quick")) {
+	if (document.getElementById("tag-Stretch")) {
 		task_new_quick.className = "dnone";
 	} else task_new_quick.className = "dblock";
 }
@@ -113,10 +115,10 @@ function renderTask(i) {
 	let el = document.createElement("div");
 	el.className = "task";
 	i.tag !== undefined ? (el.id = i.tag) : "";
-	el.appendChild(renderTaskElement("div", "task-name", i.name));
+	el.appendChild(renderTaskElement("h3", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
 	el.appendChild(renderTaskElement("div", "task-countdown", i.interval));
-	el.appendChild(removeTaskLink());
+	el.appendChild(removeTaskLink(i.name.replaceAll(' ', '')));
 	return el;
 }
 
@@ -133,12 +135,11 @@ function addQuickTask() {
 	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
 	// console.log(timerArr);
 
-	// push into item timerTasks
 	timerArr.push({
 		name: "Stretch",
 		description: "Quick timer",
 		interval: 35,
-		tag: "tag-quick",
+		tag: "tag-Stretch",
 	});
 
 	// set item timerTasks
@@ -147,26 +148,40 @@ function addQuickTask() {
 	renderTasks(timerArr2);
 }
 
-function removeTaskLink() {
+function removeTaskLink(id) {
 	let el = document.createElement("button");
 	el.innerHTML = "remove task";
 	el.className = "text";
+	el.className += " teeee";
+	el.id = 'del-' + id;
+	console.log(el.id);
 	el.addEventListener("click", () => {
-		removeQuickTask();
+		alert('tag-' + id);
+		removeTask('tag-' + id);
+		// removeQuickTask();
 		detectQuickTask();
 	});
 	return el;
 }
-removeTaskLink();
+// removeTaskLink();
 
-function removeQuickTask() {
+function removeTask(tag) {
 	let arr = JSON.parse(localStorage.getItem("timerTasks"));
 	arr = arr.filter(function(el) {
-		return el.tag !== "tag-quick";
+		return el.tag !== tag;
 	});
 	localStorage.setItem("timerTasks", JSON.stringify(arr));
 	renderTasks(arr);
 }
+
+// function removeQuickTask() {
+// 	let arr = JSON.parse(localStorage.getItem("timerTasks"));
+// 	arr = arr.filter(function(el) {
+// 		return el.tag !== "tag-Stretch";
+// 	});
+// 	localStorage.setItem("timerTasks", JSON.stringify(arr));
+// 	renderTasks(arr);
+// }
 
 function updateTasks(from, to) {
 	console.log("update tasks...");
