@@ -58,11 +58,11 @@ function addTask(name, description, interval) {
 	}
 }
 
-function detectQuickTask() {
-	if (document.getElementById("task-Stretch")) {
-		task_new_quick.className = "dnone";
-	} else task_new_quick.className = "dblock";
-}
+// function detectQuickTask() { // temparily not using
+// 	if (document.getElementById("task-Stretch")) {
+// 		task_new_quick.className = "dnone";
+// 	} else task_new_quick.className = "dblock";
+// }
 
 let startArr = [];
 localStorage.setItem("timerTasks", JSON.stringify(startArr));
@@ -84,7 +84,7 @@ localStorage.setItem("taken", JSON.stringify(tasks));
 // use quick add function so have a base setup, using all basic fields and characteristics
 task_new_quick.addEventListener("click", () => {
 	addQuickTask();
-	detectQuickTask();
+	// detectQuickTask(); // tijdelijk buiten gebruik, zie ook andere soortgelijke regels mbt detect..
 
 	// TODO: check on name if not exists to prevent duplicates
 	// getTimerTasksArr.push({
@@ -106,41 +106,35 @@ task_new_quick.addEventListener("click", () => {
 
 function renderTasks(getTimerTasksArr) {
 	task_container.innerHTML = "";
-	// for (const i of getTimerTasksArr) {
-	// 	console.log(i);
-	// 	task_container.appendChild(renderTask(i));
-	// }
 	for (let i = 0; i < getTimerTasksArr.length; i++) {
-		console.log(getTimerTasksArr[i]);
 		task_container.appendChild(renderTask(getTimerTasksArr[i], i));
 	}
 }
 
 function renderTask(i, key) {
 	let el = document.createElement("div");
-	el.className = "task";
-	el.id = i.task;
+	el.className = "task"
+	el.id = 'task-' + key;
 	el.appendChild(renderTaskElement("h3", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
 	el.appendChild(renderTaskElement("div", "task-countdown-total", i.interval));
-	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, 'countdown-' + i.task), 'countdown-' + el.id));
-	el.appendChild(removeTaskLink(i.name.replaceAll(' ', '')));
+	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, 'countdown-task-' + key), 'countdown-' + el.id));
+	// el.appendChild(renderTaskElement('div', 'task-countdown-current2', countdownTimer2(i.interval, 'countdown-task-' + key), 'countdown2-' + el.id));
+	el.appendChild(removeTaskLink(key));
 	return el;
 }
 
-function renderTaskElement(node = "div", className, content, id = '') {
+function renderTaskElement(node = "div", className, content, id = undefined) {
 	let taskEl = document.createElement(node);
 	taskEl.className = className;
 	taskEl.innerHTML = content;
-	taskEl.id = id;
+	id !== 'undefined' ? taskEl.id = id : '';
 	return taskEl;
 }
 
 function addQuickTask() {
-	// get item timerTasks
 	let timerArr = [];
 	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-	// console.log(timerArr);
 
 	timerArr.push({
 		name: "Stretch",
@@ -155,27 +149,36 @@ function addQuickTask() {
 	renderTasks(timerArr2);
 }
 
-function removeTaskLink(id) {
+function removeTaskLink(key) {
+	console.log('removeTaskLink:', key);
 	let el = document.createElement("button");
 	el.innerHTML = "remove task";
 	el.className = "text";
 	el.className += " teeee";
-	el.id = 'del-' + id;
-	console.log(el.id);
+	el.id = 'del-' + key;
 	el.addEventListener("click", () => {
-		removeTask('task-' + id);
-		detectQuickTask();
+		removeTask(key);
+		// detectQuickTask(); // tijdelijk buiten gebruik
 	});
 	return el;
 }
 
-function removeTask(task) {
+function removeTask(key) {
+	console.log('removeTask:', key);
 	let arr = JSON.parse(localStorage.getItem("timerTasks"));
-	arr = arr.filter(function(el) {
-		return el.task !== task;
-	});
-	localStorage.setItem("timerTasks", JSON.stringify(arr));
-	renderTasks(arr);
+
+	let newarr = [];
+	for (let i = 0; i < arr.length; i++) {
+		if (i === key) continue;
+		newarr.push({
+			name: arr[i].name,
+			description: arr[i].description,
+			interval: arr[i].interval,
+			task: "task-" + arr[i].name.replaceAll(' ', ''),
+		});
+	}
+	localStorage.setItem("timerTasks", JSON.stringify(newarr));
+	renderTasks(newarr);
 }
 
 function updateTasks(from, to) {
@@ -187,34 +190,64 @@ updateTasks(JSON.parse(localStorage.getItem("timerTasks")));
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
 
-// Show New task-form if tasks array is empty
-if (getTimerTasksArr.length === 0) task_new_form.className = "dblock";
-
-// let button #new_task_btn toggle the form #new_task_form
-// TODO: temporarily commented 
-// task_new_btn.addEventListener("click", () => {
-//
-// 	!task_new_form.checkVisibility()
-// 		? (task_new_form.className = "dblock")
-// 		: (task_new_form.className = "dnone");
-// });
 
 function countdownTimer(limit, id, currentCount = 0) {
-
-	let trigger = setInterval((sec = limit, id = '') => {
+	let trigger = setInterval((sec = limit) => {
 		currentCount = timer(currentCount);
-		if (currentCount === sec) { stopIntervalObj(trigger); }
+		if (currentCount == sec) { console.log('stop'); stopIntervalObj(trigger); }
 	}, 1000);
 
-	function timer(next = 0) {
+	function timer(next) {
 		next += 1;
 		document.getElementById(id).innerHTML = next;
-		console.log(id);
 		return next;
 	}
-	// return 0; // default value
 }
 
 function stopIntervalObj(obj) {
 	clearInterval(obj);
 }
+
+// var t = document.createElement('div');
+// t.id = 'testnum';
+// document.body.appendChild(t);
+
+function countdownTimer2(limit, id) {
+	console.log('id:', id);
+	console.log('limit:', limit);
+	const lb =
+		setInterval((max = limit, id) => {
+			if (document.getElementById(id) === 'undefined') { document.getElementById(id).innerHTML = 0; }
+			let nunum = document.getElementById(id).innerHTML;
+			addone(Number(nunum));
+			if (Number(nunum) === (Number(max) - 1)) stopit();
+		}, 1000);
+	function addone(oldNumber) {
+		let newNumber = oldNumber + 1;
+		document.getElementById(id).innerHTML = newNumber;
+		return
+	}
+	function stopit() {
+		console.log('stopit()');
+		clearInterval(lb);
+	}
+}
+// countdownTimer2();
+
+
+
+// TODO: organize whatever is below this line
+// -------------------------------------------------------------------------------------
+
+// Show New task-form if tasks array is empty
+if (getTimerTasksArr.length === 0) task_new_form.className = "dblock";
+
+// let button #new_task_btn toggle the form #new_task_form
+// TODO: temporarily commented 
+task_new_btn.addEventListener("click", () => {
+
+	!task_new_form.checkVisibility()
+		? (task_new_form.className = "dblock")
+		: (task_new_form.className = "dnone");
+});
+
