@@ -17,11 +17,13 @@ task_new_quick
 task_container
 */
 
+const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); }
+const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
+
 function newTaskSubmit() {
 	task_new_form.addEventListener("submit", (e) => {
 		e.preventDefault();
 		var data = new FormData(document.getElementById("task_new_form"));
-		// console.log(data.get('task_start_now'));
 		addTask(
 			data.get("task_name"),
 			data.get("task_description"),
@@ -31,17 +33,15 @@ function newTaskSubmit() {
 		document.getElementById("new_task_name").value = "";
 		document.getElementById("new_task_description").value = "";
 		document.getElementById("new_task_interval").value = "";
-		// data.delete('task_name');
 	});
 }
 newTaskSubmit();
 
 function addTask(name, description, interval) {
 	if (name) {
-		// get item timerTasks
+		// TODO: hier lijkt een bug, leeg maken voor er nieuw gemaakt wordt is leuk, maar als dit persistentie tegen gaat, moet er een andere oplossing komen.
 		let timerArr = [];
-		timerArr = JSON.parse(localStorage.getItem("timerTasks"));
-		// console.log(timerArr);
+		timerArr = getTasks();
 
 		// push into item timerTasks
 		timerArr.push({
@@ -54,55 +54,33 @@ function addTask(name, description, interval) {
 
 		// set item timerTasks
 		updateTasks(timerArr);
-		let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
+		let timerArr2 = getTasks();
 		renderTasks(timerArr2);
 	}
 }
 
-// function detectQuickTask() { // temparily not using
-// 	if (document.getElementById("task-Stretch")) {
-// 		task_new_quick.className = "dnone";
-// 	} else task_new_quick.className = "dblock";
-// }
-
 let startArr = [];
 updateTasks(startArr);
 
-let getTimerTasksArr = JSON.parse(localStorage.getItem("timerTasks"));
 
 // ADD TASKS
-let tasks = [];
-// Add task
-// properties:
-//	id<int><auto-increment><hidden>
-//	name<string><required>
-//	description<string><optional>
-//	start<string><HH:MM>/Now<required>, default=Now
-//	interval (minutes)<int>, default=false
-
 
 // use quick add function so have a base setup, using all basic fields and characteristics
 task_new_quick.addEventListener("click", () => {
 	addQuickTask();
-	// detectQuickTask(); // tijdelijk buiten gebruik, zie ook andere soortgelijke regels mbt detect..
-
-	// TODO: check on name if not exists to prevent duplicates
-	// getTimerTasksArr.push({
-	// 	name: 'stretch',
-	// 	description: 'Even lopen, strekken, eten, niets superactiefs',
-	// 	interval: 35,
-	// });
-	// localStorage.setItem('timerTasks', JSON.stringify({
-	// 	getTimerTasksArr
-	// }));
-	// console.log(getTimerTasksArr);
-	// console.log(getTimerTasksArr.length);
-	//
-
-	// TODO: verwijs naar functie die de update uitvoert, ipv bovenstaand
 });
 
-//hide quick add button when there a quickly addes task already exists
+let getTimerTasksArr = getTasks();
+
+// Show New task-form if tasks array is empty
+// TODO: if localStorage isnt persistent, this is always TRUE, so fix this
+const checkTasksEmpty = () => {
+	if (getTasks.length === 0) {
+		task_new_form.className = "dblock";
+		return true;
+	} else return false;
+}
+checkTasksEmpty();
 
 function renderTasks(getTimerTasksArr) {
 	task_container.innerHTML = "";
@@ -133,7 +111,7 @@ function renderTaskElement(node = "div", className, content, id = undefined) {
 
 function addQuickTask() {
 	let timerArr = [];
-	timerArr = JSON.parse(localStorage.getItem("timerTasks"));
+	timerArr = getTasks();
 
 	timerArr.push({
 		name: "Stretch",
@@ -145,7 +123,7 @@ function addQuickTask() {
 
 	// set item timerTasks
 	updateTasks(timerArr);
-	let timerArr2 = JSON.parse(localStorage.getItem("timerTasks"));
+	let timerArr2 = getTasks();
 	renderTasks(timerArr2);
 }
 
@@ -153,17 +131,15 @@ function removeTaskLink(key) {
 	let el = document.createElement("button");
 	el.innerHTML = "remove task";
 	el.className = "text";
-	el.className += " teeee";
 	el.id = 'del-' + key;
 	el.addEventListener("click", () => {
 		removeTask(key);
-		// detectQuickTask(); // tijdelijk buiten gebruik
 	});
 	return el;
 }
 
 function removeTask(key) {
-	let arr = JSON.parse(localStorage.getItem("timerTasks"));
+	let arr = getTasks();
 
 	let newarr = [];
 	for (let i = 0; i < arr.length; i++) {
@@ -179,15 +155,10 @@ function removeTask(key) {
 	updateTasks(newarr);
 	renderTasks(newarr);
 }
-
-function updateTasks(arr) {
-	localStorage.setItem('timerTasks', JSON.stringify(arr));
-}
-
 function countdownTimer(limit, key, id) {
 	const lb = setInterval((max = limit, id2 = id) => {
 		if (document.getElementById(id)) {
-			let arr = JSON.parse(localStorage.getItem('timerTasks'));
+			let arr = getTasks();
 			if (arr[key].timepast > max) stopit();
 			document.getElementById(id2).innerHTML = arr[key].timepast;
 		}
@@ -199,7 +170,7 @@ function countdownTimer(limit, key, id) {
 
 function countdownAll() {
 	setInterval(() => {
-		let arr = JSON.parse(localStorage.getItem("timerTasks"));
+		let arr = getTasks();
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].timepast < arr[i].interval) arr[i].timepast++;
 		}
@@ -213,11 +184,8 @@ countdownAll();
 // TODO: organize whatever is below this line
 // -------------------------------------------------------------------------------------
 
-// Show New task-form if tasks array is empty
-if (getTimerTasksArr.length === 0) task_new_form.className = "dblock";
 
 // let button #new_task_btn toggle the form #new_task_form
-// TODO: temporarily commented 
 task_new_btn.addEventListener("click", () => {
 	!task_new_form.checkVisibility()
 		? (task_new_form.className = "dblock")
@@ -226,3 +194,18 @@ task_new_btn.addEventListener("click", () => {
 
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
+
+// testing with persistence
+let tasks = JSON.parse(localStorage.getItem('tasks'));
+if (tasks === null) {
+	tasks = [];
+	tasks.push(
+		{
+			test1: 'numero un',
+			test2: 'nummer twee',
+			test3: 'numero tres',
+			test4: 'number four'
+		});
+	localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+console.log(tasks);

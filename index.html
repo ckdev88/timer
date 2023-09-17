@@ -9,9 +9,9 @@
 </head>
 
 <body>
-	<!-- <button id="task_new_btn">New task</button> -->
+	<button id="task_new_btn">New task</button>
 	<form id="task_new_form" class="dnone" onsubmit="newTaskSubmit()">
-		<!-- <h2>New task</h2> -->
+		<h2>New task</h2>
 		<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
 		<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
 		<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval (minutes)..." required />
@@ -21,7 +21,7 @@
 		<!-- </label> -->
 		<input type="submit" value="Create task" />
 	</form>
-	<button id="task_new_quick">Quick new intervalling task</button>
+	<button id="task_new_quick" class="text">Quick new intervalling task</button>
 	<div id="task_container"></div>
 	<script src="script.js"></script>
 </body>
