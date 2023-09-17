@@ -37,13 +37,11 @@ function newTaskSubmit() {
 }
 newTaskSubmit();
 
+
 function addTask(name, description, interval) {
 	if (name) {
-		// TODO: hier lijkt een bug, leeg maken voor er nieuw gemaakt wordt is leuk, maar als dit persistentie tegen gaat, moet er een andere oplossing komen.
-		let timerArr = [];
-		timerArr = getTasks();
+		let timerArr = getTasks();
 
-		// push into item timerTasks
 		timerArr.push({
 			name: name,
 			description: description,
@@ -52,15 +50,11 @@ function addTask(name, description, interval) {
 			task: "task-" + name.replaceAll(' ', ''),
 		});
 
-		// set item timerTasks
 		updateTasks(timerArr);
 		let timerArr2 = getTasks();
 		renderTasks(timerArr2);
 	}
 }
-
-let startArr = [];
-updateTasks(startArr);
 
 
 // ADD TASKS
@@ -73,21 +67,23 @@ task_new_quick.addEventListener("click", () => {
 let getTimerTasksArr = getTasks();
 
 // Show New task-form if tasks array is empty
-// TODO: if localStorage isnt persistent, this is always TRUE, so fix this
 const checkTasksEmpty = () => {
-	if (getTasks.length === 0) {
-		task_new_form.className = "dblock";
+	if (!getTasks()) updateTasks([]); // if array doesnt exist at all, create it
+	if (getTasks().length === 0) {
 		return true;
-	} else return false;
-}
-checkTasksEmpty();
-
-function renderTasks(getTimerTasksArr) {
-	task_container.innerHTML = "";
-	for (let i = 0; i < getTimerTasksArr.length; i++) {
-		task_container.appendChild(renderTask(getTimerTasksArr[i], i));
+	} else {
+		return false;
 	}
 }
+if (checkTasksEmpty() === true) task_new_form.className = "dblock";
+
+function renderTasks(arr) {
+	task_container.innerHTML = "";
+	for (let i = 0; i < arr.length; i++) {
+		task_container.appendChild(renderTask(arr[i], i));
+	}
+}
+renderTasks(getTasks());
 
 function renderTask(i, key) {
 	let el = document.createElement("div");
@@ -195,17 +191,3 @@ task_new_btn.addEventListener("click", () => {
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
 
-// testing with persistence
-let tasks = JSON.parse(localStorage.getItem('tasks'));
-if (tasks === null) {
-	tasks = [];
-	tasks.push(
-		{
-			test1: 'numero un',
-			test2: 'nummer twee',
-			test3: 'numero tres',
-			test4: 'number four'
-		});
-	localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-console.log(tasks);
