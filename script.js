@@ -47,7 +47,6 @@ function addTask(name, description, interval) {
 			description: description,
 			interval: interval,
 			timepast: 0,
-			task: "task-" + name.replaceAll(' ', ''),
 		});
 
 		updateTasks(timerArr);
@@ -75,7 +74,7 @@ const checkTasksEmpty = () => {
 		return false;
 	}
 }
-if (checkTasksEmpty() === true) task_new_form.className = "dblock";
+// if (checkTasksEmpty() === true) task_new_form.className = "dblock";
 
 function renderTasks(arr) {
 	task_container.innerHTML = "";
@@ -114,7 +113,6 @@ function addQuickTask() {
 		description: "Quick timer",
 		interval: 35,
 		timepast: 0,
-		// task: "task-Stretch",
 	});
 
 	// set item timerTasks
@@ -145,7 +143,6 @@ function removeTask(key) {
 			description: arr[i].description,
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
-			// task: "task-" + arr[i].name.replaceAll(' ', ''),
 		});
 	}
 	updateTasks(newarr);
@@ -155,7 +152,9 @@ function countdownTimer(limit, key, id) {
 	const lb = setInterval((max = limit, id2 = id) => {
 		if (document.getElementById(id)) {
 			let arr = getTasks();
-			if (arr[key].timepast > max) stopit();
+			if (arr[key].timepast === max) {
+				stopit();
+			}
 			document.getElementById(id2).innerHTML = arr[key].timepast;
 		}
 	}, 1000);
@@ -168,13 +167,23 @@ function countdownAll() {
 	setInterval(() => {
 		let arr = getTasks();
 		for (let i = 0; i < arr.length; i++) {
-			if (arr[i].timepast < arr[i].interval) arr[i].timepast++;
+			if (arr[i].timepast < arr[i].interval) {
+				arr[i].timepast++;
+				if (arr[i].timepast == arr[i].interval) playSound();
+			}
+			else arr[i].finished = true;
 		}
 		updateTasks(arr);
 	}, 1000)
 
 }
 countdownAll();
+
+function playSound() {
+	const siren = new Audio('siren1.wav');
+	siren.play();
+	console.log('play sound');
+}
 
 
 // TODO: organize whatever is below this line

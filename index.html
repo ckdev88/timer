@@ -6,12 +6,13 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link href="style.css" rel="stylesheet" />
+
 </head>
 
 <body>
 	<div id="wrapper">
 		<button id="task_new_btn">New task</button>
-		<form id="task_new_form" class="dnone" onsubmit="newTaskSubmit()">
+		<form id="task_new_form" class="dblock" onsubmit="newTaskSubmit()">
 			<h2>New task</h2>
 			<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
 			<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
@@ -22,8 +23,8 @@
 			<!-- 	Start task now -->
 			<!-- </label> -->
 			<input type="submit" value="Create task" />
-			<button id="task_new_quick" class="text">Quick new intervalling task</button>
 		</form>
+		<button id="task_new_quick" class="text">Quick new intervalling task</button>
 		<div id="task_container"></div>
 	</div>
 	<script src="script.js"></script>
