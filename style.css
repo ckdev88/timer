@@ -1,3 +1,8 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
 html {
   padding: 0;
   margin: 0;
@@ -5,10 +10,9 @@ html {
   color: #fafafa;
   font-size: 16px;
 }
-body {
-  padding: 1rem;
+h3 {
+  margin-bottom: 0;
 }
-h3{margin-bottom:0;}
 body,
 input,
 textarea,
@@ -61,21 +65,31 @@ button.text {
 button.text {
   background: none;
   border: 0;
-	text-decoration:underline;
-	padding-left:0;
+  text-decoration: underline;
+  padding-left: 0;
+}
+
+#wrapper {
+  max-width: 100vw;
+  padding: 0.5rem;
 }
 #task_new_form {
-  width: 20rem;
+  width: 100%;
   max-width: 100%;
   & input[type="text"],
   textarea,
   input[type="number"] {
+    display: block;
     width: 100%;
+    width: fill-available;
+    width: -moz-available;
+    width: -webkit-fill-available;
   }
   & textarea {
     height: 4em;
   }
 }
+
 .dnone {
   display: none;
 }
