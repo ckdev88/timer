@@ -180,7 +180,6 @@ function countdownTimer(limit, key, id) {
 			let arr = getTasks();
 			if (arr[key].timepast === max) {
 				stopit();
-				addResetTaskLink(key);
 			}
 			document.getElementById(id2).innerHTML = arr[key].timepast;
 		}
@@ -197,7 +196,10 @@ function countdownAll() {
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].timepast < arr[i].interval) {
 				arr[i].timepast++;
-				if (arr[i].timepast == arr[i].interval) playSound();
+				if (arr[i].timepast == arr[i].interval) {
+					playSound();
+					addResetTaskLink(i);
+				}
 			}
 			else arr[i].finished = true;
 		}
