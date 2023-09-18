@@ -77,12 +77,15 @@ button.text {
   text-decoration: underline;
   padding-left: 0;
   display: inline-block;
-		&:after{font-size:.8em
-	}
-	&.expanded:after{
-		content:" ▲";
-	}
-	&.collapsed:after{content:" ▼"}
+  &:after {
+    font-size: 0.8em;
+  }
+  &.expanded:after {
+    content: " ▲";
+  }
+  &.collapsed:after {
+    content: " ▼";
+  }
 }
 
 #wrapper {
