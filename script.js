@@ -7,7 +7,7 @@ const task_new_quick = document.getElementById("task_new_quick");
 const task_container = document.getElementById("task_container");
 const settings = {
 	intervalTime: 60000, // in ms
-	countDown: false, // true: show time remaining, false: show time passed
+	countDown: true, // true: show time remaining, false: show time passed
 };
 /*
 html element id's:
@@ -106,7 +106,7 @@ function renderTask(i, key) {
 	el.id = 'task-' + key;
 	el.appendChild(renderTaskElement("h3", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
-	el.appendChild(renderTaskElement("div", "task-countdown-total", 'Alert at: ' + i.interval));
+	el.appendChild(renderTaskElement("div", "task-countdown-total", 'Interval: ' + i.interval));
 	el.appendChild(renderTaskElement(
 		'div',
 		'task-countdown-current',
@@ -117,18 +117,19 @@ function renderTask(i, key) {
 			// i.timepast, 
 			settings.countDown
 		),
-		'countdown-' + el.id, key
+		'countdown-' + el.id, key,
+		(settings.countDown ? 'Time left: ' : 'Time passed: ')
 	));
 	el.appendChild(removeTaskLink(key));
 	if (i.finished === true) el.appendChild(resetTaskLink(key));
 	return el;
 }
 
-function renderTaskElement(node = "div", className, content, id = undefined, key) {
+function renderTaskElement(node = "div", className, content, id = undefined, key, contentPrefix = '') {
 	let taskEl = document.createElement(node);
 	taskEl.className = className;
 	if (content === undefined) content = (settings.countDown === true ? (getTasks()[key].interval - getTasks()[key].timepast) : getTasks()[key].timepast)
-	taskEl.innerHTML = content;
+	taskEl.innerHTML = contentPrefix + content;
 	id !== undefined ? taskEl.id = id : '';
 	return taskEl;
 }
@@ -201,17 +202,17 @@ function addResetTaskLink(key) {
 	document.getElementById('task-' + key).appendChild(el);
 }
 
-function countdownTimer(limit, key, id, countDown) {
-	console.log('countDown2:', countDown);
+function countdownTimer(limit, key, id) {
+	if (settings.countDown) contentPrefix = 'Time left: ';
+	else contentPrefix = 'Time passed: ';
 	const lb = setInterval((max = limit, id2 = id) => {
 		if (document.getElementById(id)) {
 			let arr = getTasks();
 			if (arr[key].timepast === max) {
 				stopit();
 			}
-			console.log('countDown:', countDown);
-			if (countDown) document.getElementById(id2).innerHTML = (max - arr[key].timepast);
-			else document.getElementById(id2).innerHTML = arr[key].timepast;
+			if (settings.countDown) document.getElementById(id2).innerHTML = contentPrefix + (max - arr[key].timepast);
+			else document.getElementById(id2).innerHTML = contentPrefix + arr[key].timepast;
 		}
 	}, settings.intervalTime);
 	function stopit() {
