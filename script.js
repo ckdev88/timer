@@ -219,14 +219,21 @@ function playSound() {
 // TODO: organize whatever is below this line
 // -------------------------------------------------------------------------------------
 
-
-// let button #new_task_btn toggle the form #new_task_form
 task_new_btn.addEventListener("click", () => {
 	!task_new_form.checkVisibility()
-		? (task_new_form.className = "dblock")
-		: (task_new_form.className = "dnone");
+		? ecForm('expand') : ecForm('collapse');
 });
 
+function ecForm(what) {
+	if (what == 'expand') {
+		task_new_btn.classList.replace('collapsed', 'expanded');
+		task_new_form.className = "dblock"
+	}
+	if (what === 'collapse') {
+		task_new_form.className = "dnone"
+		task_new_btn.classList.replace('expanded', 'collapsed');
+	}
+}
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
 
