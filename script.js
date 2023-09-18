@@ -5,6 +5,7 @@ const task_new_btn = document.getElementById("task_new_btn");
 const task_new_form = document.getElementById("task_new_form");
 const task_new_quick = document.getElementById("task_new_quick");
 const task_container = document.getElementById("task_container");
+const intervalTime = 60000; // 60 seconds
 /*
 html element id's:
 task_new_form
@@ -18,8 +19,7 @@ task_container
 */
 
 task_new_btn.addEventListener("click", () => {
-	!task_new_form.checkVisibility()
-		? ecForm('expand') : ecForm('collapse');
+	task_new_form.className == 'dblock' ? ecForm('collapse') : ecForm('expand');
 });
 
 function ecForm(what) {
@@ -71,7 +71,6 @@ function addTask(name, description, interval) {
 	}
 }
 
-
 // use quick add function so have a base setup, using all basic fields and characteristics
 task_new_quick.addEventListener("click", () => {
 	addQuickTask();
@@ -105,35 +104,36 @@ function renderTask(i, key) {
 	el.appendChild(renderTaskElement("h3", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-description", i.description));
 	el.appendChild(renderTaskElement("div", "task-countdown-total", i.interval));
-	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, key, 'countdown-task-' + key), 'countdown-' + el.id));
+	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, key, 'countdown-task-' + key, i.timepast), 'countdown-' + el.id, key));
 	el.appendChild(removeTaskLink(key));
-	// el.appendChild(resetTaskLink(key));
+	if (i.finished === true) el.appendChild(resetTaskLink(key));
 	return el;
 }
 
-function renderTaskElement(node = "div", className, content, id = undefined) {
+function renderTaskElement(node = "div", className, content, id = undefined, key) {
 	let taskEl = document.createElement(node);
 	taskEl.className = className;
+	if (content === undefined) content = getTasks()[key].timepast;
 	taskEl.innerHTML = content;
 	id !== undefined ? taskEl.id = id : '';
 	return taskEl;
 }
 
-function addQuickTask() {
-	let timerArr = [];
-	timerArr = getTasks();
 
-	timerArr.push({
+function addQuickTask() {
+	let arr = [];
+	arr = getTasks();
+
+	arr.push({
 		name: "Stretch",
 		description: "Quick timer",
 		interval: 35,
 		timepast: 0,
 	});
 
-	// set item timerTasks
-	updateTasks(timerArr);
-	let timerArr2 = getTasks();
-	renderTasks(timerArr2);
+	updateTasks(arr);
+	let arr2 = getTasks();
+	renderTasks(arr2);
 }
 
 function removeTaskLink(key) {
@@ -196,9 +196,8 @@ function countdownTimer(limit, key, id) {
 			}
 			document.getElementById(id2).innerHTML = arr[key].timepast;
 		}
-	}, 1000);
+	}, intervalTime);
 	function stopit() {
-		console.log('run stopit()')
 		clearInterval(lb);
 	}
 }
@@ -212,21 +211,21 @@ function countdownAll() {
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				playSound();
-				addResetTaskLink(i);
 				arr[i].finished = true;
 				document.body.style.backgroundColor = 'red';
 			}
+			if (arr[i].finished == true && !document.getElementById('reset-' + i)) {
+				addResetTaskLink(i);
+			}
 			updateTasks(arr);
 		}
-	}, 1000);
-
+	}, intervalTime);
 }
 countdownAll();
 
 function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
-	console.log('play sound');
 }
 
 
