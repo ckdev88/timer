@@ -17,8 +17,10 @@ task_new_quick
 task_container
 */
 
+
 const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); }
 const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
+if (getTasks() === null) updateTasks([]);
 
 function newTaskSubmit() {
 	task_new_form.addEventListener("submit", (e) => {
