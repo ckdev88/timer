@@ -93,6 +93,7 @@ function renderTask(i, key) {
 	el.appendChild(renderTaskElement("div", "task-countdown-total", i.interval));
 	el.appendChild(renderTaskElement('div', 'task-countdown-current', countdownTimer(i.interval, key, 'countdown-task-' + key), 'countdown-' + el.id));
 	el.appendChild(removeTaskLink(key));
+	// el.appendChild(resetTaskLink(key));
 	return el;
 }
 
@@ -124,7 +125,7 @@ function addQuickTask() {
 function removeTaskLink(key) {
 	let el = document.createElement("button");
 	el.innerHTML = "remove task";
-	el.className = "text";
+	el.className = "text ctacolor2";
 	el.id = 'del-' + key;
 	el.addEventListener("click", () => {
 		removeTask(key);
@@ -148,17 +149,42 @@ function removeTask(key) {
 	updateTasks(newarr);
 	renderTasks(newarr);
 }
+function resetTaskLink(key) {
+	let el = document.createElement('button');
+	el.innerHTML = 'reset';
+	el.className = 'text';
+	el.id = 'reset-' + key;
+	el.addEventListener('click', () => {
+		resetTask(key);
+	});
+	return el;
+}
+function resetTask(key) {
+	let arr = getTasks();
+	arr[key].timepast = 0;
+	arr[key].finished = false;
+	updateTasks(arr);
+	renderTasks(arr);
+}
+
+function addResetTaskLink(key) {
+	el = resetTaskLink(key);
+	document.getElementById('task-' + key).appendChild(el);
+}
+
 function countdownTimer(limit, key, id) {
 	const lb = setInterval((max = limit, id2 = id) => {
 		if (document.getElementById(id)) {
 			let arr = getTasks();
 			if (arr[key].timepast === max) {
 				stopit();
+				addResetTaskLink(key);
 			}
 			document.getElementById(id2).innerHTML = arr[key].timepast;
 		}
 	}, 1000);
 	function stopit() {
+		console.log('run stopit()')
 		clearInterval(lb);
 	}
 }

@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   padding: 0;
@@ -9,6 +12,9 @@ html {
   background: #000;
   color: #fafafa;
   font-size: 16px;
+}
+body {
+  min-width: calc(320px + 1rem);
 }
 h3 {
   margin-bottom: 0;
@@ -52,13 +58,18 @@ button {
 }
 input[type="text"],
 textarea,
+input[type="number"] {
+  width: 100%;
+}
+input[type="text"],
+textarea,
 input[type="number"],
 label {
   font-size: 0.9rem;
 }
 a,
 button.text {
-  color: pink;
+  color: lime;
   background: transparent;
   border: 0;
 }
@@ -67,11 +78,14 @@ button.text {
   border: 0;
   text-decoration: underline;
   padding-left: 0;
+
+  display: inline-block;
 }
 
 #wrapper {
   max-width: 100vw;
-  padding: 0.5rem;
+  min-width: 320px;
+  margin: 0.5rem;
 }
 #task_new_form {
   width: 100%;
@@ -80,10 +94,10 @@ button.text {
   textarea,
   input[type="number"] {
     display: block;
-    width: 100%;
-    width: fill-available;
-    width: -moz-available;
-    width: -webkit-fill-available;
+    /* width: 100%; */
+    /* width: fill-available; */
+    /* width: -moz-available; */
+    /* width: -webkit-fill-available; */
   }
   & textarea {
     height: 4em;
@@ -95,4 +109,19 @@ button.text {
 }
 .dblock {
   display: block;
+}
+.white,
+a.white,
+button.text.white {
+  color: white;
+}
+.ctacolor1,
+a.ctacolor1,
+button.ctacolor1 {
+  color: lime;
+}
+.ctacolor2,
+a.ctacolor2,
+button.ctacolor2 {
+  color: tan;
 }
