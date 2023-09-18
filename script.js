@@ -17,6 +17,21 @@ task_new_quick
 task_container
 */
 
+task_new_btn.addEventListener("click", () => {
+	!task_new_form.checkVisibility()
+		? ecForm('expand') : ecForm('collapse');
+});
+
+function ecForm(what) {
+	if (what == 'expand') {
+		task_new_btn.classList.replace('collapsed', 'expanded');
+		task_new_form.className = "dblock"
+	}
+	if (what === 'collapse') {
+		task_new_form.className = "dnone"
+		task_new_btn.classList.replace('expanded', 'collapsed');
+	}
+}
 
 const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); }
 const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
@@ -39,7 +54,6 @@ function newTaskSubmit() {
 }
 newTaskSubmit();
 
-
 function addTask(name, description, interval) {
 	if (name) {
 		let timerArr = getTasks();
@@ -57,8 +71,6 @@ function addTask(name, description, interval) {
 	}
 }
 
-
-// ADD TASKS
 
 // use quick add function so have a base setup, using all basic fields and characteristics
 task_new_quick.addEventListener("click", () => {
@@ -165,6 +177,7 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
+	document.body.style.backgroundColor = 'black';
 	updateTasks(arr);
 	renderTasks(arr);
 }
@@ -196,15 +209,16 @@ function countdownAll() {
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].timepast < arr[i].interval) {
 				arr[i].timepast++;
-				if (arr[i].timepast == arr[i].interval) {
-					playSound();
-					addResetTaskLink(i);
-				}
 			}
-			else arr[i].finished = true;
+			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
+				playSound();
+				addResetTaskLink(i);
+				arr[i].finished = true;
+				document.body.style.backgroundColor = 'red';
+			}
+			updateTasks(arr);
 		}
-		updateTasks(arr);
-	}, 1000)
+	}, 1000);
 
 }
 countdownAll();
@@ -219,21 +233,6 @@ function playSound() {
 // TODO: organize whatever is below this line
 // -------------------------------------------------------------------------------------
 
-task_new_btn.addEventListener("click", () => {
-	!task_new_form.checkVisibility()
-		? ecForm('expand') : ecForm('collapse');
-});
-
-function ecForm(what) {
-	if (what == 'expand') {
-		task_new_btn.classList.replace('collapsed', 'expanded');
-		task_new_form.className = "dblock"
-	}
-	if (what === 'collapse') {
-		task_new_form.className = "dnone"
-		task_new_btn.classList.replace('expanded', 'collapsed');
-	}
-}
 // - Countdown timer
 // - Button: if interval==false: DONE, if interval==true: RESET
 
