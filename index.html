@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-	<title></title>
+	<title>Task timer</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link href="style.css" rel="stylesheet" />
-
+	<link rel="icon" href="img/favicon-16.png" />
 </head>
 
 <body>
@@ -16,15 +16,14 @@
 			<!-- <h2>New task</h2> -->
 			<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
 			<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
-			<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval (minutes)..."
-				required />
+			<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval time..." required />
 			<!-- <label for="new_task_start_now"> -->
 			<!-- 	<input id="new_task_start_now" name="task_start_now" type="checkbox" checked /> -->
 			<!-- 	Start task now -->
 			<!-- </label> -->
 			<input type="submit" value="Create task" />
 		</form>
-		<button id="task_new_quick" class="text">Quick new intervalling task</button>
+		<button id="task_new_quick" class="text">New quick task</button>
 		<div id="task_container"></div>
 		<audio src="siren1.wav" />
 	</div>

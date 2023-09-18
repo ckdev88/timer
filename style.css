@@ -39,6 +39,7 @@ input[type="submit"] {
   cursor: pointer;
   background: lime;
   color: black;
+  font-weight: bold;
 }
 label {
   cursor: pointer;
@@ -89,9 +90,10 @@ button.text {
 }
 
 #wrapper {
-  max-width: 100vw;
+  max-width: 480px;
   min-width: 320px;
   padding: 0.5rem;
+  margin: 0 auto;
 }
 #task_new_form {
   width: 100%;
