@@ -37,37 +37,10 @@ if (localStorage.getItem('settings') === null) {
 }
 const settings = JSON.parse(localStorage.getItem('settings'));
 // ------------- /define settings --------------
-function setSettings() {
-	const settings_form = document.getElementById('settings_form');
-	document.getElementById('settings_form_quickTaskName').setAttribute('value', settings.quickTaskName);
-	document.getElementById('settings_form_quickTaskDescr').innerText = settings.quickTaskDescr;
-	document.getElementById('settings_form_quickTaskInterval').setAttribute('value', settings.quickTaskInterval);
-	selectOption(document.getElementById('settings_form_intervalTime'), settings.intervalTime);
-	selectOption(document.getElementById('settings_form_countDown'), settings.countDown);
-
-	settings_form.addEventListener("submit", (e) => {
-		e.preventDefault();
-		var data = new FormData(document.getElementById("settings_form"));
-
-		let settings = {
-			intervalTime: data.get('settings_form_intervalTime'),
-			intervalTimeUnit: '',
-			countDown: data.get('settings_form_countDown'), // true: show time remaining, false: show time passed
-			quickTaskInterval: data.get("settings_form_quickTaskInterval"),  // totals value multiplied by value of settings.intervalTime
-			quickTaskName: data.get("settings_form_quickTaskName"),
-			quickTaskDescr: data.get("settings_form_quickTaskDescr"),
-		};
-		if (settings.intervalTime == '60000') settings.intervalTimeUnit = 'minute(s)';
-		else if (settings.intervalTime == '1000') settings.intervalTimeUnit = 'second(s)';
-		localStorage.setItem('settings', JSON.stringify(settings));
-
-		// TODO: re-render page & variables
-	});
-
+function viewSettings() {
 	settings_btn.addEventListener('click', () => {
 		settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand');
 	});
-
 	function settingsForm(what) {
 		if (what == 'expand') {
 			settings_btn.classList.replace('collapsed', 'expanded')
@@ -78,8 +51,41 @@ function setSettings() {
 			settings_form.className = 'dnone';
 		}
 	}
+	function settingsFormDefaults() {
+		document.getElementById('settings_form_quickTaskName').setAttribute('value', settings.quickTaskName);
+		document.getElementById('settings_form_quickTaskDescr').innerText = settings.quickTaskDescr;
+		document.getElementById('settings_form_quickTaskInterval').setAttribute('value', settings.quickTaskInterval);
+		selectOption(document.getElementById('settings_form_intervalTime'), settings.intervalTime);
+		selectOption(document.getElementById('settings_form_countDown'), settings.countDown);
+	}
+	settingsFormDefaults();
 }
-setSettings();
+viewSettings();
+
+const settings_form = document.getElementById('settings_form');
+settings_form.addEventListener("submit", (e) => {
+	e.preventDefault();
+	console.log('settings form submitted');
+	let data = new FormData(settings_form);
+	settingsFormSubmit(data);
+});
+
+function settingsFormSubmit(data) {
+	let settings = {
+		intervalTime: data.get('settings_form_intervalTime'),
+		intervalTimeUnit: '',
+		countDown: data.get('settings_form_countDown'), // true: show time remaining, false: show time passed
+		quickTaskInterval: data.get("settings_form_quickTaskInterval"),  // totals value multiplied by value of settings.intervalTime
+		quickTaskName: data.get("settings_form_quickTaskName"),
+		quickTaskDescr: data.get("settings_form_quickTaskDescr"),
+	};
+	if (settings.intervalTime == '60000') settings.intervalTimeUnit = 'minute(s)';
+	else if (settings.intervalTime == '1000') settings.intervalTimeUnit = 'second(s)';
+	localStorage.setItem('settings', JSON.stringify(settings));
+
+	// TODO: re-render page & variables
+}
+
 function selectOption(el, option) {
 	option = option.toString();
 	for (let i = 0; i < el.options.length; i++) {
@@ -126,7 +132,7 @@ function newTaskSubmit() {
 		document.getElementById("new_task_interval").value = "";
 	});
 }
-newTaskSubmit();
+// newTaskSubmit();
 
 function addTask(name, descr, interval) {
 	if (name) {
