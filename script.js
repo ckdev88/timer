@@ -70,7 +70,6 @@ function viewSettings() {
 }
 viewSettings();
 
-// const settings_form = d.getElementById('settings_form');
 settings_form.addEventListener("submit", (e) => {
 	e.preventDefault();
 	let data = new FormData(settings_form);
@@ -198,7 +197,6 @@ function renderTask(i, key) {
 		'div',
 		'task-countdown-current',
 		countdownTimer(
-			i.interval / i.intervalUnit,
 			key,
 			'countdown-task-' + key,
 			settings.countDown
@@ -279,9 +277,12 @@ function removeTask(key) {
 			descr: arr[i].descr,
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
+			intervalUnit: arr[i].intervalUnit,
+			intervalUnitName: arr[i].intervalUnitName
 		});
 	}
 	updateTasks(newarr);
+	if (newarr.length === 0) d.body.style.backgroundColor = 'black';
 	renderTasks(newarr);
 }
 
@@ -300,7 +301,7 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-	d.body.style.backgroundColor = 'black';
+	d.body.style.backgroundColor = 'black'; // TODO: check if any other finished tasks should keep screen red
 	updateTasks(arr);
 	renderTasks(arr);
 }
@@ -310,29 +311,28 @@ function addResetTaskLink(key) {
 	d.getElementById('task-' + key).appendChild(el);
 }
 
-function countdownTimer(limit, key, id) {
+function countdownTimer(key, id) { // individual per task
 	let settings = getSettings();
 	if (settings.countDown) cPrefix = 'Time left: ';
 	else cPrefix = 'Time passed: ';
-	const lb = setInterval((max = limit, id2 = id) => {
+	const lb = setInterval((idtmp = id) => {
 		if (d.getElementById(id)) {
-			let c = d.getElementById(id2);
+			let c = d.getElementById(id);
 			let arr = getTasks();
-			max *= arr[key].intervalUnit;
-			if (arr[key].timepast === max) {
+			if (arr[key].timepast === arr[key].interval) {
 				stopit();
 			}
 			if (settings.countDown) {
-				c.innerHTML =
-					cPrefix + ((max - arr[key].timepast) / arr[key].intervalUnit).toFixed(0) + ' ' + arr[key].intervalUnitName;
-				// c.innerHTML = cPrefix + (300 / 60);
+				let timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
+				c.innerHTML = cPrefix + timeleft + ' ' + arr[key].intervalUnitName;
+				;
 			}
 			else {
-				c.innerHTML =
-					cPrefix + (arr[key].timepast / arr[key].intervalUnit).toFixed(0) + ' ' + arr[key].intervalUnitName;
+				let timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
+				c.innerHTML = cPrefix + timepast + ' ' + arr[key].intervalUnitName
 			}
 		}
-	}, 1000);//run every second/1000ms
+	}, 1000); // run every second/1000ms
 	function stopit() {
 		clearInterval(lb);
 	}
@@ -355,7 +355,7 @@ function countdownAll() {
 			}
 			updateTasks(arr);
 		}
-	}, 1000);//run every second/1000ms
+	}, 1000); // run every second/1000ms
 }
 countdownAll();
 
