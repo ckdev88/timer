@@ -1,5 +1,7 @@
 // build a timer, tasks and later a sort of agenda function for the day, connected with times, all using local storage, not needing any deployment server, just the html, js & css maybe even all in one html-file, so it's super easy to use.
 
+// TODO: make intervalTime, intervalTimeUnit a task-specific thing
+
 /*
 html element id's:
 task_new_form
@@ -117,6 +119,10 @@ const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); 
 const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
 if (getTasks() === null) updateTasks([]);
 
+// TODO: split newTaskSubmit in 3 functions...
+// TODO: ... 1 with listener ...
+// TODO: ... the other with adding the task ...
+// TODO: ... (and one to empty form fields (& place focus on first field?))
 function newTaskSubmit() {
 	task_new_form.addEventListener("submit", (e) => {
 		e.preventDefault();
@@ -131,12 +137,12 @@ function newTaskSubmit() {
 		document.getElementById("new_task_interval").value = "";
 	});
 }
-// newTaskSubmit();
 
 function addTask(name, descr, interval) {
 	if (name) {
 		let timerArr = getTasks();
 
+		// TODO: add task specific intervalTime (& intervalTimeUnit)
 		timerArr.push({
 			name: name,
 			descr: descr,
@@ -156,17 +162,6 @@ task_new_quick.addEventListener("click", () => {
 });
 
 let getTimerTasksArr = getTasks();
-
-// Show New task-form if tasks array is empty
-const checkTasksEmpty = () => {
-	if (!getTasks()) updateTasks([]); // if array doesnt exist at all, create it
-	if (getTasks().length === 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-// if (checkTasksEmpty() === true) task_new_form.className = "dblock";
 
 function renderTasks(arr) {
 	task_container.innerHTML = "";
@@ -302,7 +297,6 @@ function countdownTimer(limit, key, id) {
 		}
 	}, settings.intervalTime);
 	function stopit() {
-
 		clearInterval(lb);
 	}
 }
