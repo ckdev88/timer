@@ -5,7 +5,7 @@ html element id's:
 task_new_form
 task_id
 new_task_name
-new_task_description
+new_task_descr
 new_task_interval
 task_start_now
 task_new_quick
@@ -26,7 +26,7 @@ const settings_default = {
 	countDown: true, // true: show time remaining, false: show time passed
 	quickTaskInterval: 35, // totals value multiplied by value of settings.intervalTime
 	quickTaskName: 'Stretch',
-	quickTaskDescription: 'Eat, walk, pushup, drink, some or all.',
+	quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 };
 if (settings_default.intervalTime === 60000) settings_default.intervalTimeUnit = 'minute(s)';
 else if (settings_default.intervalTime === 1000) settings_default.intervalTimeUnit = 'second(s)';
@@ -36,34 +36,15 @@ if (localStorage.getItem('settings') === null) {
 	localStorage.setItem('settings', JSON.stringify(settings_default))
 }
 const settings = JSON.parse(localStorage.getItem('settings'));
-console.log('settings', settings);
 // ------------- /define settings --------------
+function setSettings() {
+	const settings_form = document.getElementById('settings_form');
+	document.getElementById('settings_form_quickTaskName').setAttribute('value', settings.quickTaskName);
+	document.getElementById('settings_form_quickTaskDescr').innerText = settings.quickTaskDescr;
+	document.getElementById('settings_form_quickTaskInterval').setAttribute('value', settings.quickTaskInterval);
+	selectOption(document.getElementById('settings_form_intervalTime'), settings.intervalTime);
+	selectOption(document.getElementById('settings_form_countDown'), settings.countDown);
 
-const settings_form = document.getElementById('settings_form');
-const settings_form_quickTaskName = document.getElementById('settings_form_quickTaskName');
-settings_form_quickTaskName.setAttribute('value', settings.quickTaskName);
-const settings_form_quickTaskDescription = document.getElementById('settings_form_quickTaskDescription');
-settings_form_quickTaskDescription.innerText = settings.quickTaskDescription;
-const settings_form_quickTaskInterval = document.getElementById('settings_form_quickTaskInterval');
-settings_form_quickTaskInterval.setAttribute('value', settings.quickTaskInterval);
-const settings_form_intervalTime = document.getElementById('settings_form_intervalTime');
-selectOption(settings_form_intervalTime, settings.intervalTime);
-const settings_form_countDown = document.getElementById('settings_form_countDown');
-selectOption(settings_form_countDown, settings.countDown);
-settings_form_countDown.setAttribute('value', settings.countDown);
-
-function selectOption(el, option) {
-	option = option.toString();
-	for (let i = 0; i < el.options.length; i++) {
-		if (el.options[i].getAttribute('value') == option) {
-			el.options[i].setAttribute('selected', 'selected');
-		}
-	}
-}
-settings_form_quickTaskName.addEventListener('click', () => {
-	console.log('click taskname');
-});
-const settingsSubmit = () => {
 	settings_form.addEventListener("submit", (e) => {
 		e.preventDefault();
 		var data = new FormData(document.getElementById("settings_form"));
@@ -74,19 +55,48 @@ const settingsSubmit = () => {
 			countDown: data.get('settings_form_countDown'), // true: show time remaining, false: show time passed
 			quickTaskInterval: data.get("settings_form_quickTaskInterval"),  // totals value multiplied by value of settings.intervalTime
 			quickTaskName: data.get("settings_form_quickTaskName"),
-			quickTaskDescription: data.get("settings_form_quickTaskDescription"),
+			quickTaskDescr: data.get("settings_form_quickTaskDescr"),
 		};
 		if (settings.intervalTime == '60000') settings.intervalTimeUnit = 'minute(s)';
 		else if (settings.intervalTime == '1000') settings.intervalTimeUnit = 'second(s)';
 		localStorage.setItem('settings', JSON.stringify(settings));
-	});
-}
-settingsSubmit();
 
+		// TODO: re-render page & variables
+	});
+
+	settings_btn.addEventListener('click', () => {
+		settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand');
+	});
+
+	function settingsForm(what) {
+		if (what == 'expand') {
+			settings_btn.classList.replace('collapsed', 'expanded')
+			settings_form.className = 'dblock';
+		}
+		if (what == 'collapse') {
+			settings_btn.classList.replace('expanded', 'collapsed')
+			settings_form.className = 'dnone';
+		}
+	}
+}
+setSettings();
+function selectOption(el, option) {
+	option = option.toString();
+	for (let i = 0; i < el.options.length; i++) {
+		if (el.options[i].getAttribute('value') == option) {
+			el.options[i].setAttribute('selected', 'selected');
+		}
+	}
+}
+const getSettings = () => { return JSON.parse(localStorage.getItem('settings')) }
+const updateSettings = (arr) => { localStorage.setItem('settings', JSON.stringify(arr)); }
+// ---------------------- /settings form
+
+
+// ---------------------- new task form
 task_new_btn.addEventListener("click", () => {
 	task_new_form.className == 'dblock' ? ecForm('collapse') : ecForm('expand');
 });
-
 function ecForm(what) {
 	if (what == 'expand') {
 		task_new_btn.classList.replace('collapsed', 'expanded');
@@ -98,24 +108,6 @@ function ecForm(what) {
 	}
 }
 
-settings_btn.addEventListener('click', () => {
-	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand');
-});
-
-function settingsForm(what) {
-	if (what == 'expand') {
-		settings_btn.classList.replace('collapsed', 'expanded')
-		settings_form.className = 'dblock';
-	}
-	if (what == 'collapse') {
-		settings_btn.classList.replace('expanded', 'collapsed')
-		settings_form.className = 'dnone';
-	}
-}
-
-const getSettings = () => { return JSON.parse(localStorage.getItem('settings')) }
-const updateSettings = (arr) => { localStorage.setItem('settings', JSON.stringify(arr)); }
-
 const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); }
 const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
 if (getTasks() === null) updateTasks([]);
@@ -126,23 +118,23 @@ function newTaskSubmit() {
 		var data = new FormData(document.getElementById("task_new_form"));
 		addTask(
 			data.get("task_name"),
-			data.get("task_description"),
+			data.get("task_descr"),
 			data.get("task_interval"),
 		);
 		document.getElementById("new_task_name").value = "";
-		document.getElementById("new_task_description").value = "";
+		document.getElementById("new_task_descr").value = "";
 		document.getElementById("new_task_interval").value = "";
 	});
 }
 newTaskSubmit();
 
-function addTask(name, description, interval) {
+function addTask(name, descr, interval) {
 	if (name) {
 		let timerArr = getTasks();
 
 		timerArr.push({
 			name: name,
-			description: description,
+			descr: descr,
 			interval: interval,
 			timepast: 0,
 		});
@@ -184,7 +176,7 @@ function renderTask(i, key) {
 	el.className = "task"
 	el.id = 'task-' + key;
 	el.appendChild(renderTaskElement("h3", "task-name", i.name));
-	el.appendChild(renderTaskElement("div", "task-description", i.description));
+	el.appendChild(renderTaskElement("div", "task-descr", i.descr));
 	el.appendChild(renderTaskElement(
 		"div",
 		"task-countdown-total",
@@ -230,7 +222,7 @@ function addQuickTask() {
 
 	arr.push({
 		name: settings.quickTaskName,
-		description: settings.quickTaskDescription,
+		descr: settings.quickTaskDescr,
 		interval: settings.quickTaskInterval,
 		timepast: 0,
 	});
@@ -259,7 +251,7 @@ function removeTask(key) {
 		if (i === key) continue;
 		newarr.push({
 			name: arr[i].name,
-			description: arr[i].description,
+			descr: arr[i].descr,
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
 		});
@@ -292,6 +284,7 @@ function addResetTaskLink(key) {
 }
 
 function countdownTimer(limit, key, id) {
+	console.log(settings.countDown);
 	if (settings.countDown) contentPrefix = 'Time left: ';
 	else contentPrefix = 'Time passed: ';
 	const lb = setInterval((max = limit, id2 = id) => {
@@ -305,6 +298,7 @@ function countdownTimer(limit, key, id) {
 		}
 	}, settings.intervalTime);
 	function stopit() {
+
 		clearInterval(lb);
 	}
 }
