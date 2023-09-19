@@ -301,9 +301,15 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-	d.body.style.backgroundColor = 'black'; // TODO: check if any other finished tasks should keep screen red
+	if (!detectFinished(arr)) d.body.style.backgroundColor = 'black';
 	updateTasks(arr);
 	renderTasks(arr);
+}
+
+function detectFinished(arr) {
+	for (i of arr) {
+		if (i.finished) return true;
+	}
 }
 
 function addResetTaskLink(key) {
