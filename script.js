@@ -65,7 +65,6 @@ viewSettings();
 const settings_form = document.getElementById('settings_form');
 settings_form.addEventListener("submit", (e) => {
 	e.preventDefault();
-	console.log('settings form submitted');
 	let data = new FormData(settings_form);
 	settingsFormSubmit(data);
 });
@@ -290,7 +289,6 @@ function addResetTaskLink(key) {
 }
 
 function countdownTimer(limit, key, id) {
-	console.log(settings.countDown);
 	if (settings.countDown) contentPrefix = 'Time left: ';
 	else contentPrefix = 'Time passed: ';
 	const lb = setInterval((max = limit, id2 = id) => {
@@ -334,11 +332,3 @@ function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
 }
-
-
-// TODO: organize whatever is below this line
-// -------------------------------------------------------------------------------------
-
-// - Countdown timer
-// - Button: if interval==false: DONE, if interval==true: RESET
-
