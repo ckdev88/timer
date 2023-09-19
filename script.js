@@ -1,18 +1,5 @@
 // build a timer, tasks and later a sort of agenda function for the day, connected with times, all using local storage, not needing any deployment server, just the html, js & css maybe even all in one html-file, so it's super easy to use.
 
-// HMTL Elements
-const task_new_btn = document.getElementById("task_new_btn");
-const task_new_form = document.getElementById("task_new_form");
-const task_new_quick = document.getElementById("task_new_quick");
-const task_container = document.getElementById("task_container");
-const settings = {
-	intervalTime: 60000, // in ms
-	intervalTimeUnit: '',
-	countDown: true, // true: show time remaining, false: show time passed
-	quickTaskInterval: 35 // totals value multiplied by value of settings.intervalTime
-};
-if (settings.intervalTime === 60000) settings.intervalTimeUnit = 'minute(s)';
-else if (settings.intervalTime === 1000) settings.intervalTimeUnit = 'second(s)';
 /*
 html element id's:
 task_new_form
@@ -24,6 +11,77 @@ task_start_now
 task_new_quick
 task_container
 */
+
+// HMTL Elements
+const task_new_btn = document.getElementById("task_new_btn");
+const task_new_form = document.getElementById("task_new_form");
+const task_new_quick = document.getElementById("task_new_quick");
+const task_container = document.getElementById("task_container");
+const settings_btn = document.getElementById('settings_btn');
+
+// ------------- define settings ---------------
+const settings_default = {
+	intervalTime: 60000, // in ms
+	intervalTimeUnit: '',
+	countDown: true, // true: show time remaining, false: show time passed
+	quickTaskInterval: 35, // totals value multiplied by value of settings.intervalTime
+	quickTaskName: 'Stretch',
+	quickTaskDescription: 'Eat, walk, pushup, drink, some or all.',
+};
+if (settings_default.intervalTime === 60000) settings_default.intervalTimeUnit = 'minute(s)';
+else if (settings_default.intervalTime === 1000) settings_default.intervalTimeUnit = 'second(s)';
+
+if (localStorage.getItem('settings') === null) {
+	localStorage.setItem('settings', []);
+	localStorage.setItem('settings', JSON.stringify(settings_default))
+}
+const settings = JSON.parse(localStorage.getItem('settings'));
+console.log('settings', settings);
+// ------------- /define settings --------------
+
+const settings_form = document.getElementById('settings_form');
+const settings_form_quickTaskName = document.getElementById('settings_form_quickTaskName');
+settings_form_quickTaskName.setAttribute('value', settings.quickTaskName);
+const settings_form_quickTaskDescription = document.getElementById('settings_form_quickTaskDescription');
+settings_form_quickTaskDescription.innerText = settings.quickTaskDescription;
+const settings_form_quickTaskInterval = document.getElementById('settings_form_quickTaskInterval');
+settings_form_quickTaskInterval.setAttribute('value', settings.quickTaskInterval);
+const settings_form_intervalTime = document.getElementById('settings_form_intervalTime');
+selectOption(settings_form_intervalTime, settings.intervalTime);
+const settings_form_countDown = document.getElementById('settings_form_countDown');
+selectOption(settings_form_countDown, settings.countDown);
+settings_form_countDown.setAttribute('value', settings.countDown);
+
+function selectOption(el, option) {
+	option = option.toString();
+	for (let i = 0; i < el.options.length; i++) {
+		if (el.options[i].getAttribute('value') == option) {
+			el.options[i].setAttribute('selected', 'selected');
+		}
+	}
+}
+settings_form_quickTaskName.addEventListener('click', () => {
+	console.log('click taskname');
+});
+const settingsSubmit = () => {
+	settings_form.addEventListener("submit", (e) => {
+		e.preventDefault();
+		var data = new FormData(document.getElementById("settings_form"));
+
+		let settings = {
+			intervalTime: data.get('settings_form_intervalTime'),
+			intervalTimeUnit: '',
+			countDown: data.get('settings_form_countDown'), // true: show time remaining, false: show time passed
+			quickTaskInterval: data.get("settings_form_quickTaskInterval"),  // totals value multiplied by value of settings.intervalTime
+			quickTaskName: data.get("settings_form_quickTaskName"),
+			quickTaskDescription: data.get("settings_form_quickTaskDescription"),
+		};
+		if (settings.intervalTime == '60000') settings.intervalTimeUnit = 'minute(s)';
+		else if (settings.intervalTime == '1000') settings.intervalTimeUnit = 'second(s)';
+		localStorage.setItem('settings', JSON.stringify(settings));
+	});
+}
+settingsSubmit();
 
 task_new_btn.addEventListener("click", () => {
 	task_new_form.className == 'dblock' ? ecForm('collapse') : ecForm('expand');
@@ -40,6 +98,24 @@ function ecForm(what) {
 	}
 }
 
+settings_btn.addEventListener('click', () => {
+	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand');
+});
+
+function settingsForm(what) {
+	if (what == 'expand') {
+		settings_btn.classList.replace('collapsed', 'expanded')
+		settings_form.className = 'dblock';
+	}
+	if (what == 'collapse') {
+		settings_btn.classList.replace('expanded', 'collapsed')
+		settings_form.className = 'dnone';
+	}
+}
+
+const getSettings = () => { return JSON.parse(localStorage.getItem('settings')) }
+const updateSettings = (arr) => { localStorage.setItem('settings', JSON.stringify(arr)); }
+
 const getTasks = () => { return JSON.parse(localStorage.getItem('timerTasks')); }
 const updateTasks = (arr) => { localStorage.setItem('timerTasks', JSON.stringify(arr)); }
 if (getTasks() === null) updateTasks([]);
@@ -53,7 +129,6 @@ function newTaskSubmit() {
 			data.get("task_description"),
 			data.get("task_interval"),
 		);
-
 		document.getElementById("new_task_name").value = "";
 		document.getElementById("new_task_description").value = "";
 		document.getElementById("new_task_interval").value = "";
@@ -154,8 +229,8 @@ function addQuickTask() {
 	arr = getTasks();
 
 	arr.push({
-		name: "Stretch",
-		description: "Quick timer",
+		name: settings.quickTaskName,
+		description: settings.quickTaskDescription,
 		interval: settings.quickTaskInterval,
 		timepast: 0,
 	});

@@ -11,9 +11,30 @@
 
 <body>
 	<div id="wrapper">
-		<button id="task_new_btn" class="text white expanded">New task</button>
+		<div class="buttons">
+			<button id="task_new_btn" class="text white expanded">New task</button>
+			<button id="settings_btn" class="icon collapsed">⚙</button>
+		</div>
+		<form id="settings_form" class="dnone" onsubmit="settingsSubmit()">
+			<h2>Settings</h2>
+			<input id="settings_form_quickTaskName" name="settings_form_quickTaskName" type="text"
+				placeholder='Quick task name...' />
+			<textarea id="settings_form_quickTaskDescription" name="settings_form_quickTaskDescription"
+				placeholder="Quick task description..."></textarea>
+			<input id="settings_form_quickTaskInterval" name="settings_form_quickTaskInterval" type="number"
+				placeholder="Quick task interval..." />
+			<select id="settings_form_intervalTime" name="settings_form_intervalTime">
+				<option value="1000">Time in Seconds</option>
+				<option value="60000">Time in Minutes</option>
+			</select>
+			<select id="settings_form_countDown" name="settings_form_countDown">
+				<option value="true">Count down timer</option>
+				<option value="false">Count up timer</option>
+			</select>
+			<input type="submit" value="Update settings" />
+		</form>
 		<form id="task_new_form" class="dblock" onsubmit="newTaskSubmit()">
-			<!-- <h2>New task</h2> -->
+			<h2>New task</h2>
 			<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
 			<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
 			<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval time..." required />
@@ -21,7 +42,9 @@
 			<!-- 	<input id="new_task_start_now" name="task_start_now" type="checkbox" checked /> -->
 			<!-- 	Start task now -->
 			<!-- </label> -->
-			<input type="submit" value="Create task" />
+			<div class="buttons">
+				<input type="submit" value="Create task" />
+			</div>
 		</form>
 		<button id="task_new_quick" class="text">New quick task</button>
 		<div id="task_container"></div>

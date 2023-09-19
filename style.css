@@ -14,13 +14,26 @@ html {
 body {
   min-width: calc(320px + 1rem);
 }
+h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#settings_form h2 {
+  text-align: right;
+}
 h3 {
   margin-bottom: 0;
+}
+form {
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.6);
+  padding-bottom: 1em;
+  margin-bottom: 1em;
 }
 body,
 input,
 textarea,
-button {
+button,
+select {
   font-family:
     system-ui,
     -apple-system,
@@ -33,6 +46,16 @@ button {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
+}
+select {
+  padding-left: 0;
+  padding-right: 0;
+}
+option {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 button,
 input[type="submit"] {
@@ -48,12 +71,24 @@ input[type="text"],
 textarea,
 input[type="number"],
 input[type="submit"],
-button {
+button,
+select {
   padding: 0.4rem 0.6rem;
   margin: 0.3rem 0;
   border-radius: 0.1rem;
   display: block;
   border: 1px solid #e1e1e1;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+}
+select {
+  width: 100%;
+  max-width: 100%;
 }
 input[type="text"],
 textarea,
@@ -67,33 +102,48 @@ label {
   font-size: 0.9rem;
 }
 a,
-button.text {
+button.text,
+button.icon {
   color: lime;
   background: transparent;
   border: 0;
 }
 button.text {
-  background: none;
-  border: 0;
   text-decoration: underline;
   padding-left: 0;
   display: inline-block;
   &:after {
     font-size: 0.8em;
   }
-  &.expanded:after {
+  &.collapsed:after {
     content: " ▲";
   }
-  &.collapsed:after {
+  &.expanded:after {
     content: " ▼";
   }
 }
+button.icon {
+  &:before {
+    font-size: 0.8em;
+  }
+  &.collapsed:before {
+    content: "▲ ";
+  }
+  &.expanded:before {
+    content: "▼ ";
+  }
+}
 
+.task {
+  padding-bottom: 0.5em;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
+}
 #wrapper {
   max-width: 480px;
   min-width: 320px;
   padding: 0.5rem;
   margin: 0 auto;
+  position: relative;
 }
 #task_new_form {
   width: 100%;
@@ -107,11 +157,19 @@ button.text {
     /* width: -moz-available; */
     /* width: -webkit-fill-available; */
   }
-  & textarea {
-    height: 4em;
-  }
 }
-
+#task_new_quick {
+  margin-top: -4.5rem;
+  position: absolute;
+  right: 0;
+}
+textarea {
+  height: 5em;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
 .dnone {
   display: none;
 }
