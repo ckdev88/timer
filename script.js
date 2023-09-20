@@ -81,8 +81,7 @@ function settingsFormSubmit(data) {
 	};
 	if (settings.intervalUnit === 60) settings.intervalUnitName = 'minute(s)';
 	else if (settings.intervalUnit === 1) settings.intervalUnitName = 'second(s)';
-	localStorage.setItem('settings', JSON.stringify(settings));
-	// TODO: re-render page & variables
+	updateSettings(settings);
 }
 
 function selectOption(el, option) {
@@ -93,7 +92,11 @@ function selectOption(el, option) {
 		}
 	}
 }
-function updateSettings(arr) { localStorage.setItem('settings', JSON.stringify(arr)); }
+
+function updateSettings(arr) {
+	localStorage.setItem('settings', JSON.stringify(arr));
+	taskFormRenderTweaks();
+}
 
 // ----------------------------- ADD TASKS - FORM
 
@@ -112,8 +115,19 @@ function ecForm(what) {
 	}
 }
 
+function taskFormRenderTweaks() {
+	d.getElementById('new_task_interval').setAttribute('placeholder', 'Interval time in ' + getSettings().intervalUnitName + '...');
+}
+taskFormRenderTweaks();
+
+task_new_form.addEventListener("submit", (e) => {
+	e.preventDefault();
+	var data = new FormData(task_new_form);
+	taskFormSubmit(data);
+});
+
 function taskFormSubmit(data) {
-	addTask(data.get('task_name'), data.get('task_description'), (data.get('task_interval') * settings.intervalUnit));
+	addTask(data.get('task_name'), data.get('task_description'), (data.get('task_interval') * getSettings().intervalUnit));
 	cleanForm();
 }
 
@@ -123,12 +137,6 @@ function cleanForm() {
 	d.getElementById("new_task_interval").value = "";
 	d.getElementById("new_task_name").focus();
 }
-
-task_new_form.addEventListener("submit", (e) => {
-	e.preventDefault();
-	var data = new FormData(task_new_form);
-	taskFormSubmit(data);
-});
 
 task_new_quick.addEventListener("click", () => {
 	addQuickTask();
@@ -151,6 +159,7 @@ function addTask(name, description, interval) {
 		intervalUnitName: settings.intervalUnitName,
 		timepast: 0
 	});
+	console.log('add task, interval:', interval, 'intervalUnit', settings.intervalUnit, '-', name);
 	updateTasks(arr);
 	arr = getTasks(); // TODO:nodig?
 	renderTasks(arr);// TODO:nodig?
@@ -262,11 +271,13 @@ function renderTaskElement(
 // ----------------------------- RENDER TASKS - DETAILS
 
 function countdownTimer(key, id) { // individual per task
-	let settings = getSettings();
-	if (settings.countDown) cPrefix = 'Time left: ';
-	else cPrefix = 'Time passed: ';
 	const lb = setInterval((idtmp = id) => {
 		if (d.getElementById(id)) {
+
+			let settings = getSettings();
+			if (settings.countDown) cPrefix = 'Time left: ';
+			else cPrefix = 'Time passed: ';
+
 			let c = d.getElementById(id);
 			let arr = getTasks();
 			if (arr[key].timepast === arr[key].interval) {
@@ -300,8 +311,10 @@ function removeTaskLink(key) {
 }
 
 function addResetTaskLink(key) { // TODO: see if better to merge with resetTaskLink()
-	el = resetTaskLink(key);
-	d.getElementById('task-' + key).appendChild(el);
+	if (d.getElementById('task-' + key)) {
+		el = resetTaskLink(key);
+		d.getElementById('task-' + key).appendChild(el);
+	}
 }
 
 function resetTaskLink(key) {
@@ -348,6 +361,7 @@ countdownAll();
 
 function playSound() {
 	const siren = new Audio('siren1.wav');
-	siren.play();
+	// siren.play(); // temporarily off, getting a bit annoying with testing
+	console.log('play sound');
 }
 
