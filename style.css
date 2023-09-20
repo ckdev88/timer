@@ -111,7 +111,8 @@ button.icon {
   background: transparent;
   border: 0;
 }
-button.text {
+button.text,
+.btn.text{
   text-decoration: underline;
   padding-left: 0;
   display: inline-block;
@@ -150,10 +151,6 @@ button.text {
   textarea,
   input[type="number"] {
     display: block;
-    /* width: 100%; */
-    /* width: fill-available; */
-    /* width: -moz-available; */
-    /* width: -webkit-fill-available; */
   }
 }
 textarea {

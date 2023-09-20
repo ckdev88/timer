@@ -165,17 +165,6 @@ function addTask(name, description, interval) {
 	renderTasks(arr);// TODO:nodig?
 }
 
-// ----------------------------- MODIFY TASKS
-
-function resetTask(key) {
-	let arr = getTasks();
-	arr[key].timepast = 0;
-	arr[key].finished = false;
-	if (!detectFinished(arr)) d.body.style.backgroundColor = 'black';
-	updateTasks(arr);
-	renderTasks(arr);
-}
-
 // ----------------------------- REMOVE TASKS
 
 function removeTask(key) {
@@ -236,8 +225,13 @@ function renderTask(i, key) {
 		(settings.countDown === true ? 'Time left: ' : 'Time passed: '),
 		(settings.intervalUnitName)
 	));
-	el.appendChild(removeTaskLink(key));
-	if (i.finished === true) el.appendChild(resetTaskLink(key));
+
+	let el2 = document.createElement('div');
+	el2.className = 'buttons';
+	el2.appendChild(resetTaskLink(key))
+	el2.appendChild(removeTaskLink(key));
+	el.appendChild(el2);
+
 	return el;
 }
 
@@ -310,13 +304,6 @@ function removeTaskLink(key) {
 	return el;
 }
 
-function addResetTaskLink(key) { // TODO: see if better to merge with resetTaskLink()
-	if (d.getElementById('task-' + key)) {
-		el = resetTaskLink(key);
-		d.getElementById('task-' + key).appendChild(el);
-	}
-}
-
 function resetTaskLink(key) {
 	let el = d.createElement('button');
 	el.innerHTML = 'reset';
@@ -326,6 +313,15 @@ function resetTaskLink(key) {
 		resetTask(key);
 	});
 	return el;
+}
+
+function resetTask(key) {
+	let arr = getTasks();
+	arr[key].timepast = 0;
+	arr[key].finished = false;
+	if (!detectFinished(arr)) d.body.style.backgroundColor = 'black';
+	updateTasks(arr);
+	renderTasks(arr);
 }
 
 // ----------------------------- DETECTIONS
@@ -349,9 +345,6 @@ function countdownAll() {
 				playSound();
 				arr[i].finished = true;
 				d.body.style.backgroundColor = 'purple';
-			}
-			if (arr[i].finished == true && !d.getElementById('reset-' + i)) {
-				addResetTaskLink(i);
 			}
 			updateTasks(arr);
 		}
