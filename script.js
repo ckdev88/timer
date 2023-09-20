@@ -269,13 +269,13 @@ function renderTaskElement(
 	let taskEl = d.createElement(node);
 	taskEl.className = className;
 
-	// TODO: make this hack neat, this hack only applies to the countdown div field
-	if (content === undefined) {
+	if (content === undefined) { // first draw of Time left/Time past
+		let i = getTasks()[key];
 		content = (
 			settings.countDown === true ?
-				(getTasks()[key].interval - getTasks()[key].timepast)
+				Math.round((i.interval - i.timepast) / i.intervalUnit)
 				:
-				getTasks()[key].timepast
+				Math.round(i.timepast / i.intervalUnit)
 		)
 	}
 
@@ -359,7 +359,6 @@ function detectAnyActive(arr = getTasks()) {
 		if (i.finished === false) return true;
 	}
 }
-// Detect all tasks finished
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE... 
 
