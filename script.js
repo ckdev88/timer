@@ -19,13 +19,15 @@ function updateTasks(arr) {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
+	bgStatus(arr);
 }
 if (getTasks() === null) updateTasks([]);
 
 if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
-} else if (getTasks().length !== 0) setBgStatus('alert');
+}
+bgStatus();
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
@@ -206,7 +208,6 @@ function removeTask(key) {
 		});
 	}
 	updateTasks(newarr);
-	if (newarr.length === 0) setBgStatus();
 	renderTasks(newarr);
 }
 
@@ -340,7 +341,7 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-	if (!detectAnyFinished(arr)) setBgStatus();
+
 	updateTasks(arr);
 	renderTasks(arr);
 }
@@ -372,7 +373,6 @@ function countdownAll() {
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				playSound();
 				arr[i].finished = true;
-				setBgStatus('alert');
 			}
 			updateTasks(arr);
 		}
@@ -384,13 +384,19 @@ function countdownAll() {
 	function stopit() {
 		clearInterval(lb);
 		localStorage.setItem('countDownAllStatus', 'stopped');
-		setBgStatus('alert');
 	}
 }
 
 function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
+}
+
+// ----------------------------- BACKGROUND... LITERALLY
+
+function bgStatus(arr = getTasks()) {
+	if (detectAnyFinished(arr)) setBgStatus('alert')
+	else setBgStatus('normal');
 }
 
 function setBgStatus(status = 'normal') {
