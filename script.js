@@ -25,9 +25,10 @@ if (getTasks() === null) updateTasks([]);
 if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
-}
+} else if (getTasks().length !== 0) setBgStatus('alert');
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
+
 const settings_d = {
 	intervalUnit: 60, // in seconds
 	intervalUnitName: '',
@@ -67,7 +68,7 @@ function settingsForm(what) {
 function settingsFormDefaults() {
 	d.getElementById('settings_form_quickTaskName').setAttribute('value', settings.quickTaskName);
 	d.getElementById('settings_form_quickTaskDescr').innerText = settings.quickTaskDescr;
-	d.getElementById('settings_form_quickTaskInterval').setAttribute('value', settings.quickTaskInterval);
+	d.getElementById('settings_form_quickTaskInterval').setAttribute('value', (settings.quickTaskInterval / settings.intervalUnit));
 	selectOption(d.getElementById('settings_form_intervalUnit'), settings.intervalUnit);
 	selectOption(d.getElementById('settings_form_countDown'), String(settings.countDown));
 }
@@ -107,6 +108,10 @@ function selectOption(el, option) {
 function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr));
 	taskFormRenderTweaks();
+	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
+		countdownAll();
+		localStorage.setItem('countDownAllStatus', 'active');
+	}
 }
 
 // ----------------------------- ADD TASKS - FORM
@@ -201,7 +206,7 @@ function removeTask(key) {
 		});
 	}
 	updateTasks(newarr);
-	if (newarr.length === 0) d.body.style.backgroundColor = 'black';
+	if (newarr.length === 0) setBgStatus();
 	renderTasks(newarr);
 }
 
@@ -335,7 +340,7 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-	if (!detectAnyFinished(arr)) d.body.style.backgroundColor = 'black';
+	if (!detectAnyFinished(arr)) setBgStatus();
 	updateTasks(arr);
 	renderTasks(arr);
 }
@@ -368,7 +373,7 @@ function countdownAll() {
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				playSound();
 				arr[i].finished = true;
-				d.body.style.backgroundColor = 'purple';
+				setBgStatus('alert');
 			}
 			updateTasks(arr);
 		}
@@ -380,11 +385,17 @@ function countdownAll() {
 	function stopit() {
 		clearInterval(lb);
 		localStorage.setItem('countDownAllStatus', 'stopped');
+		setBgStatus('alert');
 	}
 }
 
 function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
+}
+
+function setBgStatus(status = 'normal') {
+	if (status === 'alert') d.getElementById('backdrop').style.backgroundColor = 'red';
+	else d.getElementById('backdrop').style.backgroundColor = 'black';
 }
 
