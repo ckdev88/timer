@@ -110,6 +110,9 @@ input[type="number"],
 label {
   font-size: 0.9rem;
 }
+textarea {
+  height: 5em;
+}
 a,
 button.text,
 .btn.text,
@@ -124,21 +127,33 @@ button.text,
   padding-left: 0;
   display: inline-block;
   padding-right: 0;
-  &:after {
-    font-size: 0.8em;
-  }
-  &.collapsed:after {
-    content: " ▲";
-  }
-  &.expanded:after {
-    content: " ▼";
-  }
-  &.collapsed2:before {
-    content: "▲ ";
-  }
-  &.expanded2:before {
-    content: "▼ ";
-  }
+}
+button.text:after,
+.btn.text:after {
+  font-size: 0.8em;
+}
+button.text.expanded:after,
+button.text.collapsed:after,
+button.text.expanded2:before,
+button.text.collapsed2:before {
+  font-size: 0.6em;
+  display: inline-block;
+}
+button.text.collapsed:after,
+button.text.collapsed2:before {
+  content: "  ▲";
+}
+button.text.expanded:after,
+button.text.expanded2:before {
+  content: "▼  ";
+}
+button.text.expanded:after,
+button.text.collapsed:after {
+  margin-left: 0.6em;
+}
+button.text.collapsed2:before,
+button.text.expanded2:before {
+  margin-right: 0.6em;
 }
 .task {
   padding-bottom: 0.5em;
@@ -154,14 +169,11 @@ button.text,
 #task_new_form {
   width: 100%;
   max-width: 100%;
-  & input[type="text"],
-  textarea,
-  input[type="number"] {
-    display: block;
-  }
 }
-textarea {
-  height: 5em;
+#task_new_form input[type="text"],
+#task_new_form input[type="number"],
+#task_new_form textarea {
+  display: block;
 }
 .buttons {
   display: flex;
