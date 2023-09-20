@@ -6,14 +6,14 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link href="style.css" rel="stylesheet" />
-	<link rel="icon" href="img/favicon-16.png" />
+	<link rel="icon" href="img/favicon-32.png" />
 </head>
 
 <body>
 	<div id="wrapper">
 		<div class="buttons">
 			<button id="task_new_btn" class="text white expanded">New task</button>
-			<button id="settings_btn" class="icon collapsed">⚙</button>
+			<button id="settings_btn" class="text collapsed2">⚙</button>
 		</div>
 		<form id="settings_form" class="dnone">
 			<h2>Settings</h2>
@@ -38,15 +38,11 @@
 			<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
 			<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
 			<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval time..." required />
-			<!-- <label for="new_task_start_now"> -->
-			<!-- 	<input id="new_task_start_now" name="task_start_now" type="checkbox" checked /> -->
-			<!-- 	Start task now -->
-			<!-- </label> -->
 			<div class="buttons">
 				<input type="submit" value="Create task" />
+				<a href="javascript:void()" id="task_new_quick" class="btn text white">New quick task</a>
 			</div>
 		</form>
-		<button id="task_new_quick" class="text">New quick task</button>
 		<div id="task_container"></div>
 		<audio src="siren1.wav" />
 	</div>

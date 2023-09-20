@@ -9,7 +9,7 @@ body {
 html {
   background: #000;
   color: #fafafa;
-  font-size: 16px;
+  font-size: 14px;
 }
 body {
   min-width: calc(320px + 1rem);
@@ -58,6 +58,7 @@ option {
   margin-right: 0;
 }
 button,
+a.btn,
 input[type="submit"] {
   cursor: pointer;
   background: lime;
@@ -72,6 +73,7 @@ textarea,
 input[type="number"],
 input[type="submit"],
 button,
+.btn,
 select {
   padding: 0.4rem 0.6rem;
   margin: 0.3rem 0;
@@ -103,6 +105,7 @@ label {
 }
 a,
 button.text,
+.btn.text,
 button.icon {
   color: lime;
   background: transparent;
@@ -112,6 +115,7 @@ button.text {
   text-decoration: underline;
   padding-left: 0;
   display: inline-block;
+  padding-right: 0;
   &:after {
     font-size: 0.8em;
   }
@@ -121,25 +125,19 @@ button.text {
   &.expanded:after {
     content: " ▼";
   }
-}
-button.icon {
-  &:before {
-    font-size: 0.8em;
-  }
-  &.collapsed:before {
+  &.collapsed2:before {
     content: "▲ ";
   }
-  &.expanded:before {
+  &.expanded2:before {
     content: "▼ ";
   }
 }
-
 .task {
   padding-bottom: 0.5em;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
 }
 #wrapper {
-  max-width: 480px;
+  max-width: 340px;
   min-width: 320px;
   padding: 0.5rem;
   margin: 0 auto;
@@ -158,11 +156,6 @@ button.icon {
     /* width: -webkit-fill-available; */
   }
 }
-#task_new_quick {
-  margin-top: -4.5rem;
-  position: absolute;
-  right: 0;
-}
 textarea {
   height: 5em;
 }
@@ -178,7 +171,8 @@ textarea {
 }
 .white,
 a.white,
-button.text.white {
+button.text.white,
+.btn.text.white {
   color: white;
 }
 .ctacolor1,

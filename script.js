@@ -44,11 +44,11 @@ settings_btn.addEventListener('click', () => {
 
 function settingsForm(what) {
 	if (what == 'expand') {
-		settings_btn.classList.replace('collapsed', 'expanded')
+		settings_btn.classList.replace('collapsed2', 'expanded2')
 		settings_form.className = 'dblock';
 	}
 	if (what == 'collapse') {
-		settings_btn.classList.replace('expanded', 'collapsed')
+		settings_btn.classList.replace('expanded2', 'collapsed2')
 		settings_form.className = 'dnone';
 	}
 }
