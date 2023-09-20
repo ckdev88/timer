@@ -5,6 +5,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  height: 100%;
 }
 html {
   background: #000;
@@ -112,7 +113,7 @@ button.icon {
   border: 0;
 }
 button.text,
-.btn.text{
+.btn.text {
   text-decoration: underline;
   padding-left: 0;
   display: inline-block;

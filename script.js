@@ -13,15 +13,26 @@ const settings_btn = d.getElementById('settings_btn');
 const settings_form = d.getElementById('settings_form');
 
 function getTasks() { return JSON.parse(localStorage.getItem('timerTasks')) }
-function updateTasks(arr) { localStorage.setItem('timerTasks', JSON.stringify(arr)) }
+function updateTasks(arr) {
+	localStorage.setItem('timerTasks', JSON.stringify(arr))
+	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
+		countdownAll();
+		localStorage.setItem('countDownAllStatus', 'active');
+	}
+}
 if (getTasks() === null) updateTasks([]);
+
+if (detectAnyActive() === true) {
+	countdownAll();
+	localStorage.setItem('countDownAllStatus', 'active');
+}
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 const settings_d = {
-	intervalUnit: 1, // in seconds
+	intervalUnit: 60, // in seconds
 	intervalUnitName: '',
 	countDown: true, // true: show time remaining, false: show time passed
-	quickTaskInterval: 35 * 1, // totals value multiplied by value of settings.intervalUnit
+	quickTaskInterval: 35 * 60, // totals value multiplied by value of settings.intervalUnit
 	quickTaskName: 'Stretch',
 	quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 };
@@ -127,7 +138,11 @@ task_new_form.addEventListener("submit", (e) => {
 });
 
 function taskFormSubmit(data) {
-	addTask(data.get('task_name'), data.get('task_description'), (data.get('task_interval') * getSettings().intervalUnit));
+	addTask(
+		data.get('task_name'),
+		data.get('task_description'),
+		(data.get('task_interval') * getSettings().intervalUnit)
+	);
 	cleanForm();
 }
 
@@ -157,12 +172,14 @@ function addTask(name, description, interval) {
 		interval: interval,
 		intervalUnit: settings.intervalUnit,
 		intervalUnitName: settings.intervalUnitName,
-		timepast: 0
+		timepast: 0,
+		finished: false
 	});
-	console.log('add task, interval:', interval, 'intervalUnit', settings.intervalUnit, '-', name);
 	updateTasks(arr);
 	arr = getTasks(); // TODO:nodig?
 	renderTasks(arr);// TODO:nodig?
+
+
 }
 
 // ----------------------------- REMOVE TASKS
@@ -179,7 +196,8 @@ function removeTask(key) {
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
 			intervalUnit: arr[i].intervalUnit,
-			intervalUnitName: arr[i].intervalUnitName
+			intervalUnitName: arr[i].intervalUnitName,
+			finished: arr[i].finished
 		});
 	}
 	updateTasks(newarr);
@@ -218,8 +236,7 @@ function renderTask(i, key) {
 		'task-countdown-current',
 		countdownTimer(
 			key,
-			'countdown-task-' + key,
-			settings.countDown
+			'countdown-task-' + key
 		),
 		'countdown-' + el.id, key,
 		(settings.countDown === true ? 'Time left: ' : 'Time passed: '),
@@ -280,7 +297,6 @@ function countdownTimer(key, id) { // individual per task
 			if (settings.countDown) {
 				let timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
 				c.innerHTML = cPrefix + timeleft + ' ' + arr[key].intervalUnitName;
-				;
 			}
 			else {
 				let timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
@@ -319,23 +335,31 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-	if (!detectFinished(arr)) d.body.style.backgroundColor = 'black';
+	if (!detectAnyFinished(arr)) d.body.style.backgroundColor = 'black';
 	updateTasks(arr);
 	renderTasks(arr);
 }
 
 // ----------------------------- DETECTIONS
 
-function detectFinished(arr) {
+function detectAnyFinished(arr = getTasks()) {
 	for (i of arr) {
 		if (i.finished) return true;
 	}
 }
 
-// ----------------------------- WHEN DONE... 
+// Detect any still running tasks
+function detectAnyActive(arr = getTasks()) {
+	for (i of arr) {
+		if (i.finished === false) return true;
+	}
+}
+// Detect all tasks finished
+
+// ----------------------------- ALWAYS RUNNING & WHEN DONE... 
 
 function countdownAll() {
-	setInterval(() => {
+	const lb = setInterval(() => {
 		let arr = getTasks();
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].timepast < arr[i].interval) {
@@ -348,13 +372,19 @@ function countdownAll() {
 			}
 			updateTasks(arr);
 		}
+		if (!detectAnyActive()) {
+			stopit();
+		}
 	}, 1000); // run every second/1000ms
+
+	function stopit() {
+		clearInterval(lb);
+		localStorage.setItem('countDownAllStatus', 'stopped');
+	}
 }
-countdownAll();
 
 function playSound() {
 	const siren = new Audio('siren1.wav');
-	// siren.play(); // temporarily off, getting a bit annoying with testing
-	console.log('play sound');
+	siren.play();
 }
 
