@@ -124,9 +124,9 @@ button.icon {
 button.text,
 .btn.text {
   text-decoration: underline;
-  padding-left: 0;
+  margin-left: -0.6rem;
+  margin-right: -0.6rem;
   display: inline-block;
-  padding-right: 0;
 }
 button.text:after,
 .btn.text:after {
