@@ -183,8 +183,7 @@ function addTask(name, description, interval) {
 		finished: false
 	});
 	updateTasks(arr);
-	arr = getTasks(); // TODO:nodig?
-	renderTasks(arr);// TODO:nodig?
+	renderTasks(arr);
 }
 
 // ----------------------------- REMOVE TASKS
@@ -220,7 +219,7 @@ function renderTasks(arr) {
 renderTasks(getTasks());
 
 function renderTask(i, key) {
-	let settings = getSettings();// TODO: nodig?
+	let settings = getSettings();
 	let el = d.createElement("div");
 	el.className = "task"
 	el.id = 'task-' + key;
@@ -287,9 +286,8 @@ function renderTaskElement(
 // ----------------------------- RENDER TASKS - DETAILS
 
 function countdownTimer(key, id) { // individual per task
-	const lb = setInterval((idtmp = id) => { // TODO: idtmp? should be better 
+	const lb = setInterval(() => {
 		if (d.getElementById(id)) {
-
 			let settings = getSettings();
 			if (settings.countDown) cPrefix = 'Time left: ';
 			else cPrefix = 'Time passed: ';
@@ -308,7 +306,7 @@ function countdownTimer(key, id) { // individual per task
 				c.innerHTML = cPrefix + timepast + ' ' + arr[key].intervalUnitName
 			}
 		}
-	}, 1000); // run every second/1000ms
+	}, 1000);
 	function stopit() {
 		clearInterval(lb);
 	}
