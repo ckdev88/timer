@@ -4,7 +4,6 @@
 
 const d = document;// abstraction for loading speed & less code
 
-// HMTL Elements
 const task_new_btn = d.getElementById("task_new_btn");
 const task_new_form = d.getElementById("task_new_form");
 const task_new_quick = d.getElementById("task_new_quick");
@@ -86,7 +85,7 @@ function settingsFormSubmit(data) {
 	let settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
 		intervalUnitName: '',
-		countDown: Boolean(data.get('settings_form_countDown')), // true: time remaining, false: show time passed
+		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTaskInterval:
 			Number(data.get("settings_form_quickTaskInterval"))
 			* Number(data.get('settings_form_intervalUnit')),
@@ -115,6 +114,7 @@ function updateSettings(arr) {
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
 }
+
 
 // ----------------------------- ADD TASKS - FORM
 
@@ -185,8 +185,6 @@ function addTask(name, description, interval) {
 	updateTasks(arr);
 	arr = getTasks(); // TODO:nodig?
 	renderTasks(arr);// TODO:nodig?
-
-
 }
 
 // ----------------------------- REMOVE TASKS
@@ -222,7 +220,7 @@ function renderTasks(arr) {
 renderTasks(getTasks());
 
 function renderTask(i, key) {
-	let settings = getSettings();// nodig?
+	let settings = getSettings();// TODO: nodig?
 	let el = d.createElement("div");
 	el.className = "task"
 	el.id = 'task-' + key;
@@ -285,10 +283,11 @@ function renderTaskElement(
 	return taskEl;
 }
 
+
 // ----------------------------- RENDER TASKS - DETAILS
 
 function countdownTimer(key, id) { // individual per task
-	const lb = setInterval((idtmp = id) => {
+	const lb = setInterval((idtmp = id) => { // TODO: idtmp? should be better 
 		if (d.getElementById(id)) {
 
 			let settings = getSettings();
@@ -346,6 +345,7 @@ function resetTask(key) {
 	renderTasks(arr);
 }
 
+
 // ----------------------------- DETECTIONS
 
 function detectAnyFinished(arr = getTasks()) {
@@ -360,6 +360,7 @@ function detectAnyActive(arr = getTasks()) {
 		if (i.finished === false) return true;
 	}
 }
+
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE... 
 
@@ -391,6 +392,7 @@ function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
 }
+
 
 // ----------------------------- BACKGROUND... LITERALLY
 
