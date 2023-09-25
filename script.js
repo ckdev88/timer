@@ -6,10 +6,21 @@ const d = document;// abstraction for loading speed & less code
 
 const task_new_btn = d.getElementById("task_new_btn");
 const task_new_form = d.getElementById("task_new_form");
+const task_new_name = d.getElementById('new_task_name');
+const task_new_description = d.getElementById('new_task_description');
+const task_new_interval = d.getElementById('new_task_interval');
 const task_new_quick = d.getElementById("task_new_quick");
 const task_container = d.getElementById("task_container");
 const settings_btn = d.getElementById('settings_btn');
 const settings_form = d.getElementById('settings_form');
+
+const setf_quickTaskName = d.getElementById('settings_form_quickTaskName');
+const setf_quickTaskDescr = d.getElementById('settings_form_quickTaskDescr');
+const setf_quickTaskInterval = d.getElementById('settings_form_quickTaskInterval');
+const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
+const setf_countDown = d.getElementById('settings_form_countDown');
+
+const backdrop = d.getElementById('backdrop');
 
 function getTasks() { return JSON.parse(localStorage.getItem('timerTasks')) }
 function updateTasks(arr) {
@@ -67,11 +78,11 @@ function settingsForm(what) {
 }
 
 function settingsFormDefaults() {
-	d.getElementById('settings_form_quickTaskName').setAttribute('value', settings.quickTaskName);
-	d.getElementById('settings_form_quickTaskDescr').innerText = settings.quickTaskDescr;
-	d.getElementById('settings_form_quickTaskInterval').setAttribute('value', (settings.quickTaskInterval / settings.intervalUnit));
-	selectOption(d.getElementById('settings_form_intervalUnit'), settings.intervalUnit);
-	selectOption(d.getElementById('settings_form_countDown'), String(settings.countDown));
+	setf_quickTaskName.setAttribute('value', settings.quickTaskName);
+	setf_quickTaskDescr.innerText = settings.quickTaskDescr;
+	setf_quickTaskInterval.setAttribute('value', (settings.quickTaskInterval / settings.intervalUnit));
+	selectOption(setf_intervalUnit, settings.intervalUnit);
+	selectOption(setf_countDown, String(settings.countDown));
 }
 settingsFormDefaults();
 
@@ -134,7 +145,7 @@ function ecForm(what) {
 }
 
 function taskFormRenderTweaks() {
-	d.getElementById('new_task_interval').setAttribute('placeholder', 'Interval time in ' + getSettings().intervalUnitName + '...');
+	task_new_interval.setAttribute('placeholder', 'Interval time in ' + getSettings().intervalUnitName + '...');
 }
 taskFormRenderTweaks();
 
@@ -154,10 +165,10 @@ function taskFormSubmit(data) {
 }
 
 function cleanForm() {
-	d.getElementById("new_task_name").value = "";
-	d.getElementById("new_task_description").value = "";
-	d.getElementById("new_task_interval").value = "";
-	d.getElementById("new_task_name").focus();
+	task_new_name.value = "";
+	task_new_description.value = "";
+	task_new_interval.value = "";
+	task_new_name.focus();
 }
 
 task_new_quick.addEventListener("click", () => {
@@ -400,7 +411,7 @@ function bgStatus(arr = getTasks()) {
 }
 
 function setBgStatus(status = 'normal') {
-	if (status === 'alert') d.getElementById('backdrop').style.backgroundColor = 'red';
-	else d.getElementById('backdrop').style.backgroundColor = 'black';
+	if (status === 'alert') backdrop.style.backgroundColor = 'red';
+	else backdrop.style.backgroundColor = 'black';
 }
 
