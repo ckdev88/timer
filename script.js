@@ -24,7 +24,10 @@ const backdrop = d.getElementById('backdrop');
 function getTasks() { return JSON.parse(localStorage.getItem('timerTasks')) }
 function updateTasks(arr) {
 	localStorage.setItem('timerTasks', JSON.stringify(arr))
-	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
+	if (
+		(detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped')
+		|| arr.length === 0
+	) {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
@@ -36,6 +39,7 @@ if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
 }
+
 bgStatus();
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
@@ -364,9 +368,12 @@ function detectAnyFinished(arr = getTasks()) {
 
 // Detect any still running tasks
 function detectAnyActive(arr = getTasks()) {
-	for (i of arr) {
-		if (i.finished === false) return true;
+	if (arr) {
+		for (i of arr) {
+			if (i.finished === false) return true;
+		}
 	}
+	return false
 }
 
 
