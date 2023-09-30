@@ -3,7 +3,6 @@
 // ----------------------------- GLOBAL CONSTANTS
 
 const d = document;// abstraction for loading speed & less code
-
 const task_new_btn = d.getElementById("task_new_btn");
 const task_new_form = d.getElementById("task_new_form");
 const task_new_name = d.getElementById('new_task_name');
