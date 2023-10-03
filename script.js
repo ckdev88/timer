@@ -365,7 +365,6 @@ function countdownTimer(key, id) { // individual per task
 			if (
 				(arr[key].timepast === arr[key].interval)
 			) {
-				console.log('stopping count for', key);
 				stopit();
 			}
 			if (settings.countDown) {
@@ -439,6 +438,11 @@ function detectAnyFinished(arr = getTasks()) {
 		if (i.finished) return true;
 	}
 }
+function detectAnyPaused(arr = getTasks()) {
+	for (i of arr) {
+		if (i.paused) return true;
+	}
+}
 
 // Detect any still running tasks
 function detectAnyActive(arr = getTasks()) {
@@ -490,11 +494,13 @@ function playSound() {
 
 function bgStatus(arr = getTasks()) {
 	if (detectAnyFinished(arr)) setBgStatus('alert')
+	else if (detectAnyPaused(arr)) setBgStatus('paused');
 	else setBgStatus('normal');
 }
 
 function setBgStatus(status = 'normal') {
 	if (status === 'alert') backdrop.style.backgroundColor = 'red';
+	else if (status === 'paused') backdrop.style.backgroundColor = 'chocolate';
 	else backdrop.style.backgroundColor = 'black';
 }
 
