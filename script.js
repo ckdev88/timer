@@ -194,10 +194,58 @@ function addTask(name, description, interval) {
 		intervalUnit: settings.intervalUnit,
 		intervalUnitName: settings.intervalUnitName,
 		timepast: 0,
+		paused: false,
 		finished: false
 	});
 	updateTasks(arr);
 	renderTasks(arr);
+}
+
+// ----------------------------- PAUSE/RESUME TASK
+// NOTE: these 2 tasks are now a bit redundant, since the toggle is basically already built in
+// for future use applying as SOLID as possible for now...
+function pauseTask(key) {
+	let arr = getTasks();
+	let newarr = [];
+	for (let i = 0; i < arr.length; i++) {
+		if (i === key) {
+			arr[i].paused = !arr[i].paused;
+		}
+		newarr.push({
+			name: arr[i].name,
+			descr: arr[i].descr,
+			interval: arr[i].interval,
+			timepast: arr[i].timepast,
+			intervalUnit: arr[i].intervalUnit,
+			intervalUnitName: arr[i].intervalUnitName,
+			paused: arr[i].paused,
+			finished: arr[i].finished
+		})
+	}
+	updateTasks(newarr);
+	renderTasks(newarr);
+}
+
+function resumeTask(key) {
+	let arr = getTasks();
+	let newarr = [];
+	for (let i = 0; i < arr.length; i++) {
+		if (i === key) {
+			arr[i].paused = !arr[i].paused;
+		}
+		newarr.push({
+			name: arr[i].name,
+			descr: arr[i].descr,
+			interval: arr[i].interval,
+			timepast: arr[i].timepast,
+			intervalUnit: arr[i].intervalUnit,
+			intervalUnitName: arr[i].intervalUnitName,
+			paused: arr[i].paused,
+			finished: arr[i].finished
+		})
+	}
+	updateTasks(newarr);
+	renderTasks(newarr);
 }
 
 // ----------------------------- REMOVE TASKS
@@ -207,7 +255,7 @@ function removeTask(key) {
 
 	let newarr = [];
 	for (let i = 0; i < arr.length; i++) {
-		if (i === key) continue;
+		if (i === key) continue; // rebuild with all tasks, but skip the specified one
 		newarr.push({
 			name: arr[i].name,
 			descr: arr[i].descr,
@@ -215,6 +263,7 @@ function removeTask(key) {
 			timepast: arr[i].timepast,
 			intervalUnit: arr[i].intervalUnit,
 			intervalUnitName: arr[i].intervalUnitName,
+			paused: arr[i].paused,
 			finished: arr[i].finished
 		});
 	}
@@ -262,7 +311,11 @@ function renderTask(i, key) {
 
 	let el2 = document.createElement('div');
 	el2.className = 'buttons';
-	el2.appendChild(resetTaskLink(key))
+	if (!i.finished) {
+		if (i.paused) el2.appendChild(resumeTaskLink(key)); // TODO: maybe unnecessary because redundancy, leave it for now, applying SOLID
+		else el2.appendChild(pauseTaskLink(key));
+	}
+	el2.appendChild(resetTaskLink(key));
 	el2.appendChild(removeTaskLink(key));
 	el.appendChild(el2);
 
@@ -308,7 +361,11 @@ function countdownTimer(key, id) { // individual per task
 
 			let c = d.getElementById(id);
 			let arr = getTasks();
-			if (arr[key].timepast === arr[key].interval) {
+
+			if (
+				(arr[key].timepast === arr[key].interval)
+			) {
+				console.log('stopping count for', key);
 				stopit();
 			}
 			if (settings.countDown) {
@@ -324,6 +381,24 @@ function countdownTimer(key, id) { // individual per task
 	function stopit() {
 		clearInterval(lb);
 	}
+}
+
+function pauseTaskLink(key) { // TODO: maybe merge pauseTaskLink & resumeTaskLink into 1 toggle function, not sure yet because SOLID principles
+	let el = d.createElement('button');
+	el.innerHTML = 'pause';
+	el.className = "text";
+	el.id = 'pause-' + key;
+	el.addEventListener("click", () => pauseTask(key));
+	return el;
+}
+
+function resumeTaskLink(key) {
+	let el = d.createElement('button');
+	el.innerHTML = 'resume';
+	el.className = "text";
+	el.id = 'resume-' + key;
+	el.addEventListener("click", () => resumeTask(key));
+	return el;
 }
 
 function removeTaskLink(key) {
@@ -352,7 +427,6 @@ function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
 	arr[key].finished = false;
-
 	updateTasks(arr);
 	renderTasks(arr);
 }
@@ -383,7 +457,10 @@ function countdownAll() {
 	const lb = setInterval(() => {
 		let arr = getTasks();
 		for (let i = 0; i < arr.length; i++) {
-			if (arr[i].timepast < arr[i].interval) {
+			if (
+				arr[i].timepast < arr[i].interval
+				&& !arr[i].paused
+			) {
 				arr[i].timepast++;
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {

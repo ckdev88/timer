@@ -179,12 +179,18 @@ button.text.expanded2:before {
   display: flex;
   justify-content: space-between;
 }
-.dnone {
-  display: none;
+
+.task .buttons {
+	display:block;
+	margin-left:-.6rem;
 }
-.dblock {
-  display: block;
+.task .buttons button {
+	padding:0;
+	margin-left:.6rem;
+	margin-right:.6rem;
 }
+.dnone { display: none; }
+.dblock { display: block; }
 .white,
 a.white,
 button.text.white,
