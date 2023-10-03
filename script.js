@@ -1,6 +1,7 @@
 // Why this? To build a timer, tasks and later a sort of agenda function for the day, connected with times, all using local storage, not needing any deployment server, just the html, js & css maybe even all in one html-file, so it's super easy to use.
 
 // ----------------------------- GLOBAL CONSTANTS
+const quicktest = true;
 
 const d = document;// abstraction for loading speed & less code
 const task_new_btn = d.getElementById("task_new_btn");
@@ -43,15 +44,27 @@ if (detectAnyActive() === true) {
 bgStatus();
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
-
-const settings_d = {
-	intervalUnit: 60, // in seconds
-	intervalUnitName: '',
-	countDown: true, // true: show time remaining, false: show time passed
-	quickTaskInterval: 35 * 60, // totals value multiplied by value of settings.intervalUnit
-	quickTaskName: 'Stretch',
-	quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
-};
+let settings_d;
+if (quicktest) {
+	settings_d = {
+		intervalUnit: 1, // in seconds
+		intervalUnitName: '',
+		countDown: true, // true: show time remaining, false: show time passed
+		quickTaskInterval: 10, // totals value multiplied by value of settings.intervalUnit
+		quickTaskName: 'Stretch',
+		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
+	};
+}
+else {
+	settings_d = {
+		intervalUnit: 60, // in seconds
+		intervalUnitName: '',
+		countDown: true, // true: show time remaining, false: show time passed
+		quickTaskInterval: 35 * 60, // totals value multiplied by value of settings.intervalUnit
+		quickTaskName: 'Stretch',
+		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
+	};
+}
 if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minute(s)';
 else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'second(s)';
 
@@ -468,7 +481,7 @@ function countdownAll() {
 				arr[i].timepast++;
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-				playSound();
+				if (!quicktest) playSound();
 				arr[i].finished = true;
 			}
 			updateTasks(arr);
