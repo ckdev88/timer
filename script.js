@@ -23,8 +23,12 @@ const setf_countDown = d.getElementById('settings_form_countDown');
 
 const backdrop = d.getElementById('backdrop');
 
-function getTasks() { return JSON.parse(localStorage.getItem('timerTasks')) }
-cachedTasks = getTasks();
+function getTasks() {
+	let tasks = JSON.parse(localStorage.getItem('timerTasks'))
+	if (!tasks) updateTasks([]);
+	return tasks;
+}
+let cachedTasks = getTasks(); // null on clean localstorage
 
 function updateTasks(arr) {
 	localStorage.setItem('timerTasks', JSON.stringify(arr))
@@ -37,7 +41,6 @@ function updateTasks(arr) {
 	}
 	bgStatus(arr);
 }
-if (!getTasks()) updateTasks([]);
 
 if (detectAnyActive() === true) {
 	countdownAll();
