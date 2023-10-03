@@ -207,3 +207,11 @@ a.ctacolor2,
 button.ctacolor2 {
   color: tan;
 }
+#clean_btn{display:none;}
+.quicktest #clean_btn{
+	display:block;
+}
+.quicktest h2{
+	display:none;
+}
+

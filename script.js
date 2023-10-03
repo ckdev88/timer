@@ -13,6 +13,7 @@ const task_new_quick = d.getElementById("task_new_quick");
 const task_container = d.getElementById("task_container");
 const settings_btn = d.getElementById('settings_btn');
 const settings_form = d.getElementById('settings_form');
+const clean_btn = d.getElementById('clean_btn');
 
 const setf_quickTaskName = d.getElementById('settings_form_quickTaskName');
 const setf_quickTaskDescr = d.getElementById('settings_form_quickTaskDescr');
@@ -23,6 +24,8 @@ const setf_countDown = d.getElementById('settings_form_countDown');
 const backdrop = d.getElementById('backdrop');
 
 function getTasks() { return JSON.parse(localStorage.getItem('timerTasks')) }
+cachedTasks = getTasks();
+
 function updateTasks(arr) {
 	localStorage.setItem('timerTasks', JSON.stringify(arr))
 	if (
@@ -34,7 +37,7 @@ function updateTasks(arr) {
 	}
 	bgStatus(arr);
 }
-if (getTasks() === null) updateTasks([]);
+if (!getTasks()) updateTasks([]);
 
 if (detectAnyActive() === true) {
 	countdownAll();
@@ -282,6 +285,19 @@ function removeTask(key) {
 	}
 	updateTasks(newarr);
 	renderTasks(newarr);
+}
+
+if (quicktest) {
+	document.body.classList.add('quicktest');
+	clean_btn.addEventListener('click', function() {
+		clearLocalStorage();
+	});
+}
+
+function clearLocalStorage() {
+	localStorage.clear();
+	console.log('cleared local storage');
+	document.location = location;
 }
 
 // ----------------------------- RENDER TASKS - MAIN
