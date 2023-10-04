@@ -1,3 +1,8 @@
+:root {
+  --black: black;
+  --alert: red;
+  --pause: sienna;
+}
 * {
   box-sizing: border-box;
 }
@@ -21,6 +26,16 @@ body {
   width: 100vw;
   position: fixed;
 }
+#backdrop.default {
+  background-color: var(--black);
+}
+#backdrop.alert {
+  background-color: var(--alert);
+}
+#backdrop.pause {
+  background-color: var(--pause);
+}
+
 h2 {
   margin-top: 0;
   margin-bottom: 0;
@@ -181,16 +196,20 @@ button.text.expanded2:before {
 }
 
 .task .buttons {
-	display:block;
-	margin-left:-.6rem;
+  display: block;
+  margin-left: -0.6rem;
 }
 .task .buttons button {
-	padding:0;
-	margin-left:.6rem;
-	margin-right:.6rem;
+  padding: 0;
+  margin-left: 0.6rem;
+  margin-right: 0.6rem;
 }
-.dnone { display: none; }
-.dblock { display: block; }
+.dnone {
+  display: none;
+}
+.dblock {
+  display: block;
+}
 .white,
 a.white,
 button.text.white,
@@ -207,11 +226,12 @@ a.ctacolor2,
 button.ctacolor2 {
   color: tan;
 }
-#clean_btn{display:none;}
-.quicktest #clean_btn{
-	display:block;
+#clean_btn {
+  display: none;
 }
-.quicktest h2{
-	display:none;
+.quicktest #clean_btn {
+  display: block;
 }
-
+.quicktest h2 {
+  display: none;
+}

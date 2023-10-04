@@ -531,8 +531,8 @@ function bgStatus(arr = getTasks()) {
 }
 
 function setBgStatus(status = 'normal') {
-	if (status === 'alert') backdrop.style.backgroundColor = 'red';
-	else if (status === 'paused') backdrop.style.backgroundColor = 'chocolate';
-	else backdrop.style.backgroundColor = 'black';
+	if (status === 'alert') backdrop.className = 'alert';
+	else if (status === 'paused') backdrop.className = 'pause';
+	else backdrop.className = 'default';
 }
 
