@@ -1,7 +1,7 @@
 // Why this? To build a timer, tasks and later a sort of agenda function for the day, connected with times, all using local storage, not needing any deployment server, just the html, js & css maybe even all in one html-file, so it's super easy to use.
 
 // ----------------------------- GLOBAL CONSTANTS
-const quicktest = true;
+const quicktest = false;
 
 const d = document;// abstraction for loading speed & less code
 const task_new_btn = d.getElementById("task_new_btn");
