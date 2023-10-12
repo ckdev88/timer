@@ -57,8 +57,8 @@ if (quicktest) {
 		intervalUnitName: '',
 		countDown: true, // true: show time remaining, false: show time passed
 		quickTaskInterval: 10, // totals value multiplied by value of settings.intervalUnit
-		quickTaskName: 'Stretch',
-		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
+		quickTaskName: 'TEST MODUS TASK',
+		quickTaskDescr: '',
 	};
 }
 else {
@@ -394,9 +394,7 @@ function countdownTimer(key, id) { // individual per task
 			let c = d.getElementById(id);
 			let arr = getTasks();
 
-			if (
-				(arr[key].timepast === arr[key].interval)
-			) {
+			if (arr[key].timepast === arr[key].interval) {
 				stopit();
 			}
 			if (settings.countDown) {
@@ -411,6 +409,7 @@ function countdownTimer(key, id) { // individual per task
 	}, 1000);
 	function stopit() {
 		clearInterval(lb);
+		if (d.getElementById(`pause-${key}`) !== null) d.getElementById(`pause-${key}`).remove();
 	}
 }
 
