@@ -40,6 +40,12 @@ h2 {
   margin-top: 0;
   margin-bottom: 0;
 }
+#settings_form {
+  border-right: 2px dashed lime;
+  margin-right: -0.6rem;
+  padding-right: 0.6rem;
+}
+
 #settings_form h2 {
   text-align: right;
 }
@@ -175,8 +181,8 @@ button.text.expanded2:before {
   border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
 }
 #wrapper {
-  max-width: 340px;
-  min-width: 320px;
+  max-width: 320px;
+  min-width: 300px;
   padding: 0.5rem;
   margin: 0 auto;
   position: relative;
@@ -184,6 +190,9 @@ button.text.expanded2:before {
 #task_new_form {
   width: 100%;
   max-width: 100%;
+  border-left: 2px dashed lime;
+  padding-left: 0.6rem;
+  margin-left: -0.6rem;
 }
 #task_new_form input[type="text"],
 #task_new_form input[type="number"],
