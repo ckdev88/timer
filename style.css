@@ -20,6 +20,11 @@ html {
 body {
   min-width: calc(320px + 1rem);
 }
+h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1.2em;
+}
 #backdrop {
   background-attachment: fixed;
   height: 100vh;
@@ -35,25 +40,30 @@ body {
 #backdrop.pause {
   background-color: var(--pause);
 }
-h2 {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 1.2em;
+#task_new_btn,
+#settings_btn {
+  text-decoration: none;
+}
+#task_new_btn:after {
+  color: dodgerblue;
+}
+#settings_btn {
+  color: greenyellow;
 }
 #settings_form {
-  border-right: 2px dashed lime;
+  border-right: 2px dashed greenyellow;
   margin-right: -0.6rem;
   padding-right: 0.6rem;
 }
 #settings_form h2 {
   text-align: right;
+  color: greenyellow;
 }
 h3 {
   margin-bottom: 0;
 }
 form {
-  border-bottom: 2px dashed rgba(255, 255, 255, 0.6);
-  padding-bottom: 1em;
+  padding-bottom: 0.25rem;
   margin-bottom: 1em;
 }
 body,
@@ -177,7 +187,7 @@ button.text.expanded2:before {
 }
 .task {
   padding-bottom: 0.5em;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
 }
 #wrapper {
   max-width: 320px;
@@ -189,9 +199,12 @@ button.text.expanded2:before {
 #task_new_form {
   width: 100%;
   max-width: 100%;
-  border-left: 2px dashed lime;
+  border-left: 2px dashed dodgerblue;
   padding-left: 0.6rem;
   margin-left: -0.6rem;
+}
+#task_new_form h2 {
+  color: dodgerblue;
 }
 #task_new_form input[type="text"],
 #task_new_form input[type="number"],
