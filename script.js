@@ -69,8 +69,8 @@ else {
 		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 	};
 }
-if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minute(s)';
-else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'second(s)';
+if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minutes';
+else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'seconds';
 
 if (localStorage.getItem('settings') === null) {
 	localStorage.setItem('settings', []);
@@ -123,8 +123,8 @@ function settingsFormSubmit(data) {
 		quickTaskName: data.get("settings_form_quickTaskName"),
 		quickTaskDescr: data.get("settings_form_quickTaskDescr"),
 	};
-	if (settings.intervalUnit === 60) settings.intervalUnitName = 'minute(s)';
-	else if (settings.intervalUnit === 1) settings.intervalUnitName = 'second(s)';
+	if (settings.intervalUnit === 60) settings.intervalUnitName = 'minutes';
+	else if (settings.intervalUnit === 1) settings.intervalUnitName = 'seconds';
 	updateSettings(settings);
 }
 
@@ -319,15 +319,6 @@ function renderTask(i, key) {
 	el.appendChild(renderTaskElement("h3", "task-name", i.name));
 	el.appendChild(renderTaskElement("div", "task-descr", i.descr));
 	el.appendChild(renderTaskElement(
-		"div",
-		"task-countdown-total",
-		(i.interval / i.intervalUnit),
-		'',
-		'',
-		'Interval: ',
-		i.intervalUnitName
-	));
-	el.appendChild(renderTaskElement(
 		'div',
 		'task-countdown-current',
 		countdownTimer(
@@ -336,9 +327,17 @@ function renderTask(i, key) {
 		),
 		'countdown-' + el.id, key,
 		(settings.countDown === true ? 'Time left: ' : 'Time passed: '),
-		(settings.intervalUnitName)
 	));
 
+	el.appendChild(renderTaskElement(
+		"div",
+		"task-countdown-total",
+		(i.interval / i.intervalUnit),
+		'',
+		'',
+		'&nbsp;/ ',
+		i.intervalUnitName
+	));
 	let el2 = document.createElement('div');
 	el2.className = 'buttons';
 	if (!i.finished) {
@@ -397,11 +396,11 @@ function countdownTimer(key, id) { // individual per task
 			}
 			if (settings.countDown) {
 				let timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
-				c.innerHTML = cPrefix + timeleft + ' ' + arr[key].intervalUnitName;
+				c.innerHTML = cPrefix + timeleft
 			}
 			else {
 				let timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
-				c.innerHTML = cPrefix + timepast + ' ' + arr[key].intervalUnitName
+				c.innerHTML = cPrefix + timepast
 			}
 		}
 	}, 1000);
