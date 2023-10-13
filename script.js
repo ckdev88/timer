@@ -26,6 +26,7 @@ const backdrop = d.getElementById('backdrop');
 function getTasks() {
 	let tasks = JSON.parse(localStorage.getItem('timerTasks'))
 	if (!tasks) updateTasks([]);
+	bgStatus(tasks);
 	return tasks;
 }
 let cachedTasks = getTasks(); // null on clean localstorage
@@ -39,15 +40,12 @@ function updateTasks(arr) {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
-	bgStatus(arr);
 }
 
 if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
 }
-
-bgStatus();
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 let settings_d;
@@ -524,9 +522,10 @@ function playSound() {
 // ----------------------------- BACKGROUND... LITERALLY
 
 function bgStatus(arr = getTasks()) {
-	if (detectAnyFinished(arr)) setBgStatus('alert')
+	if (detectAnyFinished(arr)) setBgStatus('alert');
 	else if (detectAnyPaused(arr)) setBgStatus('paused');
 	else setBgStatus('normal');
+
 }
 
 function setBgStatus(status = 'normal') {
