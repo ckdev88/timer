@@ -26,7 +26,7 @@ const backdrop = d.getElementById('backdrop');
 function getTasks() {
 	let tasks = JSON.parse(localStorage.getItem('timerTasks'))
 	if (!tasks) updateTasks([]);
-	bgStatus(tasks);
+	else bgStatus(tasks);
 	return tasks;
 }
 let cachedTasks = getTasks(); // null on clean localstorage
@@ -520,7 +520,7 @@ function playSound() {
 
 // ----------------------------- BACKGROUND... LITERALLY
 
-function bgStatus(arr = getTasks()) {
+function bgStatus(arr) {
 	if (detectAnyFinished(arr)) setBgStatus('alert');
 	else if (detectAnyPaused(arr)) setBgStatus('paused');
 	else setBgStatus('normal');
