@@ -35,18 +35,16 @@ body {
 #backdrop.pause {
   background-color: var(--pause);
 }
-
 h2 {
   margin-top: 0;
   margin-bottom: 0;
-	font-size:1.2em;
+  font-size: 1.2em;
 }
 #settings_form {
   border-right: 2px dashed lime;
   margin-right: -0.6rem;
   padding-right: 0.6rem;
 }
-
 #settings_form h2 {
   text-align: right;
 }
@@ -204,7 +202,6 @@ button.text.expanded2:before {
   display: flex;
   justify-content: space-between;
 }
-
 .task .buttons {
   display: block;
   margin-left: -0.6rem;
