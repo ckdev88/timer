@@ -219,8 +219,7 @@ function addTask(name, description, interval) {
 }
 
 // ----------------------------- PAUSE/RESUME TASK
-// NOTE: these 2 tasks are now a bit redundant, since the toggle is basically already built in
-// for future use applying as SOLID as possible for now...
+
 function pauseTaskToggle(key) {
 	let arr = getTasks();
 	let newarr = [];
