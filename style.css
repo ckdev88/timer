@@ -1,109 +1,109 @@
 :root {
-  --black: black;
-  --alert: red;
-  --pause: sienna;
+	--black: black;
+	--alert: red;
+	--pause: sienna;
 }
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 html,
 body {
-  padding: 0;
-  margin: 0;
-  height: 100%;
+	padding: 0;
+	margin: 0;
+	height: 100%;
 }
 html {
-  background: #000;
-  color: #fafafa;
-  font-size: 14px;
+	background: #000;
+	color: #fafafa;
+	font-size: 14px;
 }
 body {
-  min-width: calc(320px + 1rem);
+	min-width: calc(320px + 1rem);
 }
 h2 {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 1.2em;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 1.2em;
 }
 #backdrop {
-  background-attachment: fixed;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
+	background-attachment: fixed;
+	height: 100vh;
+	width: 100vw;
+	position: fixed;
 }
 #backdrop.default {
-  background-color: var(--black);
+	background-color: var(--black);
 }
 #backdrop.alert {
-  background-color: var(--alert);
+	background-color: var(--alert);
 }
 #backdrop.pause {
-  background-color: var(--pause);
+	background-color: var(--pause);
 }
 #task_new_btn,
 #settings_btn {
-  text-decoration: none;
+	text-decoration: none;
 }
 #task_new_btn:after {
-  color: dodgerblue;
+	color: dodgerblue;
 }
 #settings_btn {
-  color: greenyellow;
+	color: greenyellow;
 }
 #settings_form {
-  border-right: 2px dashed greenyellow;
-  margin-right: -0.6rem;
-  padding-right: 0.6rem;
+	border-right: 2px dashed greenyellow;
+	margin-right: -0.6rem;
+	padding-right: 0.6rem;
 }
 #settings_form h2 {
-  text-align: right;
-  color: greenyellow;
+	text-align: right;
+	color: greenyellow;
 }
 h3 {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 form {
-  padding-bottom: 0.25rem;
-  margin-bottom: 1em;
+	padding-bottom: 0.25rem;
+	margin-bottom: 1em;
 }
 body,
 input,
 textarea,
 button,
 select {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Open Sans",
-    "Helvetica Neue",
-    sans-serif;
+	font-family:
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		Oxygen,
+		Ubuntu,
+		Cantarell,
+		"Open Sans",
+		"Helvetica Neue",
+		sans-serif;
 }
 select {
-  padding-left: 0;
-  padding-right: 0;
+	padding-left: 0;
+	padding-right: 0;
 }
 option {
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: 0;
-  margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
 }
 button,
 a.btn,
 input[type="submit"] {
-  cursor: pointer;
-  background: lime;
-  color: black;
-  font-weight: bold;
+	cursor: pointer;
+	background: lime;
+	color: black;
+	font-weight: bold;
 }
 label {
-  cursor: pointer;
+	cursor: pointer;
 }
 input[type="text"],
 textarea,
@@ -112,150 +112,150 @@ input[type="submit"],
 button,
 .btn,
 select {
-  padding: 0.4rem 0.6rem;
-  margin: 0.3rem 0;
-  border-radius: 0.1rem;
-  display: block;
-  border: 1px solid #e1e1e1;
+	padding: 0.4rem 0.6rem;
+	margin: 0.3rem 0;
+	border-radius: 0.1rem;
+	display: block;
+	border: 1px solid #e1e1e1;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  select {
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-  }
+	select {
+		padding-left: 0.4rem;
+		padding-right: 0.4rem;
+	}
 }
 select {
-  width: 100%;
-  max-width: 100%;
+	width: 100%;
+	max-width: 100%;
 }
 input[type="text"],
 textarea,
 input[type="number"] {
-  width: 100%;
+	width: 100%;
 }
 input[type="text"],
 textarea,
 input[type="number"],
 label {
-  font-size: 0.9rem;
+	font-size: 0.9rem;
 }
 textarea {
-  height: 5em;
+	height: 5em;
 }
 a,
 button.text,
 .btn.text,
 button.icon {
-  color: lime;
-  background: transparent;
-  border: 0;
+	color: lime;
+	background: transparent;
+	border: 0;
 }
 button.text,
 .btn.text {
-  text-decoration: underline;
-  margin-left: -0.6rem;
-  margin-right: -0.6rem;
-  display: inline-block;
+	text-decoration: underline;
+	margin-left: -0.6rem;
+	margin-right: -0.6rem;
+	display: inline-block;
 }
 button.text:after,
 .btn.text:after {
-  font-size: 0.8em;
+	font-size: 0.8em;
 }
 button.text.expanded:after,
 button.text.collapsed:after,
 button.text.expanded2:before,
 button.text.collapsed2:before {
-  font-size: 0.6em;
-  display: inline-block;
+	font-size: 0.6em;
+	display: inline-block;
 }
 button.text.collapsed:after,
 button.text.collapsed2:before {
-  content: "  ▲";
+	content: "  ▲";
 }
 button.text.expanded:after,
 button.text.expanded2:before {
-  content: "▼  ";
+	content: "▼  ";
 }
 button.text.expanded:after,
 button.text.collapsed:after {
-  margin-left: 0.6em;
+	margin-left: 0.6em;
 }
 button.text.collapsed2:before,
 button.text.expanded2:before {
-  margin-right: 0.6em;
+	margin-right: 0.6em;
 }
 .task {
-  padding-bottom: 0.5em;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+	padding-bottom: 0.5em;
+	border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
 }
 #wrapper {
-  max-width: 320px;
-  min-width: 300px;
-  padding: 0.5rem;
-  margin: 0 auto;
-  position: relative;
+	max-width: 320px;
+	min-width: 300px;
+	padding: 0.5rem;
+	margin: 0 auto;
+	position: relative;
 }
 #task_new_form {
-  width: 100%;
-  max-width: 100%;
-  border-left: 2px dashed dodgerblue;
-  padding-left: 0.6rem;
-  margin-left: -0.6rem;
+	width: 100%;
+	max-width: 100%;
+	border-left: 2px dashed dodgerblue;
+	padding-left: 0.6rem;
+	margin-left: -0.6rem;
 }
 #task_new_form h2 {
-  color: dodgerblue;
+	color: dodgerblue;
 }
 #task_new_form input[type="text"],
 #task_new_form input[type="number"],
 #task_new_form textarea {
-  display: block;
+	display: block;
 }
 .buttons {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 .task .buttons {
-  display: block;
-  margin-left: -0.6rem;
+	display: block;
+	margin-left: -0.6rem;
 }
 .task .buttons button {
-  padding: 0;
-  margin-left: 0.6rem;
-  margin-right: 0.6rem;
+	padding: 0;
+	margin-left: 0.6rem;
+	margin-right: 0.6rem;
 }
 .dnone {
-  display: none;
+	display: none;
 }
 .dblock {
-  display: block;
+	display: block;
 }
 .white,
 a.white,
 button.text.white,
 .btn.text.white {
-  color: white;
+	color: white;
 }
 .ctacolor1,
 a.ctacolor1,
 button.ctacolor1 {
-  color: lime;
+	color: lime;
 }
 .ctacolor2,
 a.ctacolor2,
 button.ctacolor2 {
-  color: tan;
+	color: tan;
 }
 #clean_btn {
-  display: none;
+	display: none;
 }
 .quicktest #clean_btn {
-  display: block;
+	display: block;
 }
 .quicktest h2 {
-  display: none;
+	display: none;
 }
 .task-countdown-current,
 .task-countdown-total {
-  display: inline-block;
+	display: inline-block;
 }

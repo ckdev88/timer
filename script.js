@@ -29,6 +29,7 @@ function getTasks() {
 	else bgStatus(tasks);
 	return tasks;
 }
+
 let cachedTasks = getTasks(); // null on clean localstorage
 
 function updateTasks(arr) {
@@ -47,8 +48,11 @@ if (detectAnyActive() === true) {
 	localStorage.setItem('countDownAllStatus', 'active');
 }
 
+
 // ----------------------------- SETUP DEFAULTS & SETTINGS
+
 let settings_d;
+
 if (quicktest) {
 	settings_d = {
 		intervalUnit: 1, // in seconds
@@ -69,6 +73,7 @@ else {
 		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 	};
 }
+
 if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minutes';
 else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'seconds';
 
