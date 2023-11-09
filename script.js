@@ -4,29 +4,29 @@
 const quicktest = false;
 
 const d = document; // abstraction for loading speed & less code
-const task_new_btn = d.getElementById("task_new_btn");
-const task_new_form = d.getElementById("task_new_form");
-const task_new_name = d.getElementById("new_task_name");
-const task_new_description = d.getElementById("new_task_description");
-const task_new_interval = d.getElementById("new_task_interval");
-const task_new_quick = d.getElementById("task_new_quick");
-const task_container = d.getElementById("task_container");
-const settings_btn = d.getElementById("settings_btn");
-const settings_form = d.getElementById("settings_form");
-const clean_btn = d.getElementById("clean_btn");
+const task_new_btn = d.getElementById('task_new_btn');
+const task_new_form = d.getElementById('task_new_form');
+const task_new_name = d.getElementById('new_task_name');
+const task_new_description = d.getElementById('new_task_description');
+const task_new_interval = d.getElementById('new_task_interval');
+const task_new_quick = d.getElementById('task_new_quick');
+const task_container = d.getElementById('task_container');
+const settings_btn = d.getElementById('settings_btn');
+const settings_form = d.getElementById('settings_form');
+const clean_btn = d.getElementById('clean_btn');
 
-const setf_quickTaskName = d.getElementById("settings_form_quickTaskName");
-const setf_quickTaskDescr = d.getElementById("settings_form_quickTaskDescr");
+const setf_quickTaskName = d.getElementById('settings_form_quickTaskName');
+const setf_quickTaskDescr = d.getElementById('settings_form_quickTaskDescr');
 const setf_quickTaskInterval = d.getElementById(
-	"settings_form_quickTaskInterval",
+	'settings_form_quickTaskInterval'
 );
-const setf_intervalUnit = d.getElementById("settings_form_intervalUnit");
-const setf_countDown = d.getElementById("settings_form_countDown");
+const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
+const setf_countDown = d.getElementById('settings_form_countDown');
 
-const backdrop = d.getElementById("backdrop");
+const backdrop = d.getElementById('backdrop');
 
 function getTasks() {
-	let tasks = JSON.parse(localStorage.getItem("timerTasks"));
+	let tasks = JSON.parse(localStorage.getItem('timerTasks'));
 	if (!tasks) updateTasks([]);
 	else bgStatus(tasks);
 	return tasks;
@@ -35,20 +35,20 @@ function getTasks() {
 let cachedTasks = getTasks(); // null on clean localstorage
 
 function updateTasks(arr) {
-	localStorage.setItem("timerTasks", JSON.stringify(arr));
+	localStorage.setItem('timerTasks', JSON.stringify(arr));
 	if (
 		(detectAnyActive() === true &&
-			localStorage.getItem("countDownAllStatus") == "stopped") ||
+			localStorage.getItem('countDownAllStatus') == 'stopped') ||
 		arr.length === 0
 	) {
 		countdownAll();
-		localStorage.setItem("countDownAllStatus", "active");
+		localStorage.setItem('countDownAllStatus', 'active');
 	}
 }
 
 if (detectAnyActive() === true) {
 	countdownAll();
-	localStorage.setItem("countDownAllStatus", "active");
+	localStorage.setItem('countDownAllStatus', 'active');
 }
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
@@ -58,65 +58,65 @@ let settings_d;
 if (quicktest) {
 	settings_d = {
 		intervalUnit: 1, // in seconds
-		intervalUnitName: "",
+		intervalUnitName: '',
 		countDown: true, // true: show time remaining, false: show time passed
 		quickTaskInterval: 10, // totals value multiplied by value of settings.intervalUnit
-		quickTaskName: "TEST MODUS TASK",
-		quickTaskDescr: "",
+		quickTaskName: 'TEST MODUS TASK',
+		quickTaskDescr: '',
 	};
 } else {
 	settings_d = {
 		intervalUnit: 60, // in seconds
-		intervalUnitName: "",
+		intervalUnitName: '',
 		countDown: true, // true: show time remaining, false: show time passed
 		quickTaskInterval: 35 * 60, // totals value multiplied by value of settings.intervalUnit
-		quickTaskName: "Stretch",
-		quickTaskDescr: "Eat, walk, pushup, drink, some or all.",
+		quickTaskName: 'Stretch',
+		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 	};
 }
 
-if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = "minutes";
-else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = "seconds";
+if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minutes';
+else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'seconds';
 
-if (localStorage.getItem("settings") === null) {
-	localStorage.setItem("settings", []);
-	localStorage.setItem("settings", JSON.stringify(settings_d));
+if (localStorage.getItem('settings') === null) {
+	localStorage.setItem('settings', []);
+	localStorage.setItem('settings', JSON.stringify(settings_d));
 }
-const getSettings = () => JSON.parse(localStorage.getItem("settings"));
+const getSettings = () => JSON.parse(localStorage.getItem('settings'));
 const settings = getSettings();
 
 // ----------------------------- CONFIGURE SETTINGS
 
-settings_btn.addEventListener("click", () => {
-	settings_form.className == "dblock"
-		? settingsForm("collapse")
-		: settingsForm("expand");
+settings_btn.addEventListener('click', () => {
+	settings_form.className == 'dblock'
+		? settingsForm('collapse')
+		: settingsForm('expand');
 });
 
 function settingsForm(what) {
-	if (what == "expand") {
-		settings_btn.classList.replace("collapsed2", "expanded2");
-		settings_form.className = "dblock";
+	if (what == 'expand') {
+		settings_btn.classList.replace('collapsed2', 'expanded2');
+		settings_form.className = 'dblock';
 	}
-	if (what == "collapse") {
-		settings_btn.classList.replace("expanded2", "collapsed2");
-		settings_form.className = "dnone";
+	if (what == 'collapse') {
+		settings_btn.classList.replace('expanded2', 'collapsed2');
+		settings_form.className = 'dnone';
 	}
 }
 
 function settingsFormDefaults() {
-	setf_quickTaskName.setAttribute("value", settings.quickTaskName);
+	setf_quickTaskName.setAttribute('value', settings.quickTaskName);
 	setf_quickTaskDescr.innerText = settings.quickTaskDescr;
 	setf_quickTaskInterval.setAttribute(
-		"value",
-		settings.quickTaskInterval / settings.intervalUnit,
+		'value',
+		settings.quickTaskInterval / settings.intervalUnit
 	);
 	selectOption(setf_intervalUnit, settings.intervalUnit);
 	selectOption(setf_countDown, String(settings.countDown));
 }
 settingsFormDefaults();
 
-settings_form.addEventListener("submit", (e) => {
+settings_form.addEventListener('submit', (e) => {
 	e.preventDefault();
 	let data = new FormData(settings_form);
 	settingsFormSubmit(data);
@@ -124,67 +124,67 @@ settings_form.addEventListener("submit", (e) => {
 
 function settingsFormSubmit(data) {
 	let settings = {
-		intervalUnit: Number(data.get("settings_form_intervalUnit")),
-		intervalUnitName: "",
-		countDown: Boolean(data.get("settings_form_countDown")),
+		intervalUnit: Number(data.get('settings_form_intervalUnit')),
+		intervalUnitName: '',
+		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTaskInterval:
-			Number(data.get("settings_form_quickTaskInterval")) *
-			Number(data.get("settings_form_intervalUnit")),
-		quickTaskName: data.get("settings_form_quickTaskName"),
-		quickTaskDescr: data.get("settings_form_quickTaskDescr"),
+			Number(data.get('settings_form_quickTaskInterval')) *
+			Number(data.get('settings_form_intervalUnit')),
+		quickTaskName: data.get('settings_form_quickTaskName'),
+		quickTaskDescr: data.get('settings_form_quickTaskDescr'),
 	};
-	if (settings.intervalUnit === 60) settings.intervalUnitName = "minutes";
-	else if (settings.intervalUnit === 1) settings.intervalUnitName = "seconds";
+	if (settings.intervalUnit === 60) settings.intervalUnitName = 'minutes';
+	else if (settings.intervalUnit === 1) settings.intervalUnitName = 'seconds';
 	updateSettings(settings);
 }
 
 function selectOption(el, option) {
 	option = option.toString();
 	for (let i = 0; i < el.options.length; i++) {
-		if (el.options[i].getAttribute("value") == option) {
-			el.options[i].setAttribute("selected", "selected");
+		if (el.options[i].getAttribute('value') == option) {
+			el.options[i].setAttribute('selected', 'selected');
 		}
 	}
 }
 
 function updateSettings(arr) {
-	localStorage.setItem("settings", JSON.stringify(arr));
+	localStorage.setItem('settings', JSON.stringify(arr));
 	taskFormRenderTweaks();
 	if (
 		detectAnyActive() === true &&
-		localStorage.getItem("countDownAllStatus") == "stopped"
+		localStorage.getItem('countDownAllStatus') == 'stopped'
 	) {
 		countdownAll();
-		localStorage.setItem("countDownAllStatus", "active");
+		localStorage.setItem('countDownAllStatus', 'active');
 	}
 }
 
 // ----------------------------- ADD TASKS - FORM
 
-task_new_btn.addEventListener("click", () => {
-	task_new_form.className == "dblock" ? ecForm("collapse") : ecForm("expand");
+task_new_btn.addEventListener('click', () => {
+	task_new_form.className == 'dblock' ? ecForm('collapse') : ecForm('expand');
 });
 
 function ecForm(what) {
-	if (what == "expand") {
-		task_new_btn.classList.replace("collapsed", "expanded");
-		task_new_form.className = "dblock";
+	if (what == 'expand') {
+		task_new_btn.classList.replace('collapsed', 'expanded');
+		task_new_form.className = 'dblock';
 	}
-	if (what === "collapse") {
-		task_new_form.className = "dnone";
-		task_new_btn.classList.replace("expanded", "collapsed");
+	if (what === 'collapse') {
+		task_new_form.className = 'dnone';
+		task_new_btn.classList.replace('expanded', 'collapsed');
 	}
 }
 
 function taskFormRenderTweaks() {
 	task_new_interval.setAttribute(
-		"placeholder",
-		"Interval time in " + getSettings().intervalUnitName + "...",
+		'placeholder',
+		'Interval time in ' + getSettings().intervalUnitName + '...'
 	);
 }
 taskFormRenderTweaks();
 
-task_new_form.addEventListener("submit", (e) => {
+task_new_form.addEventListener('submit', (e) => {
 	e.preventDefault();
 	var data = new FormData(task_new_form);
 	taskFormSubmit(data);
@@ -192,21 +192,21 @@ task_new_form.addEventListener("submit", (e) => {
 
 function taskFormSubmit(data) {
 	addTask(
-		data.get("task_name"),
-		data.get("task_description"),
-		data.get("task_interval") * getSettings().intervalUnit,
+		data.get('task_name'),
+		data.get('task_description'),
+		data.get('task_interval') * getSettings().intervalUnit
 	);
 	cleanForm();
 }
 
 function cleanForm() {
-	task_new_name.value = "";
-	task_new_description.value = "";
-	task_new_interval.value = "";
+	task_new_name.value = '';
+	task_new_description.value = '';
+	task_new_interval.value = '';
 	task_new_name.focus();
 }
 
-task_new_quick.addEventListener("click", () => {
+task_new_quick.addEventListener('click', () => {
 	addQuickTask();
 });
 
@@ -215,7 +215,7 @@ function addQuickTask() {
 	addTask(
 		settings.quickTaskName,
 		settings.quickTaskDescr,
-		settings.quickTaskInterval,
+		settings.quickTaskInterval
 	);
 }
 
@@ -285,22 +285,22 @@ function removeTask(key) {
 }
 
 if (quicktest) {
-	document.body.classList.add("quicktest");
-	clean_btn.addEventListener("click", function() {
+	document.body.classList.add('quicktest');
+	clean_btn.addEventListener('click', function() {
 		clearLocalStorage();
 	});
 }
 
 function clearLocalStorage() {
 	localStorage.clear();
-	console.log("cleared local storage");
+	console.log('cleared local storage');
 	document.location = location;
 }
 
 // ----------------------------- RENDER TASKS - MAIN
 
 function renderTasks(arr) {
-	task_container.innerHTML = "";
+	task_container.innerHTML = '';
 	for (let i = 0; i < arr.length; i++) {
 		task_container.appendChild(renderTask(arr[i], i));
 	}
@@ -309,35 +309,35 @@ renderTasks(getTasks());
 
 function renderTask(i, key) {
 	let settings = getSettings();
-	let el = d.createElement("div");
-	el.className = "task";
-	el.id = "task-" + key;
-	el.appendChild(renderTaskElement("h3", "task-name", i.name));
-	el.appendChild(renderTaskElement("div", "task-descr", i.descr));
+	let el = d.createElement('div');
+	el.className = 'task';
+	el.id = 'task-' + key;
+	el.appendChild(renderTaskElement('h3', 'task-name', i.name));
+	el.appendChild(renderTaskElement('div', 'task-descr', i.descr));
 	el.appendChild(
 		renderTaskElement(
-			"div",
-			"task-countdown-current",
-			countdownTimer(key, "countdown-task-" + key),
-			"countdown-" + el.id,
+			'div',
+			'task-countdown-current',
+			countdownTimer(key, 'countdown-task-' + key),
+			'countdown-' + el.id,
 			key,
-			settings.countDown === true ? "Time left: " : "Time passed: ",
-		),
+			settings.countDown === true ? 'Time left: ' : 'Time passed: '
+		)
 	);
 
 	el.appendChild(
 		renderTaskElement(
-			"div",
-			"task-countdown-total",
+			'div',
+			'task-countdown-total',
 			i.interval / i.intervalUnit,
-			"",
-			"",
-			"&nbsp;/ ",
-			i.intervalUnitName,
-		),
+			'',
+			'',
+			'&nbsp;/ ',
+			i.intervalUnitName
+		)
 	);
-	let el2 = document.createElement("div");
-	el2.className = "buttons";
+	let el2 = document.createElement('div');
+	el2.className = 'buttons';
 	if (!i.finished) el2.appendChild(pauseTaskToggleLink(key, !i.paused));
 	el2.appendChild(resetTaskLink(key));
 	el2.appendChild(removeTaskLink(key));
@@ -347,13 +347,13 @@ function renderTask(i, key) {
 }
 
 function renderTaskElement(
-	node = "div",
+	node = 'div',
 	className,
 	content,
 	id = undefined,
 	key,
-	contentPrefix = "",
-	contentSuffix = "",
+	contentPrefix = '',
+	contentSuffix = ''
 ) {
 	let taskEl = d.createElement(node);
 	taskEl.className = className;
@@ -367,8 +367,8 @@ function renderTaskElement(
 				: Math.round(i.timepast / i.intervalUnit);
 	}
 
-	taskEl.innerHTML = contentPrefix + content + " " + contentSuffix;
-	id !== undefined ? (taskEl.id = id) : "";
+	taskEl.innerHTML = contentPrefix + content + ' ' + contentSuffix;
+	id !== undefined ? (taskEl.id = id) : '';
 	return taskEl;
 }
 
@@ -379,8 +379,8 @@ function countdownTimer(key, id) {
 	const lb = setInterval(() => {
 		if (d.getElementById(id)) {
 			let settings = getSettings();
-			if (settings.countDown) cPrefix = "Time left: ";
-			else cPrefix = "Time passed: ";
+			if (settings.countDown) cPrefix = 'Time left: ';
+			else cPrefix = 'Time passed: ';
 
 			let c = d.getElementById(id);
 			let arr = getTasks();
@@ -391,12 +391,12 @@ function countdownTimer(key, id) {
 			if (settings.countDown) {
 				let timeleft = Math.round(
 					(arr[key].interval - arr[key].timepast) /
-					arr[key].intervalUnit,
+					arr[key].intervalUnit
 				);
 				c.innerHTML = cPrefix + timeleft;
 			} else {
 				let timepast = Math.round(
-					arr[key].timepast / arr[key].intervalUnit,
+					arr[key].timepast / arr[key].intervalUnit
 				);
 				c.innerHTML = cPrefix + timepast;
 			}
@@ -410,36 +410,36 @@ function countdownTimer(key, id) {
 }
 
 function pauseTaskToggleLink(key, paused = false) {
-	let el = d.createElement("button");
-	el.className = "text";
+	let el = d.createElement('button');
+	el.className = 'text';
 	if (paused === true) {
-		el.innerHTML = "pause";
-		el.id = "pause-" + key;
+		el.innerHTML = 'pause';
+		el.id = 'pause-' + key;
 	} else {
-		el.innerHTML = "resume";
-		el.id = "resume-" + key;
+		el.innerHTML = 'resume';
+		el.id = 'resume-' + key;
 	}
-	el.addEventListener("click", () => pauseTaskToggle(key));
+	el.addEventListener('click', () => pauseTaskToggle(key));
 	return el;
 }
 
 function removeTaskLink(key) {
-	let el = d.createElement("button");
-	el.innerHTML = "remove task";
-	el.className = "text ctacolor2";
-	el.id = "del-" + key;
-	el.addEventListener("click", () => {
+	let el = d.createElement('button');
+	el.innerHTML = 'remove task';
+	el.className = 'text ctacolor2';
+	el.id = 'del-' + key;
+	el.addEventListener('click', () => {
 		removeTask(key);
 	});
 	return el;
 }
 
 function resetTaskLink(key) {
-	let el = d.createElement("button");
-	el.innerHTML = "reset";
-	el.className = "text";
-	el.id = "reset-" + key;
-	el.addEventListener("click", () => {
+	let el = d.createElement('button');
+	el.innerHTML = 'reset';
+	el.className = 'text';
+	el.id = 'reset-' + key;
+	el.addEventListener('click', () => {
 		resetTask(key);
 	});
 	return el;
@@ -502,25 +502,25 @@ function countdownAll() {
 
 	function stopit() {
 		clearInterval(lb);
-		localStorage.setItem("countDownAllStatus", "stopped");
+		localStorage.setItem('countDownAllStatus', 'stopped');
 	}
 }
 
 function playSound() {
-	const siren = new Audio("siren1.wav");
+	const siren = new Audio('siren1.wav');
 	siren.play();
 }
 
 // ----------------------------- BACKGROUND... LITERALLY
 
 function bgStatus(arr) {
-	if (detectAnyFinished(arr)) setBgStatus("alert");
-	else if (detectAnyPaused(arr)) setBgStatus("paused");
-	else setBgStatus("normal");
+	if (detectAnyFinished(arr)) setBgStatus('alert');
+	else if (detectAnyPaused(arr)) setBgStatus('paused');
+	else setBgStatus('normal');
 }
 
-function setBgStatus(status = "normal") {
-	if (status === "alert") backdrop.className = "alert";
-	else if (status === "paused") backdrop.className = "pause";
-	else backdrop.className = "default";
+function setBgStatus(status = 'normal') {
+	if (status === 'alert') backdrop.className = 'alert';
+	else if (status === 'paused') backdrop.className = 'pause';
+	else backdrop.className = 'default';
 }

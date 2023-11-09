@@ -1,92 +1,56 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<title>Task timer</title>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link href="style.css" rel="stylesheet" />
-		<link rel="icon" href="img/favicon-32.png" />
-	</head>
 
-	<body>
-		<div id="backdrop"></div>
-		<div id="wrapper">
-			<div class="buttons">
-				<button id="task_new_btn" class="text white expanded">
-					New task
-				</button>
-				<button id="settings_btn" class="text collapsed2">⚙</button>
-				<button id="clean_btn" class="text">x</button>
-			</div>
-			<form id="settings_form" class="dnone">
-				<h2>Settings</h2>
-				<input
-					id="settings_form_quickTaskName"
-					name="settings_form_quickTaskName"
-					type="text"
-					placeholder="Quick task name..."
-				/>
-				<textarea
-					id="settings_form_quickTaskDescr"
-					name="settings_form_quickTaskDescr"
-					placeholder="Quick task description..."
-				></textarea>
-				<input
-					id="settings_form_quickTaskInterval"
-					name="settings_form_quickTaskInterval"
-					type="number"
-					placeholder="Quick task interval..."
-				/>
-				<select
-					id="settings_form_intervalUnit"
-					name="settings_form_intervalUnit"
-				>
-					<option value="1">Time in Seconds</option>
-					<option value="60">Time in Minutes</option>
-				</select>
-				<select
-					id="settings_form_countDown"
-					name="settings_form_countDown"
-				>
-					<option value="true">Count down timer</option>
-					<option value="">Count up timer</option>
-				</select>
-				<input type="submit" value="Update settings" />
-			</form>
-			<form id="task_new_form" class="dblock">
-				<h2>New task</h2>
-				<input
-					id="new_task_name"
-					name="task_name"
-					type="text"
-					placeholder="Task name..."
-					required
-				/>
-				<textarea
-					id="new_task_description"
-					name="task_description"
-					placeholder="Description..."
-				></textarea>
-				<input
-					id="new_task_interval"
-					name="task_interval"
-					type="number"
-					placeholder="Interval time..."
-					required
-				/>
-				<div class="buttons">
-					<input type="submit" value="Create task" />
-					<a
-						href="javascript:void(0)"
-						id="task_new_quick"
-						class="btn text white"
-						>New quick task</a
-					>
-				</div>
-			</form>
-			<div id="task_container"></div>
-			<audio src="siren1.wav" />
+<head>
+	<title>Task timer</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="style.css" rel="stylesheet" />
+	<link rel="icon" href="img/favicon-32.png" />
+</head>
+
+<body>
+	<div id="backdrop"></div>
+	<div id="wrapper">
+		<div class="buttons">
+			<button id="task_new_btn" class="text white expanded">
+				New task
+			</button>
+			<button id="settings_btn" class="text collapsed2">⚙</button>
+			<button id="clean_btn" class="text">x</button>
 		</div>
-		<script src="script.js"></script>
-	</body>
+		<form id="settings_form" class="dnone">
+			<h2>Settings</h2>
+			<input id="settings_form_quickTaskName" name="settings_form_quickTaskName" type="text"
+				placeholder="Quick task name..." />
+			<textarea id="settings_form_quickTaskDescr" name="settings_form_quickTaskDescr"
+				placeholder="Quick task description..."></textarea>
+			<input id="settings_form_quickTaskInterval" name="settings_form_quickTaskInterval" type="number"
+				placeholder="Quick task interval..." />
+			<select id="settings_form_intervalUnit" name="settings_form_intervalUnit">
+				<option value="1">Time in Seconds</option>
+				<option value="60">Time in Minutes</option>
+			</select>
+			<select id="settings_form_countDown" name="settings_form_countDown">
+				<option value="true">Count down timer</option>
+				<option value="">Count up timer</option>
+			</select>
+			<input type="submit" value="Update settings" />
+		</form>
+		<form id="task_new_form" class="dblock">
+			<h2>New task</h2>
+			<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
+			<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
+			<input id="new_task_interval" name="task_interval" type="number" placeholder="Interval time..." required />
+			<div class="buttons">
+				<input type="submit" value="Create task" />
+				<a href="javascript:void(0)" id="task_new_quick" class="btn text white">New quick task</a>
+			</div>
+		</form>
+		<div id="task_container"></div>
+		<audio src="siren1.wav" />
+	</div>
+	<script src="script.js"></script>
+</body>
+
 </html>
