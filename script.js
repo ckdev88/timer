@@ -17,9 +17,7 @@ const clean_btn = d.getElementById('clean_btn');
 
 const setf_quickTaskName = d.getElementById('settings_form_quickTaskName');
 const setf_quickTaskDescr = d.getElementById('settings_form_quickTaskDescr');
-const setf_quickTaskInterval = d.getElementById(
-	'settings_form_quickTaskInterval'
-);
+const setf_quickTaskInterval = d.getElementById('settings_form_quickTaskInterval');
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
 
@@ -36,11 +34,7 @@ let cachedTasks = getTasks(); // null on clean localstorage
 
 function updateTasks(arr) {
 	localStorage.setItem('timerTasks', JSON.stringify(arr));
-	if (
-		(detectAnyActive() === true &&
-			localStorage.getItem('countDownAllStatus') == 'stopped') ||
-		arr.length === 0
-	) {
+	if ((detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') || arr.length === 0) {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
@@ -88,9 +82,7 @@ const settings = getSettings();
 // ----------------------------- CONFIGURE SETTINGS
 
 settings_btn.addEventListener('click', () => {
-	settings_form.className == 'dblock'
-		? settingsForm('collapse')
-		: settingsForm('expand');
+	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand');
 });
 
 function settingsForm(what) {
@@ -107,10 +99,7 @@ function settingsForm(what) {
 function settingsFormDefaults() {
 	setf_quickTaskName.setAttribute('value', settings.quickTaskName);
 	setf_quickTaskDescr.innerText = settings.quickTaskDescr;
-	setf_quickTaskInterval.setAttribute(
-		'value',
-		settings.quickTaskInterval / settings.intervalUnit
-	);
+	setf_quickTaskInterval.setAttribute('value', settings.quickTaskInterval / settings.intervalUnit);
 	selectOption(setf_intervalUnit, settings.intervalUnit);
 	selectOption(setf_countDown, String(settings.countDown));
 }
@@ -128,8 +117,7 @@ function settingsFormSubmit(data) {
 		intervalUnitName: '',
 		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTaskInterval:
-			Number(data.get('settings_form_quickTaskInterval')) *
-			Number(data.get('settings_form_intervalUnit')),
+			Number(data.get('settings_form_quickTaskInterval')) * Number(data.get('settings_form_intervalUnit')),
 		quickTaskName: data.get('settings_form_quickTaskName'),
 		quickTaskDescr: data.get('settings_form_quickTaskDescr'),
 	};
@@ -150,10 +138,7 @@ function selectOption(el, option) {
 function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr));
 	taskFormRenderTweaks();
-	if (
-		detectAnyActive() === true &&
-		localStorage.getItem('countDownAllStatus') == 'stopped'
-	) {
+	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
@@ -177,10 +162,7 @@ function ecForm(what) {
 }
 
 function taskFormRenderTweaks() {
-	task_new_interval.setAttribute(
-		'placeholder',
-		'Interval time in ' + getSettings().intervalUnitName + '...'
-	);
+	task_new_interval.setAttribute('placeholder', 'Interval time in ' + getSettings().intervalUnitName + '...');
 }
 taskFormRenderTweaks();
 
@@ -212,11 +194,7 @@ task_new_quick.addEventListener('click', () => {
 
 function addQuickTask() {
 	let settings = getSettings();
-	addTask(
-		settings.quickTaskName,
-		settings.quickTaskDescr,
-		settings.quickTaskInterval
-	);
+	addTask(settings.quickTaskName, settings.quickTaskDescr, settings.quickTaskInterval);
 }
 
 function addTask(name, description, interval) {
@@ -389,23 +367,17 @@ function countdownTimer(key, id) {
 				stopit();
 			}
 			if (settings.countDown) {
-				let timeleft = Math.round(
-					(arr[key].interval - arr[key].timepast) /
-					arr[key].intervalUnit
-				);
+				let timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
 				c.innerHTML = cPrefix + timeleft;
 			} else {
-				let timepast = Math.round(
-					arr[key].timepast / arr[key].intervalUnit
-				);
+				let timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
 				c.innerHTML = cPrefix + timepast;
 			}
 		}
 	}, 1000);
 	function stopit() {
 		clearInterval(lb);
-		if (d.getElementById(`pause-${key}`) !== null)
-			d.getElementById(`pause-${key}`).remove();
+		if (d.getElementById(`pause-${key}`) !== null) d.getElementById(`pause-${key}`).remove();
 	}
 }
 
@@ -486,10 +458,7 @@ function countdownAll() {
 			if (arr[i].timepast < arr[i].interval && !arr[i].paused) {
 				arr[i].timepast++;
 			}
-			if (
-				arr[i].timepast == arr[i].interval &&
-				arr[i].finished !== true
-			) {
+			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				if (!quicktest) playSound();
 				arr[i].finished = true;
 			}
@@ -497,7 +466,7 @@ function countdownAll() {
 		}
 		if (!detectAnyActive()) {
 			stopit();
-		}
+		},
 	}, 1000); // run every second/1000ms
 
 	function stopit() {
