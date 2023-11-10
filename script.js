@@ -264,7 +264,7 @@ function removeTask(key) {
 
 if (quicktest) {
 	document.body.classList.add('quicktest');
-	clean_btn.addEventListener('click', function() {
+	clean_btn.addEventListener('click', function () {
 		clearLocalStorage();
 	});
 }
@@ -466,7 +466,7 @@ function countdownAll() {
 		}
 		if (!detectAnyActive()) {
 			stopit();
-		},
+		}
 	}, 1000); // run every second/1000ms
 
 	function stopit() {
