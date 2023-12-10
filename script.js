@@ -34,7 +34,10 @@ let cachedTasks = getTasks(); // null on clean localstorage
 
 function updateTasks(arr) {
 	localStorage.setItem('timerTasks', JSON.stringify(arr));
-	if ((detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') || arr.length === 0) {
+	if (
+		(detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') ||
+		arr.length === 0
+	) {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
 	}
@@ -117,7 +120,8 @@ function settingsFormSubmit(data) {
 		intervalUnitName: '',
 		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTaskInterval:
-			Number(data.get('settings_form_quickTaskInterval')) * Number(data.get('settings_form_intervalUnit')),
+			Number(data.get('settings_form_quickTaskInterval')) *
+			Number(data.get('settings_form_intervalUnit')),
 		quickTaskName: data.get('settings_form_quickTaskName'),
 		quickTaskDescr: data.get('settings_form_quickTaskDescr'),
 	};
@@ -162,7 +166,10 @@ function ecForm(what) {
 }
 
 function taskFormRenderTweaks() {
-	task_new_interval.setAttribute('placeholder', 'Interval time in ' + getSettings().intervalUnitName + '...');
+	task_new_interval.setAttribute(
+		'placeholder',
+		'Interval time in ' + getSettings().intervalUnitName + '...'
+	);
 }
 taskFormRenderTweaks();
 
