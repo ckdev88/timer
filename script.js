@@ -66,7 +66,7 @@ if (quicktest) {
 		intervalUnit: 60, // in seconds
 		intervalUnitName: '',
 		countDown: true, // true: show time remaining, false: show time passed
-		quickTaskInterval: 35 * 60, // totals value multiplied by value of settings.intervalUnit
+		quickTaskInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
 		quickTaskName: 'Stretch',
 		quickTaskDescr: 'Eat, walk, pushup, drink, some or all.',
 	};
