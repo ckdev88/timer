@@ -207,7 +207,9 @@ function addQuickTask() {
 function addTask(name, description, interval) {
 	let settings = getSettings();
 	let arr = [];
+	const starttime = getCurrentTimeSimple();
 	arr = getTasks();
+
 	arr.push({
 		name: name,
 		descr: description,
@@ -217,6 +219,7 @@ function addTask(name, description, interval) {
 		timepast: 0,
 		paused: false,
 		finished: false,
+		starttime: starttime,
 	});
 	updateTasks(arr);
 	renderTasks(arr);
@@ -240,6 +243,7 @@ function pauseTaskToggle(key) {
 			intervalUnitName: arr[i].intervalUnitName,
 			paused: arr[i].paused,
 			finished: arr[i].finished,
+			// starttime: arr[i].starttime,
 		});
 	}
 	updateTasks(newarr);
@@ -263,6 +267,7 @@ function removeTask(key) {
 			intervalUnitName: arr[i].intervalUnitName,
 			paused: arr[i].paused,
 			finished: arr[i].finished,
+			starttime: arr[i].starttime,
 		});
 	}
 	updateTasks(newarr);
@@ -300,6 +305,7 @@ function renderTask(i, key) {
 	el.appendChild(renderTaskElement('h3', 'task-name', i.name));
 	el.appendChild(renderTaskElement('div', 'task-descr', i.descr));
 	el.appendChild(
+		// first part of visual countdown: Time left/passed: xxx ...
 		renderTaskElement(
 			'div',
 			'task-countdown-current',
@@ -311,6 +317,7 @@ function renderTask(i, key) {
 	);
 
 	el.appendChild(
+		// second part of visual countdown: ... / xxx seconds/minutes
 		renderTaskElement(
 			'div',
 			'task-countdown-total',
@@ -321,6 +328,7 @@ function renderTask(i, key) {
 			i.intervalUnitName
 		)
 	);
+	el.appendChild(renderTaskElement('div', 'starttime', 'Starting time: ' + i.starttime));
 	let el2 = document.createElement('div');
 	el2.className = 'buttons';
 	if (!i.finished) el2.appendChild(pauseTaskToggleLink(key, !i.paused));
@@ -427,13 +435,13 @@ function resetTaskLink(key) {
 function resetTask(key) {
 	let arr = getTasks();
 	arr[key].timepast = 0;
+	arr[key].starttime = getCurrentTimeSimple();
 	arr[key].finished = false;
 	updateTasks(arr);
 	renderTasks(arr);
 }
 
 // ----------------------------- DETECTIONS
-
 function detectAnyFinished(arr = getTasks()) {
 	for (i of arr) {
 		if (i.finished) return true;
@@ -485,6 +493,17 @@ function countdownAll() {
 function playSound() {
 	const siren = new Audio('siren1.wav');
 	siren.play();
+}
+
+// ----------------------------- MISC METHODS
+
+function getCurrentTimeSimple() {
+	const now = new Date();
+	let hours = now.getHours().toString();
+	let minutes = now.getMinutes().toString();
+	hours = !hours.slice(1) ? '0' + hours : hours;
+	minutes = !minutes.slice(1) ? '0' + minutes : minutes;
+	return hours + ':' + minutes;
 }
 
 // ----------------------------- BACKGROUND... LITERALLY
