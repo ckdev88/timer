@@ -151,10 +151,12 @@ function updateSettings(arr) {
 // ----------------------------- ADD TASKS - FORM
 
 task_new_btn.addEventListener('click', () => {
-	task_new_form.className == 'dblock' ? ecForm('collapse') : ecForm('expand');
+	task_new_form.className == 'dblock'
+		? expandCollapseForm('collapse')
+		: expandCollapseForm('expand');
 });
 
-function ecForm(what) {
+function expandCollapseForm(what) {
 	if (what == 'expand') {
 		task_new_btn.classList.replace('collapsed', 'expanded');
 		task_new_form.className = 'dblock';
