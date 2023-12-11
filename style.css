@@ -43,7 +43,7 @@ body {
 #backdrop.pause {
 	background-color: var(--pause);
 }
-#task_new_btn:after {
+#timer_new_btn:after {
 	color: dodgerblue;
 }
 #settings_btn {
@@ -55,14 +55,13 @@ body {
 	border-color: greenyellow;
 }
 #settings_form .form-name {
-	text-align: right;
 	color: greenyellow;
 }
-.task {
+.timer {
 	padding: 1rem;
 	margin: -1rem;
 }
-.task-name {
+.timer-name {
 	margin: 0;
 	padding: 0;
 	font-weight: 800;
@@ -152,7 +151,7 @@ form.dblock {
 	height: 100%;
 }
 /* --------------------------- / FORM & INPUT */
-.task button {
+.timer button {
 	margin-bottom: 0;
 }
 a,
@@ -202,15 +201,15 @@ button.text-btn.expanded2:before {
 	margin: 0 auto;
 	position: relative;
 }
-.task {
+.timer {
 	border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
 	margin-top: 0;
 	margin-bottom: 0;
 }
-.task.paused {
+.timer.paused {
 	background-color: #333;
 }
-.task.finished {
+.timer.finished {
 	background-color: transparent;
 	animation: blink-finished 2s infinite;
 }
@@ -225,19 +224,19 @@ button.text-btn.expanded2:before {
 		background-color: transparent;
 	}
 }
-.task .buttons {
+.timer .buttons {
 	justify-content: flex-start;
 }
-.task .buttons button {
+.timer .buttons button {
 	padding: 0;
 	margin-left: 0;
 	margin-right: 1.6rem;
 }
-.task .buttons .text-btn {
+.timer .buttons .text-btn {
 	display: flex;
 	align-items: center;
 }
-.task .buttons .text-btn::before {
+.timer .buttons .text-btn::before {
 	content: '';
 	display: block;
 	float: left;
@@ -246,10 +245,10 @@ button.text-btn.expanded2:before {
 	bottom: 0.5em;
 	line-height: 1em;
 }
-.task .buttons .text-btn.pause {
+.timer .buttons .text-btn.pause {
 	margin-left: -0.1rem;
 }
-.task .buttons .text-btn.pause::before {
+.timer .buttons .text-btn.pause::before {
 	content: '=';
 	transform: rotate(90deg);
 	font-weight: 800;
@@ -258,7 +257,7 @@ button.text-btn.expanded2:before {
 	padding-right: 0.15em;
 	margin-bottom: -0.2em;
 }
-.task .buttons .resume::before {
+.timer .buttons .resume::before {
 	background: transparent;
 	content: ' ';
 	width: 0;
@@ -271,25 +270,25 @@ button.text-btn.expanded2:before {
 	border-left: 0.5em solid greenyellow;
 	border-top: 0.3em solid transparent;
 }
-.task .buttons button.text-btn.reset::before {
+.timer .buttons button.text-btn.reset::before {
 	content: '↺';
 	font-weight: bold;
 }
 .buttons .text-btn:hover {
 	text-decoration: underline;
 }
-.task .buttons button.text-btn.remove::before {
+.timer .buttons button.text-btn.remove::before {
 	content: 'x';
 	font-size: 0.9em;
 	margin-top: 0.1em;
 	font-weight: 800;
 }
-#task_new_form {
+#timer_new_form {
 	border-width: 0 0 0 2px;
 	border-color: dodgerblue;
 	padding-left: 0.6rem;
 }
-#task_new_form .form-name {
+#timer_new_form .form-name {
 	color: dodgerblue;
 }
 .buttons {
@@ -317,7 +316,7 @@ button.text-btn.white,
 .quicktest h2 {
 	display: none;
 }
-.task-countdown-current,
-.task-countdown-total {
+.timer-countdown-current,
+.timer-countdown-total {
 	display: inline-block;
 }
