@@ -22,7 +22,8 @@ html {
 body {
 	min-width: calc(320px + 1rem);
 }
-h2 {
+.form-name {
+	font-weight: 800;
 	margin-top: 0;
 	margin-bottom: 0;
 	font-size: 1.2em;
@@ -49,11 +50,11 @@ h2 {
 	color: greenyellow;
 }
 #settings_form {
-	border-right: 2px dashed greenyellow;
-	margin-right: -0.6rem;
 	padding-right: 0.6rem;
+	border-width: 0 2px 0 0;
+	border-color: greenyellow;
 }
-#settings_form h2 {
+#settings_form .form-name {
 	text-align: right;
 	color: greenyellow;
 }
@@ -65,10 +66,6 @@ h2 {
 	margin: 0;
 	padding: 0;
 	font-weight: 800;
-}
-form {
-	padding-bottom: 0.25rem;
-	margin-bottom: 1em;
 }
 body,
 input,
@@ -88,27 +85,18 @@ select {
 		'Helvetica Neue',
 		sans-serif;
 }
-select {
-	padding-left: 0;
-	padding-right: 0;
-}
-option {
-	padding-left: 0;
-	padding-right: 0;
-	margin-left: 0;
-	margin-right: 0;
-}
 button,
 a.btn,
 input[type='submit'] {
 	cursor: pointer;
-	background: lime;
+	background: greenyellow;
 	color: black;
 	font-weight: bold;
 }
 label {
 	cursor: pointer;
 }
+/* --------------------------- FORM & INPUT */
 input[type='text'],
 textarea,
 input[type='number'],
@@ -122,8 +110,12 @@ select {
 	display: block;
 	border: 1px solid #e1e1e1;
 }
-.task button {
-	margin-bottom: 0;
+select,
+input[type='text'],
+textarea,
+input[type='number'] {
+	width: 100%;
+	display: block;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
@@ -131,15 +123,6 @@ select {
 		padding-left: 0.4rem;
 		padding-right: 0.4rem;
 	}
-}
-select {
-	width: 100%;
-	max-width: 100%;
-}
-input[type='text'],
-textarea,
-input[type='number'] {
-	width: 100%;
 }
 input[type='text'],
 textarea,
@@ -150,11 +133,33 @@ label {
 textarea {
 	height: 5em;
 }
+form {
+	height: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition-delay: 0.02s;
+	transition-timing-function: ease;
+	transition-duration: 0.3s;
+	transition-property: opacity;
+	border-style: dashed;
+}
+
+/* --------------------------- form exceptions */
+
+form.dblock {
+	visibility: visible;
+	opacity: 1;
+	height: 100%;
+}
+/* --------------------------- / FORM & INPUT */
+.task button {
+	margin-bottom: 0;
+}
 a,
 button.text-btn,
 .btn.text-btn,
 button.icon {
-	color: lime;
+	color: greenyellow;
 	background: transparent;
 	border: 0;
 }
@@ -241,7 +246,6 @@ button.text-btn.expanded2:before {
 	bottom: 0.5em;
 	line-height: 1em;
 }
-
 .task .buttons .text-btn.pause {
 	margin-left: -0.1rem;
 }
@@ -264,50 +268,33 @@ button.text-btn.expanded2:before {
 	background-color: transparent;
 	border-right: 0.5em solid transparent;
 	border-bottom: 0.3em solid transparent;
-	border-left: 0.5em solid lime;
+	border-left: 0.5em solid greenyellow;
 	border-top: 0.3em solid transparent;
 }
-
 .task .buttons button.text-btn.reset::before {
 	content: '↺';
 	font-weight: bold;
 }
-
 .buttons .text-btn:hover {
 	text-decoration: underline;
 }
-
 .task .buttons button.text-btn.remove::before {
 	content: 'x';
 	font-size: 0.9em;
 	margin-top: 0.1em;
 	font-weight: 800;
 }
-
 #task_new_form {
-	width: 100%;
-	max-width: 100%;
-	border-left: 2px dashed dodgerblue;
+	border-width: 0 0 0 2px;
+	border-color: dodgerblue;
 	padding-left: 0.6rem;
-	margin-left: -0.6rem;
 }
-#task_new_form h2 {
+#task_new_form .form-name {
 	color: dodgerblue;
-}
-#task_new_form input[type='text'],
-#task_new_form input[type='number'],
-#task_new_form textarea {
-	display: block;
 }
 .buttons {
 	display: flex;
 	justify-content: space-between;
-}
-.dnone {
-	display: none;
-}
-.dblock {
-	display: block;
 }
 .white,
 a.white,
