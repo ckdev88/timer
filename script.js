@@ -92,6 +92,8 @@ function settingsForm(what) {
 	if (what == 'expand') {
 		settings_btn.classList.replace('collapsed2', 'expanded2');
 		settings_form.className = 'dblock';
+		task_new_form.className = 'dnone';
+		task_new_btn.classList.replace('expanded', 'collapsed');
 	}
 	if (what == 'collapse') {
 		settings_btn.classList.replace('expanded2', 'collapsed2');
@@ -160,6 +162,8 @@ function expandCollapseForm(what) {
 	if (what == 'expand') {
 		task_new_btn.classList.replace('collapsed', 'expanded');
 		task_new_form.className = 'dblock';
+		settings_form.className = 'dnone';
+		settings_btn.classList.replace('expanded2', 'collapsed2');
 	}
 	if (what === 'collapse') {
 		task_new_form.className = 'dnone';
@@ -401,12 +405,14 @@ function countdownTimer(key, id) {
 function pauseTaskToggleLink(key, paused = false) {
 	let el = d.createElement('button');
 	el.className = 'text';
+	el.classList.add('pause');
 	if (paused === true) {
 		el.innerHTML = 'pause';
 		el.id = 'pause-' + key;
 	} else {
 		el.innerHTML = 'resume';
 		el.id = 'resume-' + key;
+		el.classList.replace('pause', 'resume');
 	}
 	el.addEventListener('click', () => pauseTaskToggle(key));
 	return el;
@@ -415,7 +421,7 @@ function pauseTaskToggleLink(key, paused = false) {
 function removeTaskLink(key) {
 	let el = d.createElement('button');
 	el.innerHTML = 'remove task';
-	el.className = 'text ctacolor2';
+	el.className = 'text ctacolor2 remove';
 	el.id = 'del-' + key;
 	el.addEventListener('click', () => {
 		removeTask(key);
@@ -427,6 +433,7 @@ function resetTaskLink(key) {
 	let el = d.createElement('button');
 	el.innerHTML = 'reset';
 	el.className = 'text';
+	el.classList.add('reset');
 	el.id = 'reset-' + key;
 	el.addEventListener('click', () => {
 		resetTask(key);
