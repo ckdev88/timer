@@ -12,9 +12,9 @@
 		<div id="backdrop"></div>
 		<div id="wrapper">
 			<div class="buttons">
-				<button id="task_new_btn" class="text white expanded">New task</button>
-				<button id="settings_btn" class="text collapsed2">⚙</button>
-				<button id="clean_btn" class="text">x</button>
+				<button id="task_new_btn" class="text-btn white expanded">New task</button>
+				<button id="settings_btn" class="text-btn collapsed2">⚙</button>
+				<button id="clean_btn" class="text-btn">x</button>
 			</div>
 
 			<form id="settings_form" class="dnone">
@@ -48,8 +48,18 @@
 			</form>
 			<form id="task_new_form" class="dblock">
 				<h2>New task</h2>
-				<input id="new_task_name" name="task_name" type="text" placeholder="Task name..." required />
-				<textarea id="new_task_description" name="task_description" placeholder="Description..."></textarea>
+				<input
+					id="new_task_name"
+					name="task_name"
+					type="text"
+					placeholder="Task name..."
+					required
+				/>
+				<textarea
+					id="new_task_description"
+					name="task_description"
+					placeholder="Description..."
+				></textarea>
 				<input
 					id="new_task_interval"
 					name="task_interval"
@@ -59,7 +69,9 @@
 				/>
 				<div class="buttons">
 					<input type="submit" value="Create task" />
-					<a href="javascript:void(0)" id="task_new_quick" class="btn text white">New quick task</a>
+					<a href="javascript:void(0)" id="task_new_quick" class="btn text-btn white"
+						>New quick task</a
+					>
 				</div>
 			</form>
 			<div id="task_container"></div>

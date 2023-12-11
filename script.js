@@ -249,7 +249,7 @@ function pauseTaskToggle(key) {
 			intervalUnitName: arr[i].intervalUnitName,
 			paused: arr[i].paused,
 			finished: arr[i].finished,
-			// starttime: arr[i].starttime,
+			starttime: arr[i].starttime,
 		});
 	}
 	updateTasks(newarr);
@@ -307,6 +307,8 @@ function renderTask(i, key) {
 	let settings = getSettings();
 	let el = d.createElement('div');
 	el.className = 'task';
+	if (i.paused) el.classList.add('paused');
+	else if (i.finished) el.classList.add('finished');
 	el.id = 'task-' + key;
 	el.appendChild(renderTaskElement('h3', 'task-name', i.name));
 	el.appendChild(renderTaskElement('div', 'task-descr', i.descr));
@@ -404,7 +406,7 @@ function countdownTimer(key, id) {
 
 function pauseTaskToggleLink(key, paused = false) {
 	let el = d.createElement('button');
-	el.className = 'text';
+	el.className = 'text-btn';
 	el.classList.add('pause');
 	if (paused === true) {
 		el.innerHTML = 'pause';
@@ -421,7 +423,7 @@ function pauseTaskToggleLink(key, paused = false) {
 function removeTaskLink(key) {
 	let el = d.createElement('button');
 	el.innerHTML = 'remove task';
-	el.className = 'text ctacolor2 remove';
+	el.className = 'text-btn remove';
 	el.id = 'del-' + key;
 	el.addEventListener('click', () => {
 		removeTask(key);
@@ -432,7 +434,7 @@ function removeTaskLink(key) {
 function resetTaskLink(key) {
 	let el = d.createElement('button');
 	el.innerHTML = 'reset';
-	el.className = 'text';
+	el.className = 'text-btn';
 	el.classList.add('reset');
 	el.id = 'reset-' + key;
 	el.addEventListener('click', () => {
