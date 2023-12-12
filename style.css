@@ -46,6 +46,18 @@ body {
 #timer_new_btn:after {
 	color: dodgerblue;
 }
+#timer_new_quick {
+	display: block;
+}
+#timer_new_quick::before {
+	/*★ ☆ */
+	content: '⚡';
+	color: white;
+	display: block;
+	float: left;
+	width: 1em;
+	height: auto;
+}
 #settings_btn {
 	color: greenyellow;
 }
@@ -155,10 +167,12 @@ form {
 	margin-top: -0.3rem;
 	margin-bottom: -0.3rem;
 }
-#new_timer_interval {
+#new_timer_interval,
+#settings_form_quickTimerInterval {
 	max-width: 40%;
 }
-#new_timer_intervalUnit {
+#new_timer_intervalUnit,
+#settings_form_intervalUnit {
 	max-width: calc(60% - 0.3rem);
 }
 
