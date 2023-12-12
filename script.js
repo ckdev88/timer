@@ -21,7 +21,6 @@ const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr');
 const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterval');
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
-
 const backdrop = d.getElementById('backdrop');
 
 function getTimers() {
@@ -81,7 +80,6 @@ if (localStorage.getItem('settings') === null) {
 }
 const getSettings = () => JSON.parse(localStorage.getItem('settings'));
 const settings = getSettings();
-
 // ----------------------------- CONFIGURE SETTINGS
 
 settings_btn.addEventListener('click', () => {
@@ -143,13 +141,13 @@ function selectOption(el, option) {
 	for (let i = 0; i < el.options.length; i++) {
 		if (el.options[i].getAttribute('value') == option) {
 			el.options[i].setAttribute('selected', 'selected');
-		}
+		} else el.options[i].removeAttribute('selected');
 	}
 }
 
 function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr));
-	timerFormRenderTweaks();
+	selectOption(timer_new_intervalUnit, getSettings().intervalUnit);
 	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
@@ -157,6 +155,7 @@ function updateSettings(arr) {
 }
 
 // ----------------------------- ADD TASKS - FORM
+selectOption(timer_new_intervalUnit, settings.intervalUnit);
 
 timer_new_btn.addEventListener('click', () => {
 	timer_new_form.className == 'dblock'
@@ -177,11 +176,6 @@ function expandCollapseForm(what) {
 	}
 }
 
-function timerFormRenderTweaks() {
-	timer_new_interval.setAttribute('placeholder', 'Time...');
-}
-timerFormRenderTweaks();
-
 timer_new_form.addEventListener('submit', (e) => {
 	e.preventDefault();
 	var data = new FormData(timer_new_form);
@@ -191,7 +185,7 @@ timer_new_form.addEventListener('submit', (e) => {
 function timerFormSubmit(data) {
 	// console.log('settings before:', getSettings());
 
-	//change some default settings first, to use for the next to be added timer
+	//change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'));
 		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit));
