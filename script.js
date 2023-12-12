@@ -122,7 +122,7 @@ function getIntervalUnitName(num) {
 	return 'minutes';
 }
 function settingsFormSubmit(data) {
-	let settings = {
+	settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
 		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
@@ -133,6 +133,7 @@ function settingsFormSubmit(data) {
 		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
 	};
 	updateSettings(settings);
+	delete settings;
 }
 
 function selectOption(el, option) {
@@ -215,7 +216,7 @@ function addQuickTimer() {
 
 function addTimer(name, description, interval) {
 	let settings = getSettings();
-	let arr = [];
+	arr = [];
 	const starttime = getCurrentTimeSimple();
 	arr = getTimers();
 
@@ -232,13 +233,14 @@ function addTimer(name, description, interval) {
 	});
 	updateTimers(arr);
 	renderTimers(arr);
+	delete arr;
 }
 
 // ----------------------------- PAUSE/RESUME TASK
 
 function pauseTimerToggle(key) {
-	let arr = getTimers();
-	let newarr = [];
+	arr = getTimers();
+	var newarr = [];
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) {
 			arr[i].paused = !arr[i].paused;
@@ -255,16 +257,20 @@ function pauseTimerToggle(key) {
 			starttime: arr[i].starttime,
 		});
 	}
+
 	updateTimers(newarr);
 	renderTimers(newarr);
+
+	delete arr;
+	delete newarr;
 }
 
 // ----------------------------- REMOVE TASKS
 
 function removeTimer(key) {
-	let arr = getTimers();
+	arr = getTimers();
 
-	let newarr = [];
+	var newarr = [];
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) continue; // rebuild with all timers, but skip the specified one
 		newarr.push({
@@ -279,8 +285,12 @@ function removeTimer(key) {
 			starttime: arr[i].starttime,
 		});
 	}
+
 	updateTimers(newarr);
 	renderTimers(newarr);
+
+	delete arr;
+	delete newarr;
 }
 
 if (quicktest) {
@@ -297,7 +307,6 @@ function clearLocalStorage() {
 }
 
 // ----------------------------- RENDER TASKS - MAIN
-
 function renderTimers(arr) {
 	timer_container.innerHTML = '';
 	for (let i = 0; i < arr.length; i++) {
@@ -311,7 +320,6 @@ function renderTimer(i, key) {
 	let el = d.createElement('div');
 	el.className = 'timer';
 	if (i.paused) el.classList.add('paused');
-	else if (i.finished) el.classList.add('finished');
 	el.id = 'timer-' + key;
 	el.appendChild(renderTimerElement('h3', 'timer-name', i.name));
 	el.appendChild(renderTimerElement('div', 'timer-descr', i.descr));
@@ -367,8 +375,8 @@ function renderTimerElement(
 		let i = getTimers()[key];
 		content =
 			settings.countDown === true
-				? Math.round((i.interval - i.timepast) / i.intervalUnit)
-				: Math.round(i.timepast / i.intervalUnit);
+				? (i.interval - i.timepast) / i.intervalUnit
+				: i.timepast / i.intervalUnit;
 	}
 
 	timerEl.innerHTML = contentPrefix + content + ' ' + contentSuffix;
@@ -380,7 +388,8 @@ function renderTimerElement(
 
 function countdownTimer(key, id) {
 	// individual per timer
-	const lb = setInterval(() => {
+	var lb = setInterval(() => {
+		if (getTimers()[key].paused === true) stopit();
 		if (d.getElementById(id)) {
 			let settings = getSettings();
 			if (settings.countDown) cPrefix = 'Time left: ';
@@ -392,18 +401,20 @@ function countdownTimer(key, id) {
 			if (arr[key].timepast === arr[key].interval) {
 				stopit();
 			}
-			if (settings.countDown) {
-				let timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
-				c.innerHTML = cPrefix + timeleft;
-			} else {
-				let timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
-				c.innerHTML = cPrefix + timepast;
+			if (arr[key].paused === true) console.log('arr paused');
+			else {
+				if (settings.countDown) {
+					timeleft = (arr[key].interval - arr[key].timepast) / arr[key].intervalUnit;
+					c.innerHTML = cPrefix + timeleft;
+				} else {
+					timepast = arr[key].timepast / arr[key].intervalUnit;
+					c.innerHTML = cPrefix + timepast;
+				}
 			}
 		}
 	}, 1000);
 	function stopit() {
 		clearInterval(lb);
-		if (d.getElementById(`pause-${key}`) !== null) d.getElementById(`pause-${key}`).remove();
 	}
 }
 
@@ -458,13 +469,13 @@ function resetTimer(key) {
 // ----------------------------- DETECTIONS
 function detectAnyFinished(arr = getTimers()) {
 	for (i of arr) {
-		if (i.finished) return true;
+		if (i.finished === true) return true;
 	}
 }
 
 function detectAnyPaused(arr = getTimers()) {
 	for (i of arr) {
-		if (i.paused) return true;
+		if (i.paused === true) return true;
 	}
 }
 
@@ -483,8 +494,10 @@ function detectAnyActive(arr = getTimers()) {
 function countdownAll() {
 	const lb = setInterval(() => {
 		let arr = getTimers();
+		console.log('amount of timers', arr.length);
 		for (let i = 0; i < arr.length; i++) {
-			if (arr[i].timepast < arr[i].interval && !arr[i].paused) {
+			if (arr[i].paused === true) continue;
+			if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
 				arr[i].timepast++;
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
