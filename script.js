@@ -122,7 +122,7 @@ function getIntervalUnitName(num) {
 	return 'minutes';
 }
 function settingsFormSubmit(data) {
-	settings = {
+	var settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
 		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
@@ -375,8 +375,8 @@ function renderTimerElement(
 		let i = getTimers()[key];
 		content =
 			settings.countDown === true
-				? (i.interval - i.timepast) / i.intervalUnit
-				: i.timepast / i.intervalUnit;
+				? Math.round((i.interval - i.timepast) / i.intervalUnit)
+				: Math.round(i.timepast / i.intervalUnit);
 	}
 
 	timerEl.innerHTML = contentPrefix + content + ' ' + contentSuffix;
@@ -404,10 +404,10 @@ function countdownTimer(key, id) {
 			if (arr[key].paused === true) console.log('arr paused');
 			else {
 				if (settings.countDown) {
-					timeleft = (arr[key].interval - arr[key].timepast) / arr[key].intervalUnit;
+					timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
 					c.innerHTML = cPrefix + timeleft;
 				} else {
-					timepast = arr[key].timepast / arr[key].intervalUnit;
+					timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
 					c.innerHTML = cPrefix + timepast;
 				}
 			}
