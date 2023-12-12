@@ -547,3 +547,7 @@ function setBgStatus(status = 'normal') {
 	else if (status === 'paused') backdrop.className = 'pause';
 	else backdrop.className = 'default';
 }
+
+// ----------------------------- LANGUAGE DETECTION & SELECTION
+var lang = 'en';
+if (navigator.language.substring(0, 2) == 'pt') lang = 'pt';

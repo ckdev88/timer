@@ -67,7 +67,7 @@ body {
 	border-color: greenyellow;
 }
 #settings_form .form-name {
-	color: greenyellow;
+	color: lightsteelblue;
 }
 .timer {
 	padding: 1rem;
@@ -234,6 +234,9 @@ button.text-btn.expanded2:before {
 	margin: 0 auto;
 	position: relative;
 }
+#timer_container {
+	padding-top: 1rem;
+}
 .timer {
 	border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
 	margin-top: 0;
@@ -322,7 +325,7 @@ button.text-btn.expanded2:before {
 	padding-left: 0.6rem;
 }
 #timer_new_form .form-name {
-	color: dodgerblue;
+	color: lightsteelblue;
 }
 .buttons {
 	display: flex;
