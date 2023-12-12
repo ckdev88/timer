@@ -124,7 +124,7 @@ function getIntervalUnitName(num) {
 function settingsFormSubmit(data) {
 	let settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
-		intervalUnitName: '',
+		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTimerInterval:
 			Number(data.get('settings_form_quickTimerInterval')) *
@@ -132,7 +132,6 @@ function settingsFormSubmit(data) {
 		quickTimerName: data.get('settings_form_quickTimerName'),
 		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
 	};
-	settings.intervalUnitName = getIntervalUnitName(settings.intervalUnit);
 	updateSettings(settings);
 }
 
@@ -183,15 +182,12 @@ timer_new_form.addEventListener('submit', (e) => {
 });
 
 function timerFormSubmit(data) {
-	// console.log('settings before:', getSettings());
-
 	//change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'));
 		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit));
 	}
 	updateSettings(settings);
-	// console.log('settings after:', getSettings());
 
 	addTimer(
 		data.get('timer_name'),
