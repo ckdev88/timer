@@ -178,10 +178,7 @@ function expandCollapseForm(what) {
 }
 
 function timerFormRenderTweaks() {
-	timer_new_interval.setAttribute(
-		'placeholder',
-		'Time... (' + getSettings().intervalUnitName + ')'
-	);
+	timer_new_interval.setAttribute('placeholder', 'Time...');
 }
 timerFormRenderTweaks();
 
