@@ -109,6 +109,10 @@ select {
 	display: block;
 	border: 1px solid #e1e1e1;
 }
+select {
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+}
 select,
 input[type='text'],
 textarea,
@@ -157,10 +161,6 @@ form {
 #new_timer_intervalUnit {
 	max-width: calc(60% - 0.3rem);
 }
-/* .form-inputs-wrapper input, */
-/* .form-inputs-wrapper select { */
-/* 	margin: 1em; */
-/* } */
 
 form.dblock {
 	visibility: visible;
