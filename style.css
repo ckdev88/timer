@@ -143,7 +143,24 @@ form {
 	border-style: dashed;
 }
 
-/* --------------------------- form exceptions */
+/* --------------------------- form class definitions */
+
+.form-inputs-wrapper {
+	display: flex;
+	justify-content: space-between;
+	margin-top: -0.3rem;
+	margin-bottom: -0.3rem;
+}
+#new_timer_interval {
+	max-width: 40%;
+}
+#new_timer_intervalUnit {
+	max-width: calc(60% - 0.3rem);
+}
+/* .form-inputs-wrapper input, */
+/* .form-inputs-wrapper select { */
+/* 	margin: 1em; */
+/* } */
 
 form.dblock {
 	visibility: visible;
@@ -194,6 +211,8 @@ button.text-btn.collapsed2:before,
 button.text-btn.expanded2:before {
 	margin-right: 0.6em;
 }
+
+/* --------------------------- general class definitions */
 #wrapper {
 	max-width: 320px;
 	min-width: 300px;

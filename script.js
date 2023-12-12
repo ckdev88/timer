@@ -9,6 +9,7 @@ const timer_new_form = d.getElementById('timer_new_form');
 const timer_new_name = d.getElementById('new_timer_name');
 const timer_new_description = d.getElementById('new_timer_description');
 const timer_new_interval = d.getElementById('new_timer_interval');
+const timer_new_intervalUnit = d.getElementById('new_timer_intervalUnit');
 const timer_new_quick = d.getElementById('timer_new_quick');
 const timer_container = d.getElementById('timer_container');
 const settings_btn = d.getElementById('settings_btn');
@@ -72,8 +73,7 @@ if (quicktest) {
 	};
 }
 
-if (settings_d.intervalUnit === 60) settings_d.intervalUnitName = 'minutes';
-else if (settings_d.intervalUnit === 1) settings_d.intervalUnitName = 'seconds';
+settings_d.intervalUnitName = getIntervalUnitName(settings_d.intervalUnit);
 
 if (localStorage.getItem('settings') === null) {
 	localStorage.setItem('settings', []);
@@ -119,6 +119,10 @@ settings_form.addEventListener('submit', (e) => {
 	settingsFormSubmit(data);
 });
 
+function getIntervalUnitName(num) {
+	if (num === 1) return 'seconds';
+	return 'minutes';
+}
 function settingsFormSubmit(data) {
 	let settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
@@ -130,8 +134,7 @@ function settingsFormSubmit(data) {
 		quickTimerName: data.get('settings_form_quickTimerName'),
 		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
 	};
-	if (settings.intervalUnit === 60) settings.intervalUnitName = 'minutes';
-	else if (settings.intervalUnit === 1) settings.intervalUnitName = 'seconds';
+	settings.intervalUnitName = getIntervalUnitName(settings.intervalUnit);
 	updateSettings(settings);
 }
 
@@ -177,7 +180,7 @@ function expandCollapseForm(what) {
 function timerFormRenderTweaks() {
 	timer_new_interval.setAttribute(
 		'placeholder',
-		'Interval time in ' + getSettings().intervalUnitName + '...'
+		'Time... (' + getSettings().intervalUnitName + ')'
 	);
 }
 timerFormRenderTweaks();
@@ -189,10 +192,20 @@ timer_new_form.addEventListener('submit', (e) => {
 });
 
 function timerFormSubmit(data) {
+	// console.log('settings before:', getSettings());
+
+	//change some default settings first, to use for the next to be added timer
+	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
+		settings.intervalUnit = Number(data.get('timer_intervalUnit'));
+		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit));
+	}
+	updateSettings(settings);
+	// console.log('settings after:', getSettings());
+
 	addTimer(
 		data.get('timer_name'),
 		data.get('timer_description'),
-		data.get('timer_interval') * getSettings().intervalUnit
+		data.get('timer_interval') * Number(data.get('timer_intervalUnit'))
 	);
 	cleanForm();
 }
@@ -425,7 +438,7 @@ function pauseTimerToggleLink(key, paused = false) {
 
 function removeTimerLink(key) {
 	let el = d.createElement('button');
-	el.innerHTML = 'remove timer';
+	el.innerHTML = 'remove';
 	el.className = 'text-btn remove';
 	el.id = 'del-' + key;
 	el.addEventListener('click', () => {

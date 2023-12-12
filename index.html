@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>Timer Mega Ultra</title>
+		<title>Timer</title>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link href="style.css" rel="stylesheet" />
 		<link rel="icon" href="img/favicon-32.png" />
+		<meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+		<!-- TODO add later to
+singlify tasks; this would be only to please evil Google though ... needs a bit more examination -->
 	</head>
 
 	<body>
@@ -48,25 +51,29 @@
 			</form>
 			<form id="timer_new_form" class="dblock">
 				<h2 class="form-name">New timer</h2>
-				<input
-					id="new_timer_name"
-					name="timer_name"
-					type="text"
-					placeholder="Timer name..."
-					required
-				/>
+				<input id="new_timer_name" name="timer_name" type="text" placeholder="Name..." required />
 				<textarea
 					id="new_timer_description"
 					name="timer_description"
 					placeholder="Description..."
 				></textarea>
-				<input
-					id="new_timer_interval"
-					name="timer_interval"
-					type="number"
-					placeholder="Interval time..."
-					required
-				/>
+				<div class="form-inputs-wrapper">
+					<input
+						id="new_timer_interval"
+						name="timer_interval"
+						type="number"
+						placeholder="Time..."
+						required
+					/>
+					<select id="new_timer_intervalUnit" name="timer_intervalUnit">
+						<option value="1">Seconds</option>
+						<option value="60">Minutes</option>
+					</select>
+				</div>
+				<!-- <select id="settings_form_countDown" name="settings_form_countDown"> -->
+				<!-- 	<option value="true">Count down to 0</option> -->
+				<!-- 	<option value="">Count up to timer value</option> -->
+				<!-- </select> -->
 				<div class="buttons">
 					<input type="submit" value="Create timer" />
 					<a href="javascript:void(0)" id="timer_new_quick" class="btn text-btn white"
