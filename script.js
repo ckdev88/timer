@@ -182,7 +182,7 @@ timer_new_form.addEventListener('submit', (e) => {
 });
 
 function timerFormSubmit(data) {
-	//change some default settings first
+	// change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'));
 		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit));
@@ -488,8 +488,9 @@ function countdownAll() {
 				arr[i].timepast++;
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-				if (!quicktest) playSound();
 				arr[i].finished = true;
+				d.getElementById('timer-' + i).classList.add('finished');
+				if (!quicktest) playSound();
 			}
 			updateTimers(arr);
 		}
