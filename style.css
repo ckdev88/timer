@@ -195,8 +195,8 @@ button.icon {
 }
 button.text-btn,
 .btn.text-btn {
-	margin-left: -0.6rem;
-	margin-right: -0.6rem;
+	margin-left: -0.7rem;
+	margin-right: -0.7rem;
 	display: inline-block;
 }
 button.text-btn:after {
@@ -206,7 +206,7 @@ button.text-btn.expanded::after,
 button.text-btn.collapsed::after,
 button.text-btn.expanded2::before,
 button.text-btn.collapsed2::before {
-	font-size: 0.6em;
+	font-size: 0.7em;
 	display: inline-block;
 }
 button.text-btn.collapsed::after,
@@ -219,11 +219,11 @@ button.text-btn.expanded2::before {
 }
 button.text-btn.expanded:after,
 button.text-btn.collapsed:after {
-	margin-left: 0.6em;
+	margin-left: 0.7em;
 }
 button.text-btn.collapsed2:before,
 button.text-btn.expanded2:before {
-	margin-right: 0.6em;
+	margin-right: 0.7em;
 }
 
 /* --------------------------- general class definitions */

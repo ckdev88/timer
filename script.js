@@ -164,6 +164,8 @@ function settingsForm(what) {
 	if (what == 'collapse') {
 		settings_btn.classList.replace('expanded2', 'collapsed2');
 		settings_form.className = 'dnone';
+		timer_new_form.className = 'dblock';
+		timer_new_btn.classList.replace('collapsed', 'expanded');
 	}
 }
 
