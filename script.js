@@ -2,6 +2,7 @@
 
 // ----------------------------- GLOBAL CONSTANTS
 const quicktest = false;
+let pageInit = 1;
 
 const d = document; // abstraction for loading speed & less code
 const timer_new_btn = d.getElementById('timer_new_btn');
@@ -21,6 +22,7 @@ const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr');
 const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterval');
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
+const setf_language = d.getElementById('settings_form_language');
 const backdrop = d.getElementById('backdrop');
 
 function getTimers() {
@@ -47,8 +49,57 @@ if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
 }
+var translationMap = {
+	en: {
+		pause: 'pause',
+		reset: 'reset',
+		resume: 'resume',
+		remove: 'remove',
+		New_timer: 'New timer',
+		Quick_add: 'Quick add',
+		Name: 'Name',
+		Description: 'Description',
+		Time: 'Time',
+		Seconds: 'Seconds',
+		Minutes: 'Minutes',
+		Create_timer: 'Create timer',
+		General_settings: 'General settings',
+		Count_down: 'Count down to 0',
+		Count_up: 'Count up from 0',
+		Update_settings: 'Update settings',
+		Quick_add_settings: 'Quick add settings',
+		Starting_time: 'Starting time',
+		Time_left: 'Time left',
+		Time_passed: 'Tempo passado',
+	},
+	pt: {
+		pause: 'pausar',
+		reset: 'redefinir',
+		resume: 'continuar',
+		remove: 'remover',
+		New_timer: 'Novo timer',
+		Quick_add: 'Adição rápido',
+		Name: 'Nome',
+		Description: 'Descrição',
+		Time: 'Tempo',
+		Seconds: 'Segundos',
+		Minutes: 'Minutos',
+		Create_timer: 'Criar timer',
+		General_settings: 'Configurações gerais',
+		Count_down: 'Contagem regressiva até zero',
+		Count_up: 'Contagem a partir do zero',
+		Update_settings: 'Atualizar',
+		Quick_add_settings: 'Adição rápida configurações',
+		Starting_time: 'Hora de início',
+		Time_left: 'Tempo restante',
+		Time_passed: 'Tempo passado',
+	},
+};
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
+
+var language = 'en';
+if (navigator.language.substring(0, 2) == 'pt') language = 'pt';
 
 let settings_d;
 
@@ -60,6 +111,7 @@ if (quicktest) {
 		quickTimerInterval: 10, // totals value multiplied by value of settings.intervalUnit
 		quickTimerName: 'TEST MODUS TASK',
 		quickTimerDescr: '',
+		language: language,
 	};
 } else {
 	settings_d = {
@@ -68,8 +120,15 @@ if (quicktest) {
 		countDown: true, // true: show time remaining, false: show time passed
 		quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
 		quickTimerName: 'Stretch',
-		quickTimerDescr: 'Eat, walk, pushup, drink, some or all.',
+		quickTimerDescr: 'Eat, walk, push-up, drink, some or all.',
+		language: language,
 	};
+}
+
+if (!language) language = getSettings().language;
+if (language === 'pt') {
+	settings_d.quickTimerName = 'Alongar';
+	settings_d.quickTimerDescr = 'Comer, se movimentar, beber ou alguma coisa.';
 }
 
 settings_d.intervalUnitName = getIntervalUnitName(settings_d.intervalUnit);
@@ -80,6 +139,7 @@ if (localStorage.getItem('settings') === null) {
 }
 const getSettings = () => JSON.parse(localStorage.getItem('settings'));
 const settings = getSettings();
+
 // ----------------------------- CONFIGURE SETTINGS
 
 settings_btn.addEventListener('click', () => {
@@ -108,6 +168,7 @@ function settingsFormDefaults() {
 	);
 	selectOption(setf_intervalUnit, settings.intervalUnit);
 	selectOption(setf_countDown, String(settings.countDown));
+	selectOption(setf_language, settings.language);
 }
 settingsFormDefaults();
 
@@ -118,8 +179,8 @@ settings_form.addEventListener('submit', (e) => {
 });
 
 function getIntervalUnitName(num) {
-	if (num === 1) return 'seconds';
-	return 'minutes';
+	if (num === 1) return language == 'pt' ? 'segundos' : 'seconds';
+	return language === 'pt' ? 'minutos' : 'minutes';
 }
 function settingsFormSubmit(data) {
 	var settings = {
@@ -131,12 +192,27 @@ function settingsFormSubmit(data) {
 			Number(data.get('settings_form_intervalUnit')),
 		quickTimerName: data.get('settings_form_quickTimerName'),
 		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
+		language: data.get('settings_form_language'),
 	};
+	// console.log('updating settings');
+	console.log('settings.language:', settings.language);
+	console.log('data.get("settings_form_language"):', data.get('settings_form_language'));
+	console.log('getSettings().language:', getSettings().language);
+	if (settings.language !== getSettings().language) {
+		// if (settings.language !== 'pt') {
+		// 	location.reload();
+		// 	updateSettings(settings);
+		// 	delete settings;
+		// }
+		changeLanguage(settings.language);
+	}
 	updateSettings(settings);
 	delete settings;
 }
 
 function selectOption(el, option) {
+	// console.log('el:', el);
+	// console.log('option:', option);
 	option = option.toString();
 	for (let i = 0; i < el.options.length; i++) {
 		if (el.options[i].getAttribute('value') == option) {
@@ -146,6 +222,7 @@ function selectOption(el, option) {
 }
 
 function updateSettings(arr) {
+	// console.log('arr:', arr);
 	localStorage.setItem('settings', JSON.stringify(arr));
 	selectOption(timer_new_intervalUnit, getSettings().intervalUnit);
 	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
@@ -302,7 +379,7 @@ if (quicktest) {
 
 function clearLocalStorage() {
 	localStorage.clear();
-	console.log('cleared local storage');
+	// console.log('cleared local storage');
 	document.location = location;
 }
 
@@ -317,12 +394,14 @@ renderTimers(getTimers());
 
 function renderTimer(i, key) {
 	let settings = getSettings();
+	// console.log('settings:', settings);
 	let el = d.createElement('div');
 	el.className = 'timer';
 	if (i.paused) el.classList.add('paused');
 	el.id = 'timer-' + key;
 	el.appendChild(renderTimerElement('h3', 'timer-name', i.name));
 	el.appendChild(renderTimerElement('div', 'timer-descr', i.descr));
+	console.log('settings.language:', settings.language);
 	el.appendChild(
 		// first part of visual countdown: Time left/passed: xxx ...
 		renderTimerElement(
@@ -331,7 +410,13 @@ function renderTimer(i, key) {
 			countdownTimer(key, 'countdown-timer-' + key),
 			'countdown-' + el.id,
 			key,
-			settings.countDown === true ? 'Time left: ' : 'Time passed: '
+			settings.countDown === true
+				? settings.language === 'pt'
+					? '<span class="time_left_text">Tempo restante</span>: '
+					: '<span class="time_left_text">Time left</span>: '
+				: settings.language === 'pt'
+				? '<span class="time_passed_text">Tempo passado</span>'
+				: '<span class="time_passed_text">Time passed</span>: '
 		)
 	);
 
@@ -347,7 +432,16 @@ function renderTimer(i, key) {
 			i.intervalUnitName
 		)
 	);
-	el.appendChild(renderTimerElement('div', 'starttime', 'Starting time: ' + i.starttime));
+	el.appendChild(
+		renderTimerElement(
+			'div',
+			'starttime',
+			'<span class="starting_time_text">' +
+				(getSettings().language === 'pt' ? 'Hora de início' : 'Starting time') +
+				'</span>: ' +
+				i.starttime
+		)
+	);
 	let el2 = document.createElement('div');
 	el2.className = 'buttons';
 	if (!i.finished) el2.appendChild(pauseTimerToggleLink(key, !i.paused));
@@ -392,17 +486,21 @@ function countdownTimer(key, id) {
 		if (getTimers()[key].paused === true) stopit();
 		if (d.getElementById(id)) {
 			let settings = getSettings();
-			if (settings.countDown) cPrefix = 'Time left: ';
-			else cPrefix = 'Time passed: ';
-
+			if (settings.countDown)
+				cPrefix =
+					'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: ';
+			else
+				cPrefix =
+					'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: ';
 			let c = d.getElementById(id);
 			let arr = getTimers();
 
 			if (arr[key].timepast === arr[key].interval) {
 				stopit();
 			}
-			if (arr[key].paused === true) console.log('arr paused');
-			else {
+			if (arr[key].paused === true) {
+				//console.log('arr paused');
+			} else {
 				if (settings.countDown) {
 					timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
 					c.innerHTML = cPrefix + timeleft;
@@ -423,10 +521,10 @@ function pauseTimerToggleLink(key, paused = false) {
 	el.className = 'text-btn';
 	el.classList.add('pause');
 	if (paused === true) {
-		el.innerHTML = 'pause';
+		el.innerText = tl(getSettings().language, 'pause');
 		el.id = 'pause-' + key;
 	} else {
-		el.innerHTML = 'resume';
+		el.innerText = tl(getSettings().language, 'resume'); // asdasd
 		el.id = 'resume-' + key;
 		el.classList.replace('pause', 'resume');
 	}
@@ -436,7 +534,7 @@ function pauseTimerToggleLink(key, paused = false) {
 
 function removeTimerLink(key) {
 	let el = d.createElement('button');
-	el.innerHTML = 'remove';
+	el.innerText = tl(getSettings().language, 'remove');
 	el.className = 'text-btn remove';
 	el.id = 'del-' + key;
 	el.addEventListener('click', () => {
@@ -447,7 +545,7 @@ function removeTimerLink(key) {
 
 function resetTimerLink(key) {
 	let el = d.createElement('button');
-	el.innerHTML = 'reset';
+	el.innerText = tl(getSettings().language, 'reset');
 	el.className = 'text-btn';
 	el.classList.add('reset');
 	el.id = 'reset-' + key;
@@ -543,11 +641,57 @@ function bgStatus(arr) {
 }
 
 function setBgStatus(status = 'normal') {
-	if (status === 'alert') backdrop.className = 'alert';
-	else if (status === 'paused') backdrop.className = 'pause';
-	else backdrop.className = 'default';
+	if (status === 'alert') backdrop.className = 'backdrop-alert';
+	else if (status === 'paused') backdrop.className = 'backdrop-pause';
+	else backdrop.className = 'backdrop-default';
 }
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
-var lang = 'en';
-if (navigator.language.substring(0, 2) == 'pt') lang = 'pt';
+function tl(langkey, stringkey) {
+	return translationMap[langkey][stringkey];
+}
+function changeLanguage(lang) {
+	newTextInElements('pause', tl(lang, 'pause'));
+	newTextInElements('resume', tl(lang, 'resume'));
+	newTextInElements('reset', tl(lang, 'reset'));
+	newTextInElements('remove', tl(lang, 'remove'));
+
+	d.getElementById('timer_new_btn').innerText = tl(lang, 'New_timer');
+	d.getElementById('timer_new_form_head').innerText = tl(lang, 'New_timer');
+	d.getElementById('timer_new_quick').innerText = tl(lang, 'Quick_add');
+
+	d.getElementById('new_timer_name').setAttribute('placeholder', tl(lang, 'Name') + '...');
+	d.getElementById('new_timer_description').setAttribute(
+		'placeholder',
+		tl(lang, 'Description') + '...'
+	);
+	d.getElementById('new_timer_interval').setAttribute('placeholder', tl(lang, 'Time') + '...');
+	d.getElementById('new_timer_intervalUnit').options[0].innerText = tl(lang, 'Seconds');
+	d.getElementById('settings_form_intervalUnit').options[0].innerText = tl(lang, 'Seconds');
+	d.getElementById('new_timer_intervalUnit').options[1].innerText = tl(lang, 'Minutes');
+	d.getElementById('settings_form_intervalUnit').options[1].innerText = tl(lang, 'Minutes');
+	d.getElementById('btn_create_timer').setAttribute('value', tl(lang, 'Create_timer'));
+
+	d.getElementById('general_settings_head').innerText = tl(lang, 'General_settings');
+	d.getElementById('settings_form_countDown').options[0].innerText = tl(lang, 'Count_down');
+	d.getElementById('settings_form_countDown').options[1].innerText = tl(lang, 'Count_up');
+	d.getElementById('quick_add_settings_head').innerText = tl(lang, 'Quick_add_settings');
+	d.getElementById('btn_update_settings').setAttribute('value', tl(lang, 'Update_settings'));
+
+	newTextInElements('starting_time_text', tl(lang, 'Starting_time'));
+	newTextInElements('time_left_text', tl(lang, 'Time_left'));
+	newTextInElements('time_passed_text', tl(lang, 'Time_passed'));
+}
+
+function newTextInElements(classname, newText) {
+	var elements = d.getElementsByClassName(classname);
+	for (i = 0; i < elements.length; i++) {
+		elements[i].innerText = newText;
+	}
+	delete elements;
+}
+
+if (pageInit === 1 && settings.language === 'pt') {
+	changeLanguage('pt');
+}
+pageInit = 0;

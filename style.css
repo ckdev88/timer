@@ -37,10 +37,10 @@ body {
 #backdrop.default {
 	background-color: var(--black);
 }
-#backdrop.alert {
+#backdrop.backdrop-alert {
 	background-color: var(--alert);
 }
-#backdrop.pause {
+#backdrop.backdrop-pause {
 	background-color: var(--pause);
 }
 #timer_new_btn:after {
@@ -340,7 +340,7 @@ button.text-btn.white,
 .text-btn.remove {
 	color: var(--remove-fg);
 }
-#backdrop.alert + #wrapper .text-btn.remove {
+#backdrop.backdrop-alert + #wrapper .text-btn.remove {
 	color: white;
 }
 #clean_btn {
