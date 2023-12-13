@@ -2,7 +2,7 @@
 
 // ----------------------------- GLOBAL CONSTANTS
 const quicktest = false;
-let pageInit = 1;
+let pageInit = true;
 
 const d = document; // abstraction for loading speed & less code
 const timer_new_btn = d.getElementById('timer_new_btn');
@@ -61,7 +61,9 @@ var translationMap = {
 		Description: 'Description',
 		Time: 'Time',
 		Seconds: 'Seconds',
+		seconds: 'seconds',
 		Minutes: 'Minutes',
+		minutes: 'minutes',
 		Create_timer: 'Create timer',
 		General_settings: 'General settings',
 		Count_down: 'Count down to 0',
@@ -70,7 +72,9 @@ var translationMap = {
 		Quick_add_settings: 'Quick add settings',
 		Starting_time: 'Starting time',
 		Time_left: 'Time left',
-		Time_passed: 'Tempo passado',
+		Time_passed: 'Tempo passed',
+		Quick_timer_default_name: 'Stretch',
+		Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
 	},
 	pt: {
 		pause: 'pausar',
@@ -78,12 +82,14 @@ var translationMap = {
 		resume: 'continuar',
 		remove: 'remover',
 		New_timer: 'Novo timer',
-		Quick_add: 'Adição rápido',
+		Quick_add: 'Adição rápida',
 		Name: 'Nome',
 		Description: 'Descrição',
 		Time: 'Tempo',
 		Seconds: 'Segundos',
+		seconds: 'segundos',
 		Minutes: 'Minutos',
+		minutes: 'minutos',
 		Create_timer: 'Criar timer',
 		General_settings: 'Configurações gerais',
 		Count_down: 'Contagem regressiva até zero',
@@ -93,13 +99,17 @@ var translationMap = {
 		Starting_time: 'Hora de início',
 		Time_left: 'Tempo restante',
 		Time_passed: 'Tempo passado',
+		Quick_timer_default_name: 'Alongar',
+		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
 	},
 };
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
-
-var language = 'en';
-if (navigator.language.substring(0, 2) == 'pt') language = 'pt';
+if (pageInit === true) {
+	var browserLanguage = 'en';
+	if (navigator.language.substring(0, 2) == 'pt') browserLanguage = 'pt';
+	language = browserLanguage;
+}
 
 let settings_d;
 
@@ -119,16 +129,10 @@ if (quicktest) {
 		intervalUnitName: '',
 		countDown: true, // true: show time remaining, false: show time passed
 		quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
-		quickTimerName: 'Stretch',
-		quickTimerDescr: 'Eat, walk, push-up, drink, some or all.',
+		quickTimerName: tl(language, 'Quick_timer_default_name'),
+		quickTimerDescr: tl(language, 'Quick_timer_default_description'),
 		language: language,
 	};
-}
-
-if (!language) language = getSettings().language;
-if (language === 'pt') {
-	settings_d.quickTimerName = 'Alongar';
-	settings_d.quickTimerDescr = 'Comer, se movimentar, beber ou alguma coisa.';
 }
 
 settings_d.intervalUnitName = getIntervalUnitName(settings_d.intervalUnit);
@@ -179,8 +183,8 @@ settings_form.addEventListener('submit', (e) => {
 });
 
 function getIntervalUnitName(num) {
-	if (num === 1) return language == 'pt' ? 'segundos' : 'seconds';
-	return language === 'pt' ? 'minutos' : 'minutes';
+	if (num === 1) return tl(language, 'seconds');
+	return tl(language, 'minutes');
 }
 function settingsFormSubmit(data) {
 	var settings = {
@@ -252,6 +256,7 @@ function timerFormSubmit(data) {
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'));
 		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit));
+		settings.language = getSettings().language;
 	}
 	updateSettings(settings);
 
@@ -396,12 +401,8 @@ function renderTimer(i, key) {
 			'countdown-' + el.id,
 			key,
 			settings.countDown === true
-				? settings.language === 'pt'
-					? '<span class="time_left_text">Tempo restante</span>: '
-					: '<span class="time_left_text">Time left</span>: '
-				: settings.language === 'pt'
-				? '<span class="time_passed_text">Tempo passado</span>'
-				: '<span class="time_passed_text">Time passed</span>: '
+				? '<span class="time_left_text">' + tl(getSettings().language, 'Time_left') + '</span>: '
+				: '<span class="time_passed_text">' + tl(getSettings().language, 'Time_passed') + '</span>'
 		)
 	);
 
@@ -422,7 +423,7 @@ function renderTimer(i, key) {
 			'div',
 			'starttime',
 			'<span class="starting_time_text">' +
-				(getSettings().language === 'pt' ? 'Hora de início' : 'Starting time') +
+				tl(getSettings().language, 'Starting_time') +
 				'</span>: ' +
 				i.starttime
 		)
@@ -676,7 +677,7 @@ function newTextInElements(classname, newText) {
 	delete elements;
 }
 
-if (pageInit === 1 && settings.language === 'pt') {
+if (pageInit === true && settings.language === 'pt') {
 	changeLanguage('pt');
 }
-pageInit = 0;
+pageInit = false;
