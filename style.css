@@ -234,6 +234,31 @@ button.text-btn.expanded2:before {
 	margin: 0 auto;
 	position: relative;
 }
+.submit-buttons {
+	justify-content: flex-start;
+	align-items: center;
+}
+.submit-buttons .feedback {
+	margin-left: 0.5em;
+	opacity: 0;
+	animation: feedbackfade 1.5s;
+	font-size: 0.9em;
+}
+@keyframes feedbackfade {
+	0% {
+		opacity: 0%;
+	}
+	5% {
+		opacity: 100%;
+	}
+	95% {
+		opacity: 100%;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
 #timer_container {
 	padding-top: 1rem;
 }
@@ -329,6 +354,8 @@ button.text-btn.expanded2:before {
 }
 .buttons {
 	display: flex;
+}
+.top-buttons {
 	justify-content: space-between;
 }
 .white,

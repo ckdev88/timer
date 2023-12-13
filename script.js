@@ -75,6 +75,8 @@ var translationMap = {
 		Time_passed: 'Tempo passed',
 		Quick_timer_default_name: 'Stretch',
 		Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
+		Timer_created: 'Timer created',
+		Settings_updated: 'Settings updated',
 	},
 	pt: {
 		pause: 'pausar',
@@ -101,6 +103,8 @@ var translationMap = {
 		Time_passed: 'Tempo passado',
 		Quick_timer_default_name: 'Alongar',
 		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
+		Timer_created: 'Timer criado',
+		Settings_updated: 'Configurações atualizadas',
 	},
 };
 
@@ -202,6 +206,14 @@ function settingsFormSubmit(data) {
 		changeLanguage(settings.language);
 	}
 	updateSettings(settings);
+
+	showFeedback(d.getElementById('btn_update_settings'), 'Settings_updated');
+	// let aftertext = document.createElement('div');
+	// aftertext.innerText = 'Updated!';
+	// aftertext.className = 'feedback';
+	// let submitbtn = d.getElementById('btn_update_settings');
+	// insertAfter(submitbtn, aftertext);
+	// setTimeout(() => aftertext.remove(), 1500);
 	delete settings;
 }
 
@@ -265,7 +277,19 @@ function timerFormSubmit(data) {
 		data.get('timer_description'),
 		data.get('timer_interval') * Number(data.get('timer_intervalUnit'))
 	);
+
+	showFeedback(d.getElementById('btn_create_timer'), 'Timer_created');
+
 	cleanForm();
+}
+
+function showFeedback(afterElement, textKey) {
+	let aftertext = document.createElement('div');
+	console.log('showing feedback');
+	aftertext.innerText = tl(getSettings().language, textKey);
+	aftertext.className = 'feedback';
+	setTimeout(() => aftertext.remove(), 1500);
+	return insertAfter(afterElement, aftertext);
 }
 
 function cleanForm() {
@@ -680,4 +704,9 @@ function newTextInElements(classname, newText) {
 if (pageInit === true && settings.language === 'pt') {
 	changeLanguage('pt');
 }
+
+function insertAfter(referenceNode, newNode) {
+	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 pageInit = false;

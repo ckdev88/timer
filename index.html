@@ -15,7 +15,7 @@ singlify tasks; this would be only to please evil Google though ... needs a bit 
 		<!-- https://css-tricks.com/snippets/css/a-guide-to-flexbox/ -->
 		<div id="backdrop"></div>
 		<div id="wrapper">
-			<div class="buttons">
+			<div class="buttons top-buttons">
 				<button id="timer_new_btn" class="text-btn white expanded">New timer</button>
 				<button id="settings_btn" class="text-btn collapsed2">⚙</button>
 				<button id="clean_btn" class="text-btn">x</button>
@@ -56,7 +56,9 @@ singlify tasks; this would be only to please evil Google though ... needs a bit 
 						<option value="60">Minutes</option>
 					</select>
 				</div>
-				<input type="submit" id="btn_update_settings" value="Update settings" />
+				<div class="buttons submit-buttons">
+					<input type="submit" id="btn_update_settings" value="Update settings" />
+				</div>
 			</form>
 			<form id="timer_new_form" class="dblock">
 				<div style="display: flex; align-items: center; justify-content: space-between">
@@ -82,7 +84,7 @@ singlify tasks; this would be only to please evil Google though ... needs a bit 
 						<option value="60">Minutes</option>
 					</select>
 				</div>
-				<div class="buttons">
+				<div class="buttons submit-buttons">
 					<input type="submit" id="btn_create_timer" value="Create timer" />
 				</div>
 			</form>
