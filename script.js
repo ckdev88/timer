@@ -194,16 +194,7 @@ function settingsFormSubmit(data) {
 		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
 		language: data.get('settings_form_language'),
 	};
-	// console.log('updating settings');
-	console.log('settings.language:', settings.language);
-	console.log('data.get("settings_form_language"):', data.get('settings_form_language'));
-	console.log('getSettings().language:', getSettings().language);
 	if (settings.language !== getSettings().language) {
-		// if (settings.language !== 'pt') {
-		// 	location.reload();
-		// 	updateSettings(settings);
-		// 	delete settings;
-		// }
 		changeLanguage(settings.language);
 	}
 	updateSettings(settings);
@@ -211,8 +202,6 @@ function settingsFormSubmit(data) {
 }
 
 function selectOption(el, option) {
-	// console.log('el:', el);
-	// console.log('option:', option);
 	option = option.toString();
 	for (let i = 0; i < el.options.length; i++) {
 		if (el.options[i].getAttribute('value') == option) {
@@ -222,7 +211,6 @@ function selectOption(el, option) {
 }
 
 function updateSettings(arr) {
-	// console.log('arr:', arr);
 	localStorage.setItem('settings', JSON.stringify(arr));
 	selectOption(timer_new_intervalUnit, getSettings().intervalUnit);
 	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
@@ -379,7 +367,6 @@ if (quicktest) {
 
 function clearLocalStorage() {
 	localStorage.clear();
-	// console.log('cleared local storage');
 	document.location = location;
 }
 
@@ -394,14 +381,12 @@ renderTimers(getTimers());
 
 function renderTimer(i, key) {
 	let settings = getSettings();
-	// console.log('settings:', settings);
 	let el = d.createElement('div');
 	el.className = 'timer';
 	if (i.paused) el.classList.add('paused');
 	el.id = 'timer-' + key;
 	el.appendChild(renderTimerElement('h3', 'timer-name', i.name));
 	el.appendChild(renderTimerElement('div', 'timer-descr', i.descr));
-	console.log('settings.language:', settings.language);
 	el.appendChild(
 		// first part of visual countdown: Time left/passed: xxx ...
 		renderTimerElement(
@@ -592,7 +577,7 @@ function detectAnyActive(arr = getTimers()) {
 function countdownAll() {
 	const lb = setInterval(() => {
 		let arr = getTimers();
-		console.log('amount of timers', arr.length);
+		// console.log('amount of timers', arr.length);
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].paused === true) continue;
 			if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
