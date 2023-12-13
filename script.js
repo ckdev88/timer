@@ -278,8 +278,6 @@ function timerFormSubmit(data) {
 		data.get('timer_interval') * Number(data.get('timer_intervalUnit'))
 	);
 
-	showFeedback(d.getElementById('btn_create_timer'), 'Timer_created');
-
 	cleanForm();
 }
 
@@ -326,6 +324,7 @@ function addTimer(name, description, interval) {
 		starttime: starttime,
 	});
 	updateTimers(arr);
+	showFeedback(d.getElementById('btn_create_timer'), 'Timer_created');
 	renderTimers(arr);
 	delete arr;
 }
@@ -426,7 +425,9 @@ function renderTimer(i, key) {
 			key,
 			settings.countDown === true
 				? '<span class="time_left_text">' + tl(getSettings().language, 'Time_left') + '</span>: '
-				: '<span class="time_passed_text">' + tl(getSettings().language, 'Time_passed') + '</span>'
+				: '<span class="time_passed_text">' +
+						tl(getSettings().language, 'Time_passed') +
+						'</span>: '
 		)
 	);
 
@@ -610,8 +611,10 @@ function countdownAll() {
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				arr[i].finished = true;
-				d.getElementById('timer-' + i).classList.add('finished');
 				if (!quicktest) playSound();
+			}
+			if (arr[i].finished === true) {
+				d.getElementById('timer-' + i).classList.add('finished');
 			}
 			updateTimers(arr);
 		}
