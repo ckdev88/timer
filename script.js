@@ -77,6 +77,7 @@ var translationMap = {
 		Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
 		Timer_created: 'Timer created',
 		Settings_updated: 'Settings updated',
+		Select_time_unit: 'Select time unit',
 	},
 	pt: {
 		pause: 'pausar',
@@ -105,6 +106,7 @@ var translationMap = {
 		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
 		Timer_created: 'Timer criado',
 		Settings_updated: 'Configurações atualizadas',
+		Select_time_unit: 'Selecione a unidade de tempo',
 	},
 };
 
@@ -689,6 +691,15 @@ function changeLanguage(lang) {
 	newTextInElements('starting_time_text', tl(lang, 'Starting_time'));
 	newTextInElements('time_left_text', tl(lang, 'Time_left'));
 	newTextInElements('time_passed_text', tl(lang, 'Time_passed'));
+
+	d.getElementById('settings_form_intervalUnit').setAttribute(
+		'aria-label',
+		tl(lang, 'Select_time_unit')
+	);
+	d.getElementById('new_timer_intervalUnit').setAttribute(
+		'aria-label',
+		tl(lang, 'Select_time_unit')
+	);
 }
 
 function newTextInElements(classname, newText) {

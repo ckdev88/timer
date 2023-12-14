@@ -48,7 +48,11 @@
 						type="number"
 						placeholder="Quick timer interval..."
 					/>
-					<select id="settings_form_intervalUnit" name="settings_form_intervalUnit">
+					<select
+						id="settings_form_intervalUnit"
+						name="settings_form_intervalUnit"
+						aria-label="Select time unit"
+					>
 						<option value="1">Seconds</option>
 						<option value="60">Minutes</option>
 					</select>
@@ -60,7 +64,7 @@
 			<form id="timer_new_form" class="dblock">
 				<div style="display: flex; align-items: center; justify-content: space-between">
 					<h2 class="form-name" id="timer_new_form_head">New timer</h2>
-					<a href="javascript:void(0)" id="timer_new_quick" class="white">Quick add </a>
+					<a href="javascript:void(0)" id="timer_new_quick" class="white">Quick add</a>
 				</div>
 				<input id="new_timer_name" name="timer_name" type="text" placeholder="Name..." required />
 				<textarea
@@ -76,7 +80,11 @@
 						placeholder="Time..."
 						required
 					/>
-					<select id="new_timer_intervalUnit" name="timer_intervalUnit">
+					<select
+						id="new_timer_intervalUnit"
+						name="timer_intervalUnit"
+						aria-label="Select time unit"
+					>
 						<option value="1">Seconds</option>
 						<option value="60">Minutes</option>
 					</select>
