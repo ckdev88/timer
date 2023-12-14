@@ -1,8 +1,41 @@
 :root {
-	--black: black;
-	--alert: firebrick;
-	--pause: #222;
-	--remove-fg: orangered;
+	--bg-color: hsl(0, 0%, 100%);
+	--fg-color: hsl(0, 0%, 10%);
+	--pause-color: hsl(0, 0%, 90%);
+	--alert-color: hsl(0, 68%, 52%);
+	--remove-fg: hsl(16, 100%, 50%);
+	--remove-icon-color: hsl(16, 100%, 80%);
+	--settings-fg: greenyellow;
+	--button-bg: hsl(217, 87%, 50%);
+	--button-bg-hover: hsl(217, 87%, 30%);
+	--button-fg: white;
+	--input-border-color: hsl(0, 0, 20%);
+	--text-button-fg: hsl(217, 87%, 50%);
+	--separation-border-color: rgba(255, 255, 255, 0.8);
+	--finished-blink-bg: white;
+	--play-icon-color: hsl(217, 87%, 80%);
+	--input-bg: white;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg-color: hsl(60, 70%, 0%);
+		--fg-color: hsl(10, 10%, 90%);
+		--pause-color: hsl(0, 0%, 20%);
+		--alert-color: hsl(0, 68%, 42%);
+		--remove-fg: hsl(16, 100%, 50%);
+		--remove-icon-color: hsl(16, 100%, 70%);
+		--settings-fg: greenyellow;
+		--button-bg: hsl(84, 100%, 59%);
+		--button-bg-hover: hsl(84, 100%, 39%);
+		--button-fg: black;
+		--input-border-color: hsl(0, 0, 80%);
+		--text-button-fg: greenyellow;
+		--separation-border-color: rgba(255, 255, 255, 0.2);
+		--finished-blink-bg: black;
+		--play-icon-color: hsl(217, 87%, 80%);
+		--input-bg: white;
+	}
 }
 
 * {
@@ -15,8 +48,8 @@ body {
 	height: 100%;
 }
 html {
-	background: #000;
-	color: #fafafa;
+	background: var(--bg-color);
+	color: var(--fg-color);
 	font-size: 14px;
 }
 body {
@@ -35,16 +68,16 @@ body {
 	position: fixed;
 }
 #backdrop.default {
-	background-color: var(--black);
+	background-color: var(--bg-color);
 }
 #backdrop.backdrop-alert {
-	background-color: var(--alert);
+	background-color: var(--alert-color);
 }
 #backdrop.backdrop-pause {
-	background-color: var(--pause);
+	background-color: var(--pause-color);
 }
 #timer_new_btn:after {
-	color: dodgerblue;
+	color: var(--timer-border-fg);
 }
 #timer_new_quick {
 	display: block;
@@ -52,22 +85,22 @@ body {
 #timer_new_quick::before {
 	/*★ ☆ */
 	content: '⚡';
-	color: white;
+	color: var(--play-icon-color);
 	display: block;
 	float: left;
 	width: 1em;
 	height: auto;
 }
 #settings_btn {
-	color: greenyellow;
+	color: var(--settings-fg);
 }
 #settings_form {
 	padding-right: 0.6rem;
 	border-width: 0 2px 0 0;
-	border-color: greenyellow;
+	border-color: var(--settings-fg);
 }
 #settings_form .form-name {
-	color: lightsteelblue;
+	color: var(--fg-color);
 }
 .timer {
 	padding: 1rem;
@@ -100,9 +133,15 @@ button,
 a.btn,
 input[type='submit'] {
 	cursor: pointer;
-	background: greenyellow;
-	color: black;
+	background: var(--button-bg);
+	color: var(--button-fg);
 	font-weight: bold;
+	transition: background-color 0.2s ease-in-out;
+}
+button:hover,
+a.btn:hover,
+input[type='submit']:hover {
+	background: var(--button-bg-hover);
 }
 label {
 	cursor: pointer;
@@ -119,7 +158,7 @@ select {
 	margin: 0.3rem 0;
 	border-radius: 0.1rem;
 	display: block;
-	border: 1px solid #e1e1e1;
+	border: 1px solid var(--input-border-color);
 }
 select {
 	padding-top: 0.25rem;
@@ -131,6 +170,8 @@ textarea,
 input[type='number'] {
 	width: 100%;
 	display: block;
+	background-color: var(--input-bg);
+	color: #222;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
@@ -156,7 +197,6 @@ form {
 	transition-timing-function: ease;
 	transition-duration: 0.3s;
 	transition-property: opacity;
-	border-style: dashed;
 }
 
 /* --------------------------- form class definitions */
@@ -189,7 +229,7 @@ a,
 button.text-btn,
 .btn.text-btn,
 button.icon {
-	color: greenyellow;
+	color: var(--text-button-fg);
 	background: transparent;
 	border: 0;
 }
@@ -212,10 +252,12 @@ button.text-btn.collapsed2::before {
 button.text-btn.collapsed::after,
 button.text-btn.collapsed2::before {
 	content: '  ▲';
+	color: var(--play-icon-color);
 }
 button.text-btn.expanded::after,
 button.text-btn.expanded2::before {
 	content: '▼  ';
+	color: var(--play-icon-color);
 }
 button.text-btn.expanded:after,
 button.text-btn.collapsed:after {
@@ -263,12 +305,12 @@ button.text-btn.expanded2:before {
 	padding-top: 1rem;
 }
 .timer {
-	border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+	border-bottom: 1px dashed var(--separation-border-color);
 	margin-top: 0;
 	margin-bottom: 0;
 }
 .timer.paused {
-	background-color: #333;
+	background-color: var(--pause-color);
 }
 .timer.finished {
 	background-color: transparent;
@@ -279,7 +321,7 @@ button.text-btn.expanded2:before {
 		background-color: transparent;
 	}
 	75% {
-		background-color: black;
+		background-color: var(--finished-blink-bg);
 	}
 	100% {
 		background-color: transparent;
@@ -317,6 +359,7 @@ button.text-btn.expanded2:before {
 	margin-left: -0.15em;
 	padding-right: 0.15em;
 	margin-bottom: -0.2em;
+	color: var(--play-icon-color);
 }
 .timer .buttons .resume::before {
 	background: transparent;
@@ -328,12 +371,13 @@ button.text-btn.expanded2:before {
 	background-color: transparent;
 	border-right: 0.5em solid transparent;
 	border-bottom: 0.3em solid transparent;
-	border-left: 0.5em solid greenyellow;
+	border-left: 0.5em solid var(--play-icon-color);
 	border-top: 0.3em solid transparent;
 }
 .timer .buttons button.text-btn.reset::before {
 	content: '↺';
 	font-weight: bold;
+	color: var(--play-icon-color);
 }
 .buttons .text-btn:hover {
 	text-decoration: underline;
@@ -343,14 +387,10 @@ button.text-btn.expanded2:before {
 	font-size: 0.9em;
 	margin-top: 0.1em;
 	font-weight: 800;
-}
-#timer_new_form {
-	border-width: 0 0 0 2px;
-	border-color: dodgerblue;
-	padding-left: 0.6rem;
+	color: var(--remove-icon-color);
 }
 #timer_new_form .form-name {
-	color: lightsteelblue;
+	color: var(--fg-color);
 }
 .buttons {
 	display: flex;
@@ -362,13 +402,13 @@ button.text-btn.expanded2:before {
 a.white,
 button.text-btn.white,
 .btn.text-btn.white {
-	color: white;
+	color: var(--fg-color);
 }
 .text-btn.remove {
 	color: var(--remove-fg);
 }
 #backdrop.backdrop-alert + #wrapper .text-btn.remove {
-	color: white;
+	color: var(--fg-color);
 }
 #clean_btn {
 	display: none;

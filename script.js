@@ -111,7 +111,9 @@ var translationMap = {
 };
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
+
 if (pageInit === true) {
+	console.log(navigator);
 	var browserLanguage = 'en';
 	if (navigator.language.substring(0, 2) == 'pt') {
 		browserLanguage = 'pt';
