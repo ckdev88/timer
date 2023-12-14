@@ -210,12 +210,6 @@ function settingsFormSubmit(data) {
 	updateSettings(settings);
 
 	showFeedback(d.getElementById('btn_update_settings'), 'Settings_updated');
-	// let aftertext = document.createElement('div');
-	// aftertext.innerText = 'Updated!';
-	// aftertext.className = 'feedback';
-	// let submitbtn = d.getElementById('btn_update_settings');
-	// insertAfter(submitbtn, aftertext);
-	// setTimeout(() => aftertext.remove(), 1500);
 	delete settings;
 }
 
@@ -285,7 +279,6 @@ function timerFormSubmit(data) {
 
 function showFeedback(afterElement, textKey) {
 	let aftertext = document.createElement('div');
-	console.log('showing feedback');
 	aftertext.innerText = tl(getSettings().language, textKey);
 	aftertext.className = 'feedback';
 	setTimeout(() => aftertext.remove(), 1500);
