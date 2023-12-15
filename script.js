@@ -613,15 +613,23 @@ function countdownAll() {
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				arr[i].finished = true;
+				document.title = arr[i].name + '!';
 				if (!quicktest) playSound();
 			}
 			if (arr[i].finished === true) {
 				d.getElementById('timer-' + i).classList.add('finished');
 			}
 			updateTimers(arr);
+			// document.title = +'timers active';
 		}
 		if (!detectAnyActive()) {
+			// document.title = 'Timer';
 			stopit();
+		}
+		if (!detectAnyPaused && !detectAnyFinished) {
+			if (!detectAnyPaused) console.log('none paused');
+			if (!detectAnyFinished) console.log('none finished');
+			document.title = 'Timer running';
 		}
 	}, 1000); // run every second/1000ms
 
