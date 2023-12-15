@@ -1,7 +1,8 @@
 :root {
 	--bg-color: hsl(0, 0%, 100%);
 	--fg-color: hsl(0, 0%, 10%);
-	--pause-color: hsl(0, 0%, 90%);
+	--pause-color: hsl(0, 0%, 95%);
+	--alert-bg: hsl(0, 68%, 72%);
 	--alert-color: hsl(0, 68%, 52%);
 	--remove-fg: hsl(16, 100%, 50%);
 	--remove-icon-color: hsl(16, 100%, 80%);
@@ -18,13 +19,15 @@
 	--border-inactive: hsl(0, 0%, 90%);
 	--border-hover: hsl(0, 0%, 60%);
 	--border-active: hsl(0, 0%, 40%);
+	--timer-pause-color: hsl(0, 0%, 85%);
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
 		--bg-color: hsl(60, 70%, 0%);
 		--fg-color: hsl(10, 10%, 90%);
-		--pause-color: hsl(0, 0%, 20%);
+		--pause-color: hsl(0, 0%, 5%);
+		--alert-bg: hsl(0, 68%, 42%);
 		--alert-color: hsl(0, 68%, 42%);
 		--remove-fg: hsl(16, 100%, 50%);
 		--remove-icon-color: hsl(16, 100%, 70%);
@@ -41,6 +44,7 @@
 		--border-inactive: hsl(0, 0%, 30%);
 		--border-hover: hsl(0, 0%, 40%);
 		--border-active: hsl(0, 0%, 60%);
+		--timer-pause-color: hsl(0, 0%, 15%);
 	}
 }
 
@@ -77,7 +81,7 @@ body {
 	background-color: var(--bg-color);
 }
 #backdrop.backdrop-alert {
-	background-color: var(--alert-color);
+	background-color: var(--alert-bg);
 }
 #backdrop.backdrop-pause {
 	background-color: var(--pause-color);
@@ -324,11 +328,14 @@ button.text-btn.expanded2:before {
 	margin-bottom: 0;
 }
 .timer.paused {
-	background-color: var(--pause-color);
+	background-color: var(--timer-pause-color);
 }
 .timer.finished {
 	background-color: transparent;
 	animation: blink-finished 2s infinite;
+}
+.timer.finished .buttons .text-btn.pause {
+	display: none;
 }
 @keyframes blink-finished {
 	0% {

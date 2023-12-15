@@ -113,7 +113,7 @@ var translationMap = {
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
 if (pageInit === true) {
-	console.log(navigator);
+	// console.log(navigator);
 	var browserLanguage = 'en';
 	if (navigator.language.substring(0, 2) == 'pt') {
 		browserLanguage = 'pt';
@@ -537,9 +537,10 @@ function pauseTimerToggleLink(key, paused = false) {
 		el.innerText = tl(getSettings().language, 'pause');
 		el.id = 'pause-' + key;
 	} else {
-		el.innerText = tl(getSettings().language, 'resume'); // asdasd
+		el.innerText = tl(getSettings().language, 'resume');
 		el.id = 'resume-' + key;
 		el.classList.replace('pause', 'resume');
+		document.title = 'Timer';
 	}
 	el.addEventListener('click', () => pauseTimerToggle(key));
 	return el;
@@ -603,7 +604,9 @@ function detectAnyActive(arr = getTimers()) {
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 
 function countdownAll() {
+	let extradot = false;
 	const lb = setInterval(() => {
+		// console.log('extradot:', extradot);
 		let arr = getTimers();
 		// console.log('amount of timers', arr.length);
 		for (let i = 0; i < arr.length; i++) {
@@ -626,10 +629,16 @@ function countdownAll() {
 			// document.title = 'Timer';
 			stopit();
 		}
-		if (!detectAnyPaused && !detectAnyFinished) {
-			if (!detectAnyPaused) console.log('none paused');
-			if (!detectAnyFinished) console.log('none finished');
-			document.title = 'Timer running';
+
+		if (!detectAnyPaused() !== true && !detectAnyFinished() !== true) {
+			document.title = 'Timer';
+		}
+		if (extradot === false) {
+			document.title = document.title + '.';
+			extradot = true;
+		} else {
+			document.title = document.title.slice(0, -1);
+			extradot = false;
 		}
 	}, 1000); // run every second/1000ms
 
