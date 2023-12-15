@@ -699,7 +699,6 @@ function bgStatus(arr) {
 }
 
 function setBgStatus(status = 'normal') {
-	console.log('status:', status);
 	if (status === 'alert') statusbar.className = 'statusbar-alert';
 	else if (status === 'paused') statusbar.className = 'statusbar-pause';
 	else if (status === 'running') statusbar.className = 'statusbar-running';

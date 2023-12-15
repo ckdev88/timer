@@ -77,22 +77,20 @@ body {
 	height: 0.5rem;
 }
 
-#statusbar.default {
+.statusbar-default {
 	background-color: var(--bg-color);
 }
-#statusbar.statusbar-pause {
-	background-color: var(--timer-pause-color);
+.statusbar-pause {
+	background-color: var(--pause-color);
 }
-#statusbar.statusbar-running {
+.statusbar-running {
 	background-color: var(--running-bg);
 }
-#statusbar.statusbar-alert {
+.statusbar-alert {
 	background-color: var(--alert-bg);
-}
-
-#statusbar.statusbar-alert {
 	animation: blink-statusbar 1.5s infinite;
 }
+
 @keyframes blink-statusbar {
 	0% {
 		background-color: transparent;
@@ -105,9 +103,6 @@ body {
 	}
 }
 
-#statusbar.statusbar-pause {
-	background-color: var(--pause-color);
-}
 #timer_new_btn:after {
 	color: var(--timer-border-fg);
 }
@@ -449,7 +444,7 @@ button.text-btn.white,
 .text-btn.remove {
 	color: var(--remove-fg);
 }
-#statusbar.statusbar-alert + #wrapper .text-btn.remove {
+.statusbar-alert + #wrapper .text-btn.remove {
 	color: var(--fg-color);
 }
 #clean_btn {
