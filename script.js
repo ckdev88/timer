@@ -78,6 +78,7 @@ var translationMap = {
 		Timer_created: 'Timer created',
 		Settings_updated: 'Settings updated',
 		Select_time_unit: 'Select time unit',
+		now: 'now',
 	},
 	pt: {
 		pause: 'pausar',
@@ -107,6 +108,7 @@ var translationMap = {
 		Timer_created: 'Timer criado',
 		Settings_updated: 'Configurações atualizadas',
 		Select_time_unit: 'Selecione a unidade de tempo',
+		now: 'agora',
 	},
 };
 
@@ -452,7 +454,12 @@ function renderTimer(i, key) {
 			'<span class="starting_time_text">' +
 				tl(getSettings().language, 'Starting_time') +
 				'</span>: ' +
-				i.starttime
+				i.starttime +
+				' (' +
+				tl(getSettings().language, 'now') +
+				': ' +
+				getCurrentTimeSimple() +
+				')'
 		)
 	);
 	let el2 = document.createElement('div');
