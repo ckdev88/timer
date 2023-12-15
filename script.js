@@ -163,13 +163,13 @@ settings_btn.addEventListener('click', () => {
 
 function settingsForm(what) {
 	if (what == 'expand') {
-		settings_btn.classList.replace('collapsed2', 'expanded2');
+		settings_btn.classList.replace('collapsed', 'expanded');
 		settings_form.className = 'dblock';
 		timer_new_form.className = 'dnone';
 		timer_new_btn.classList.replace('expanded', 'collapsed');
 	}
 	if (what == 'collapse') {
-		settings_btn.classList.replace('expanded2', 'collapsed2');
+		settings_btn.classList.replace('expanded', 'collapsed');
 		settings_form.className = 'dnone';
 		timer_new_form.className = 'dblock';
 		timer_new_btn.classList.replace('collapsed', 'expanded');
@@ -252,7 +252,7 @@ function expandCollapseForm(what) {
 		timer_new_btn.classList.replace('collapsed', 'expanded');
 		timer_new_form.className = 'dblock';
 		settings_form.className = 'dnone';
-		settings_btn.classList.replace('expanded2', 'collapsed2');
+		settings_btn.classList.replace('expanded', 'collapsed');
 	}
 	if (what === 'collapse') {
 		timer_new_form.className = 'dnone';

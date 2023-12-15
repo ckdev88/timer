@@ -5,16 +5,19 @@
 	--alert-color: hsl(0, 68%, 52%);
 	--remove-fg: hsl(16, 100%, 50%);
 	--remove-icon-color: hsl(16, 100%, 80%);
-	--settings-fg: greenyellow;
+	--settings-fg: red;
 	--button-bg: hsl(217, 87%, 50%);
 	--button-bg-hover: hsl(217, 87%, 30%);
 	--button-fg: white;
-	--input-border-color: hsl(0, 0, 20%);
+	--input-border-color: hsl(0, 0%, 20%);
 	--text-button-fg: hsl(217, 87%, 50%);
 	--separation-border-color: rgba(255, 255, 255, 0.8);
 	--finished-blink-bg: white;
 	--play-icon-color: hsl(217, 87%, 80%);
 	--input-bg: white;
+	--border-inactive: hsl(0, 0%, 90%);
+	--border-hover: hsl(0, 0%, 60%);
+	--border-active: hsl(0, 0%, 40%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,6 +38,9 @@
 		--finished-blink-bg: black;
 		--play-icon-color: hsl(217, 87%, 80%);
 		--input-bg: white;
+		--border-inactive: hsl(0, 0%, 30%);
+		--border-hover: hsl(0, 0%, 40%);
+		--border-active: hsl(0, 0%, 60%);
 	}
 }
 
@@ -91,8 +97,18 @@ body {
 	width: 1em;
 	height: auto;
 }
-#settings_btn {
+.top-buttons .text-btn {
+	border: 1px dotted var(--border-inactive);
+	border-bottom: 0;
 	color: var(--settings-fg);
+}
+.top-buttons .text-btn:hover {
+	border-color: var(--border-hover);
+}
+.top-buttons .expanded,
+.top-buttons .text-btn.expanded:hover {
+	border-style: solid;
+	border-color: var(--border-active);
 }
 #settings_form {
 	padding-right: 0.6rem;
@@ -235,8 +251,6 @@ button.icon {
 }
 button.text-btn,
 .btn.text-btn {
-	margin-left: -0.7rem;
-	margin-right: -0.7rem;
 	display: inline-block;
 }
 button.text-btn:after {
