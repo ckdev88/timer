@@ -23,7 +23,7 @@ const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterv
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
 const setf_language = d.getElementById('settings_form_language');
-const backdrop = d.getElementById('backdrop');
+const statusbar = d.getElementById('statusbar');
 
 const getTimers = () => {
 	let timers = JSON.parse(localStorage.getItem('timerTimers'));
@@ -694,13 +694,16 @@ function getCurrentTimeSimple(seconds = false) {
 function bgStatus(arr) {
 	if (detectAnyFinished(arr)) setBgStatus('alert');
 	else if (detectAnyPaused(arr)) setBgStatus('paused');
+	else if (detectAnyActive(arr)) setBgStatus('running');
 	else setBgStatus('normal');
 }
 
 function setBgStatus(status = 'normal') {
-	if (status === 'alert') backdrop.className = 'backdrop-alert';
-	else if (status === 'paused') backdrop.className = 'backdrop-pause';
-	else backdrop.className = 'backdrop-default';
+	console.log('status:', status);
+	if (status === 'alert') statusbar.className = 'statusbar-alert';
+	else if (status === 'paused') statusbar.className = 'statusbar-pause';
+	else if (status === 'running') statusbar.className = 'statusbar-running';
+	else statusbar.className = 'statusbar-default';
 }
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION

@@ -1,8 +1,9 @@
 :root {
-	--bg-color: hsl(0, 0%, 100%);
+	--bg-color: hsl(0, 0%, 95%);
 	--fg-color: hsl(0, 0%, 10%);
-	--pause-color: hsl(0, 0%, 95%);
-	--alert-bg: hsl(0, 68%, 72%);
+	--pause-color: hsl(0, 0%, 85%);
+	--alert-bg: hsl(0, 68%, 42%);
+	--running-bg: greenyellow;
 	--alert-color: hsl(0, 68%, 52%);
 	--remove-fg: hsl(16, 100%, 50%);
 	--remove-icon-color: hsl(16, 100%, 80%);
@@ -19,15 +20,16 @@
 	--border-inactive: hsl(0, 0%, 90%);
 	--border-hover: hsl(0, 0%, 60%);
 	--border-active: hsl(0, 0%, 40%);
-	--timer-pause-color: hsl(0, 0%, 85%);
+	--timer-pause-color: var(--pause-color);
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
 		--bg-color: hsl(60, 70%, 0%);
 		--fg-color: hsl(10, 10%, 90%);
-		--pause-color: hsl(0, 0%, 5%);
+		--pause-color: hsl(0, 0%, 15%);
 		--alert-bg: hsl(0, 68%, 42%);
+		--running-bg: greenyellow;
 		--alert-color: hsl(0, 68%, 42%);
 		--remove-fg: hsl(16, 100%, 50%);
 		--remove-icon-color: hsl(16, 100%, 70%);
@@ -38,13 +40,13 @@
 		--input-border-color: hsl(0, 0, 80%);
 		--text-button-fg: greenyellow;
 		--separation-border-color: rgba(255, 255, 255, 0.2);
-		--finished-blink-bg: black;
+		--finished-blink-bg: var(--alert-bg);
 		--play-icon-color: hsl(217, 87%, 80%);
 		--input-bg: white;
 		--border-inactive: hsl(0, 0%, 30%);
 		--border-hover: hsl(0, 0%, 40%);
 		--border-active: hsl(0, 0%, 60%);
-		--timer-pause-color: hsl(0, 0%, 15%);
+		--timer-pause-color: var(--pause-color);
 	}
 }
 
@@ -71,19 +73,39 @@ body {
 	margin-bottom: 0;
 	font-size: 1.2em;
 }
-#backdrop {
-	background-attachment: fixed;
-	height: 100vh;
-	width: 100vw;
-	position: fixed;
+#statusbar {
+	height: 0.5rem;
 }
-#backdrop.default {
+
+#statusbar.default {
 	background-color: var(--bg-color);
 }
-#backdrop.backdrop-alert {
+#statusbar.statusbar-pause {
+	background-color: var(--timer-pause-color);
+}
+#statusbar.statusbar-running {
+	background-color: var(--running-bg);
+}
+#statusbar.statusbar-alert {
 	background-color: var(--alert-bg);
 }
-#backdrop.backdrop-pause {
+
+#statusbar.statusbar-alert {
+	animation: blink-statusbar 1.5s infinite;
+}
+@keyframes blink-statusbar {
+	0% {
+		background-color: transparent;
+	}
+	50% {
+		background-color: var(--alert-bg);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
+
+#statusbar.statusbar-pause {
 	background-color: var(--pause-color);
 }
 #timer_new_btn:after {
@@ -331,8 +353,7 @@ button.text-btn.expanded2:before {
 	background-color: var(--timer-pause-color);
 }
 .timer.finished {
-	background-color: transparent;
-	animation: blink-finished 2s infinite;
+	animation: blink-finished 1.5s infinite;
 }
 .timer.finished .buttons .text-btn.pause {
 	display: none;
@@ -341,7 +362,7 @@ button.text-btn.expanded2:before {
 	0% {
 		background-color: transparent;
 	}
-	75% {
+	50% {
 		background-color: var(--finished-blink-bg);
 	}
 	100% {
@@ -428,7 +449,7 @@ button.text-btn.white,
 .text-btn.remove {
 	color: var(--remove-fg);
 }
-#backdrop.backdrop-alert + #wrapper .text-btn.remove {
+#statusbar.statusbar-alert + #wrapper .text-btn.remove {
 	color: var(--fg-color);
 }
 #clean_btn {
