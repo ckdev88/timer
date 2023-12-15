@@ -25,12 +25,12 @@ const setf_countDown = d.getElementById('settings_form_countDown');
 const setf_language = d.getElementById('settings_form_language');
 const backdrop = d.getElementById('backdrop');
 
-function getTimers() {
+const getTimers = () => {
 	let timers = JSON.parse(localStorage.getItem('timerTimers'));
 	if (!timers) updateTimers([]);
 	else bgStatus(timers);
 	return timers;
-}
+};
 
 let cachedTimers = getTimers(); // null on clean localstorage
 
@@ -496,30 +496,32 @@ function renderTimerElement(
 function countdownTimer(key, id) {
 	// individual per timer
 	var lb = setInterval(() => {
-		if (getTimers()[key].paused === true) stopit();
-		if (d.getElementById(id)) {
-			let settings = getSettings();
-			if (settings.countDown)
-				cPrefix =
-					'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: ';
-			else
-				cPrefix =
-					'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: ';
-			let c = d.getElementById(id);
-			let arr = getTimers();
+		timer = getTimers()[key];
+		if (timer.paused === true) stopit();
+		else {
+			if (d.getElementById(id)) {
+				let settings = getSettings();
+				if (settings.countDown)
+					cPrefix =
+						'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: ';
+				else
+					cPrefix =
+						'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: ';
+				let c = d.getElementById(id);
 
-			if (arr[key].timepast === arr[key].interval) {
-				stopit();
-			}
-			if (arr[key].paused === true) {
-				//console.log('arr paused');
-			} else {
-				if (settings.countDown) {
-					timeleft = Math.round((arr[key].interval - arr[key].timepast) / arr[key].intervalUnit);
-					c.innerHTML = cPrefix + timeleft;
+				if (timer.timepast === timer.interval) {
+					stopit();
+				}
+				if (timer.paused === true) {
+					//console.log('arr paused');
 				} else {
-					timepast = Math.round(arr[key].timepast / arr[key].intervalUnit);
-					c.innerHTML = cPrefix + timepast;
+					if (settings.countDown) {
+						timeleft = Math.round((timer.interval - timer.timepast) / timer.intervalUnit);
+						c.innerHTML = cPrefix + timeleft;
+					} else {
+						timepast = Math.round(timer.timepast / timer.intervalUnit);
+						c.innerHTML = cPrefix + timepast;
+					}
 				}
 			}
 		}
@@ -570,13 +572,14 @@ function resetTimerLink(key) {
 }
 
 function resetTimer(key) {
-	let arr = getTimers();
+	var arr = getTimers();
 	arr[key].timepast = 0;
 	arr[key].starttime = getCurrentTimeSimple();
 	arr[key].finished = false;
 	document.title = 'Timer';
 	updateTimers(arr);
 	renderTimers(arr);
+	delete arr;
 }
 
 // ----------------------------- DETECTIONS
