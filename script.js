@@ -411,6 +411,16 @@ function renderTimers(arr) {
 }
 renderTimers(getTimers());
 
+function getCurrentTime() {
+	var current_time = d.createElement('div');
+	current_time.classList.add('current_time');
+	setInterval(() => {
+		current_time.innerHTML = getCurrentTimeSimple(true);
+		timer_container.appendChild(current_time);
+	}, 1000);
+}
+getCurrentTime();
+
 function renderTimer(i, key) {
 	let settings = getSettings();
 	let el = d.createElement('div');
@@ -454,12 +464,7 @@ function renderTimer(i, key) {
 			'<span class="starting_time_text">' +
 				tl(getSettings().language, 'Starting_time') +
 				'</span>: ' +
-				i.starttime +
-				' (' +
-				tl(getSettings().language, 'now') +
-				': ' +
-				getCurrentTimeSimple() +
-				')'
+				i.starttime
 		)
 	);
 	let el2 = document.createElement('div');
@@ -499,7 +504,6 @@ function renderTimerElement(
 }
 
 // ----------------------------- RENDER TASKS - DETAILS
-
 function countdownTimer(key, id) {
 	// individual per timer
 	var lb = setInterval(() => {
@@ -670,12 +674,18 @@ function playSound() {
 
 // ----------------------------- MISC METHODS
 
-function getCurrentTimeSimple() {
+function getCurrentTimeSimple(seconds = false) {
 	const now = new Date();
+	// console.log(now);
 	let hours = now.getHours().toString();
 	let minutes = now.getMinutes().toString();
 	hours = !hours.slice(1) ? '0' + hours : hours;
 	minutes = !minutes.slice(1) ? '0' + minutes : minutes;
+	if (seconds) {
+		let seconds = now.getSeconds().toString();
+		seconds = !seconds.slice(1) ? '0' + seconds : seconds;
+		return hours + ':' + minutes + ':' + seconds;
+	}
 	return hours + ':' + minutes;
 }
 

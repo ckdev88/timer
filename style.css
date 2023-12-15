@@ -444,3 +444,7 @@ button.text-btn.white,
 .timer-countdown-total {
 	display: inline-block;
 }
+.current_time {
+	padding: 1rem 0;
+	text-align: right;
+}
