@@ -44,6 +44,7 @@
 					name="settings_form_quickTimerName"
 					type="text"
 					placeholder="Quick timer name..."
+					pattern="[^!]+"
 				/>
 				<textarea
 					id="settings_form_quickTimerDescr"
@@ -76,7 +77,14 @@
 					<h2 class="form-name" id="timer_new_form_head">New timer</h2>
 					<a href="javascript:void(0)" id="timer_new_quick" class="white">Quick add</a>
 				</div>
-				<input id="new_timer_name" name="timer_name" type="text" placeholder="Name..." required />
+				<input
+					id="new_timer_name"
+					name="timer_name"
+					type="text"
+					placeholder="Name..."
+					pattern="[^!]+"
+					required
+				/>
 				<textarea
 					id="new_timer_description"
 					name="timer_description"

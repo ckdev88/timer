@@ -574,6 +574,7 @@ function resetTimer(key) {
 	arr[key].timepast = 0;
 	arr[key].starttime = getCurrentTimeSimple();
 	arr[key].finished = false;
+	document.title = 'Timer';
 	updateTimers(arr);
 	renderTimers(arr);
 }
@@ -602,13 +603,13 @@ function detectAnyActive(arr = getTimers()) {
 }
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
-
 function countdownAll() {
-	let extradot = false;
+	let blinkRunningOn = false;
+	let bufferTitle = '';
+	let finishedTimer;
+	let blinkFinishedOn = false;
 	const lb = setInterval(() => {
-		// console.log('extradot:', extradot);
 		let arr = getTimers();
-		// console.log('amount of timers', arr.length);
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].paused === true) continue;
 			if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
@@ -616,30 +617,34 @@ function countdownAll() {
 			}
 			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 				arr[i].finished = true;
-				document.title = arr[i].name + '!';
 				if (!quicktest) playSound();
 			}
 			if (arr[i].finished === true) {
+				finishedTimer = arr[i].name;
 				d.getElementById('timer-' + i).classList.add('finished');
 			}
 			updateTimers(arr);
-			// document.title = +'timers active';
 		}
 		if (!detectAnyActive()) {
-			// document.title = 'Timer';
 			stopit();
 		}
 
-		if (!detectAnyPaused() !== true && !detectAnyFinished() !== true) {
-			document.title = 'Timer';
-		}
-		if (extradot === false) {
-			document.title = document.title + '.';
-			extradot = true;
+		// tab/title manipulation for keepalive and notifying user
+		if (finishedTimer !== undefined && detectAnyFinished() === true) {
+			blinkFinishedOn = !blinkFinishedOn;
+			if (!blinkFinishedOn) {
+				document.title = finishedTimer + '!';
+			} else document.title = finishedTimer;
 		} else {
-			document.title = document.title.slice(0, -1);
-			extradot = false;
+			blinkRunningOn = !blinkRunningOn;
+			timerTitleBasic = 'Timer';
+			if (!blinkRunningOn && document.title === timerTitleBasic) {
+				document.title = timerTitleBasic + '.';
+			} else {
+				document.title = timerTitleBasic;
+			}
 		}
+		// /tab/title manipulation for keepalive and notifying user
 	}, 1000); // run every second/1000ms
 
 	function stopit() {
