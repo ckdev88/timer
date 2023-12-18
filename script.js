@@ -447,6 +447,7 @@ function getCurrentTime() {
 		timer_container.appendChild(el);
 	};
 	showtime(el);
+
 	setInterval(() => {
 		showtime(el);
 	}, 1000);
@@ -551,7 +552,6 @@ function countdownTimer(key, id) {
 		if (timerspersec[key] === undefined) {
 			clearInterval(tmpinterval);
 			stopit();
-			console.log('HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEELP');
 		} else {
 			// console.log('timerspersec[key]:', timerspersec[key]);
 			if (timerspersec[key].paused === true || timerspersec[key].paused === undefined) stopit();
@@ -679,22 +679,24 @@ function countdownAll() {
 	let blinkFinishedOn = false;
 	let arr;
 	var countdownAllPerSecond = setInterval(() => {
-		arr = timerspersec;
-		for (let i = 0; i < arr.length; i++) {
-			if (arr[i].paused === true) continue;
-			// re-render timers that are not paused
-			if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
-				arr[i].timepast++;
+		if (timerspersec.length > 0) {
+			arr = timerspersec;
+			for (let i = 0; i < arr.length; i++) {
+				if (arr[i].paused === true) continue;
+				// re-render timers that are not paused
+				if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
+					arr[i].timepast++;
+				}
+				if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
+					arr[i].finished = true;
+					if (!quicktest) playSound();
+				}
+				if (arr[i].finished === true) {
+					finishedTimer = arr[i].name;
+					d.getElementById('timer-' + i).classList.add('finished');
+				}
+				updateTimers(arr);
 			}
-			if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-				arr[i].finished = true;
-				if (!quicktest) playSound();
-			}
-			if (arr[i].finished === true) {
-				finishedTimer = arr[i].name;
-				d.getElementById('timer-' + i).classList.add('finished');
-			}
-			updateTimers(arr);
 		}
 		if (!detectAnyActive()) {
 			stopit();
