@@ -34,6 +34,9 @@ const getTimers = () => {
 
 let cachedTimers = getTimers(); // null on clean localstorage
 
+/**
+ * @param {Array<any>} arr - state of localStorage.timerTimers
+ */
 function updateTimers(arr) {
 	localStorage.setItem('timerTimers', JSON.stringify(arr));
 	if (
@@ -93,8 +96,8 @@ var translationMap = {
 		Seconds: 'Segundos',
 		seconds: 'segundos',
 		Minutes: 'Minutos',
-		minutes: 'minutos',
 		Create_timer: 'Criar timer',
+		minutes: 'minutos',
 		General_settings: 'Configurações gerais',
 		Count_down: 'Contagem regressiva até zero',
 		Count_up: 'Contagem a partir do zero',
@@ -264,10 +267,16 @@ function expandCollapseForm(what) {
 
 timer_new_form.addEventListener('submit', (e) => {
 	e.preventDefault();
+	/**
+	 * @type {FormData} - Data input of the New Timer form
+	 */
 	var data = new FormData(timer_new_form);
 	timerFormSubmit(data);
 });
 
+/**
+ * @param {FormData} data - data input of the New Timer form
+ */
 function timerFormSubmit(data) {
 	// change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
@@ -286,6 +295,10 @@ function timerFormSubmit(data) {
 	cleanForm();
 }
 
+/**
+ * @param {HTMLElement} afterElement - next to which the feedback will be inserted
+ * @param {string} textKey - translation key present in object translationMap
+ */
 function showFeedback(afterElement, textKey) {
 	let aftertext = document.createElement('div');
 	aftertext.innerText = tl(getSettings().language, textKey);
@@ -310,6 +323,11 @@ function addQuickTimer() {
 	addTimer(settings.quickTimerName, settings.quickTimerDescr, settings.quickTimerInterval);
 }
 
+/**
+ * @param {string} name - Name for the new timer
+ * @param {string} description - (optional) Description for the new timer
+ * @param {number} interval - Number of seconds or minutes for the new timer
+ */
 function addTimer(name, description, interval) {
 	let settings = getSettings();
 	arr = [];
@@ -504,11 +522,22 @@ function renderTimerElement(
 }
 
 // ----------------------------- RENDER TASKS - DETAILS
+/**
+ * @param { number } key - key in timer in localStorage.timerTimers
+ * @param { number } id - id of timer HTMLelement
+ */
 function countdownTimer(key, id) {
 	// individual per timer
-	var lb = setInterval(() => {
+	var tmpinterval = setInterval(() => {
 		timer = getTimers()[key];
-		if (timer.paused === true) stopit();
+
+		console.log('timer:', timer);
+		if (timer === undefined) {
+			clearInterval(tmpinterval);
+			stopit(this);
+		}
+		console.log('timer lb in setinterval per seconde in countdownTimer:', timer);
+		if (timer.paused === true || timer.paused === undefined) stopit();
 		else {
 			if (d.getElementById(id)) {
 				let settings = getSettings();
@@ -524,7 +553,7 @@ function countdownTimer(key, id) {
 					stopit();
 				}
 				if (timer.paused === true) {
-					//console.log('arr paused');
+					// console.log('arr paused');
 				} else {
 					if (settings.countDown) {
 						timeleft = Math.round((timer.interval - timer.timepast) / timer.intervalUnit);
@@ -594,6 +623,9 @@ function resetTimer(key) {
 }
 
 // ----------------------------- DETECTIONS
+/**
+ * @param { Object } arr - array of localstorage.timerTimers
+ */
 function detectAnyFinished(arr = getTimers()) {
 	for (i of arr) {
 		if (i.finished === true) return true;
@@ -623,6 +655,7 @@ function countdownAll() {
 	let finishedTimer;
 	let blinkFinishedOn = false;
 	const lb = setInterval(() => {
+		console.log('----------------------- countdown all per second ---------------------');
 		let arr = getTimers();
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].paused === true) continue;
@@ -706,6 +739,10 @@ function setBgStatus(status = 'normal') {
 }
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
+/**
+ * @param {string} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
+ * @param {string} stringkey - value used in object translationMap, text that needs to be translated
+ */
 function tl(langkey, stringkey) {
 	return translationMap[langkey][stringkey];
 }
