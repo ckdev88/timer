@@ -32,7 +32,13 @@ const getTimers = () => {
 	return timers;
 };
 
-let cachedTimers = getTimers(); // null on clean localstorage
+/**
+ * @type Array - Array of timers, refreshed every second
+ */
+let timerspersec = getTimers();
+setInterval(() => {
+	timerspersec = getTimers();
+}, 1000);
 
 /**
  * @param {Array<any>} arr - state of localStorage.timerTimers
@@ -356,9 +362,12 @@ function addTimer(name, description, interval) {
 function pauseTimerToggle(key) {
 	arr = getTimers();
 	var newarr = [];
+	var refresh = false; // TODO: the refresh-variable is just a hotfix for issue TOOMANYLOADS
+	// caused by toggling pause/resume
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) {
 			arr[i].paused = !arr[i].paused;
+			if (arr[i].paused === false) refresh = true;
 		}
 		newarr.push({
 			name: arr[i].name,
@@ -374,7 +383,8 @@ function pauseTimerToggle(key) {
 	}
 
 	updateTimers(newarr);
-	renderTimers(newarr);
+	renderTimers(newarr, false); // TODO: false isnt doing anything useful here, but somewhere here should be the proper bugfix for issue TOOMANYLOADS
+	if (refresh === true) location.reload();
 
 	delete arr;
 	delete newarr;
@@ -421,20 +431,24 @@ function clearLocalStorage() {
 }
 
 // ----------------------------- RENDER TASKS - MAIN
-function renderTimers(arr) {
+function renderTimers(arr, paused = false) {
 	timer_container.innerHTML = '';
 	for (let i = 0; i < arr.length; i++) {
-		timer_container.appendChild(renderTimer(arr[i], i));
+		if (paused === false) timer_container.appendChild(renderTimer(arr[i], i));
 	}
 }
 renderTimers(getTimers());
 
 function getCurrentTime() {
-	var current_time = d.createElement('div');
-	current_time.classList.add('current_time');
+	const el = d.createElement('div');
+	el.classList.add('current_time');
+	const showtime = (el) => {
+		el.innerHTML = getCurrentTimeSimple(true);
+		timer_container.appendChild(el);
+	};
+	showtime(el);
 	setInterval(() => {
-		current_time.innerHTML = getCurrentTimeSimple(true);
-		timer_container.appendChild(current_time);
+		showtime(el);
 	}, 1000);
 }
 getCurrentTime();
@@ -528,46 +542,55 @@ function renderTimerElement(
  */
 function countdownTimer(key, id) {
 	// individual per timer
-	var tmpinterval = setInterval(() => {
-		timer = getTimers()[key];
+	let testvar = 0;
+	const tmpinterval = setInterval(() => {
+		/*
+		TODO: there is still a bug that makes this run the amount of running timers for the only active timer, added by the amount of used pause/resume-toggles, every second (i.e. timer #0 can run 6 times per second) , this is hotfixed for now, by refreshing the page after resuming a timer, providing a clean array of timers, this issue in short is TOOMANYLOADS
+		*/
 
-		console.log('timer:', timer);
-		if (timer === undefined) {
+		if (timerspersec[key] === undefined) {
 			clearInterval(tmpinterval);
-			stopit(this);
-		}
-		console.log('timer lb in setinterval per seconde in countdownTimer:', timer);
-		if (timer.paused === true || timer.paused === undefined) stopit();
-		else {
-			if (d.getElementById(id)) {
-				let settings = getSettings();
-				if (settings.countDown)
-					cPrefix =
-						'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: ';
-				else
-					cPrefix =
-						'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: ';
-				let c = d.getElementById(id);
+			stopit();
+			console.log('HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEELP');
+		} else {
+			// console.log('timerspersec[key]:', timerspersec[key]);
+			if (timerspersec[key].paused === true || timerspersec[key].paused === undefined) stopit();
+			else {
+				if (d.getElementById(id)) {
+					let settings = getSettings();
+					if (settings.countDown)
+						cPrefix =
+							'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: ';
+					else
+						cPrefix =
+							'<span class="time_passed_text">' +
+							tl(settings.language, 'Time_passed') +
+							'</span>: ';
+					let c = d.getElementById(id);
 
-				if (timer.timepast === timer.interval) {
-					stopit();
-				}
-				if (timer.paused === true) {
-					// console.log('arr paused');
-				} else {
-					if (settings.countDown) {
-						timeleft = Math.round((timer.interval - timer.timepast) / timer.intervalUnit);
-						c.innerHTML = cPrefix + timeleft;
+					if (timerspersec[key].timepast === timerspersec[key].interval) {
+						stopit();
+					}
+					if (timerspersec[key].paused === true) {
+						// console.log('arr paused');
 					} else {
-						timepast = Math.round(timer.timepast / timer.intervalUnit);
-						c.innerHTML = cPrefix + timepast;
+						if (settings.countDown) {
+							timeleft = Math.round(
+								(timerspersec[key].interval - timerspersec[key].timepast) /
+									timerspersec[key].intervalUnit
+							);
+							c.innerHTML = cPrefix + timeleft;
+						} else {
+							timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit);
+							c.innerHTML = cPrefix + timepast;
+						}
 					}
 				}
 			}
 		}
 	}, 1000);
 	function stopit() {
-		clearInterval(lb);
+		clearInterval(tmpinterval);
 	}
 }
 
@@ -654,11 +677,12 @@ function countdownAll() {
 	let bufferTitle = '';
 	let finishedTimer;
 	let blinkFinishedOn = false;
-	const lb = setInterval(() => {
-		console.log('----------------------- countdown all per second ---------------------');
-		let arr = getTimers();
+	let arr;
+	var countdownAllPerSecond = setInterval(() => {
+		arr = timerspersec;
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].paused === true) continue;
+			// re-render timers that are not paused
 			if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
 				arr[i].timepast++;
 			}
@@ -695,7 +719,7 @@ function countdownAll() {
 	}, 1000); // run every second/1000ms
 
 	function stopit() {
-		clearInterval(lb);
+		clearInterval(countdownAllPerSecond);
 		localStorage.setItem('countDownAllStatus', 'stopped');
 	}
 }
