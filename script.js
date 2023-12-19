@@ -313,6 +313,9 @@ function timerFormSubmit(data) {
  * @param {string} textKey - translation key present in object translationMap
  */
 function showFeedback(afterElement, textKey) {
+	if (document.getElementsByClassName('feedback').length > 0) {
+		document.getElementsByClassName('feedback')[0].remove();
+	}
 	let aftertext = document.createElement('div');
 	aftertext.innerText = tl(getSettings().language, textKey);
 	aftertext.className = 'feedback';
@@ -473,7 +476,6 @@ const getCurrentDate = (lang = getSettings().language) => {
 };
 const setCurrentDate = (lang = getSettings().language) => {
 	d.getElementById('current_date').innerHTML = getCurrentDate(lang);
-	console.log('lang:', lang);
 };
 setCurrentDate();
 
