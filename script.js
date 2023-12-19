@@ -7,15 +7,18 @@ let pageInit = true;
 const d = document; // abstraction for loading speed & less code
 const timer_new_btn = d.getElementById('timer_new_btn');
 const timer_new_form = d.getElementById('timer_new_form');
+const timer_new_form_head = d.getElementById('timer_new_form_head');
 const timer_new_name = d.getElementById('new_timer_name');
 const timer_new_description = d.getElementById('new_timer_description');
 const timer_new_interval = d.getElementById('new_timer_interval');
 const timer_new_intervalUnit = d.getElementById('new_timer_intervalUnit');
 const timer_new_quick = d.getElementById('timer_new_quick');
 const timer_container = d.getElementById('timer_container');
+const new_timer_name = d.getElementById('new_timer_name');
 const settings_btn = d.getElementById('settings_btn');
 const settings_form = d.getElementById('settings_form');
 const clean_btn = d.getElementById('clean_btn');
+const btn_create_timer = d.getElementById('btn_create_timer');
 
 const setf_quickTimerName = d.getElementById('settings_form_quickTimerName');
 const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr');
@@ -23,8 +26,15 @@ const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterv
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
 const setf_language = d.getElementById('settings_form_language');
+const btn_update_settings = d.getElementById('btn_update_settings');
+
+const general_settings_head = d.getElementById('general_settings_head');
+const quick_add_settings_head = d.getElementById('quick_add_settings_head');
 
 const statusbar = d.getElementById('statusbar');
+
+const current_time = d.getElementById('current_time');
+const current_date = d.getElementById('current_date');
 
 const getTimers = () => {
 	let timers = JSON.parse(localStorage.getItem('timerTimers'));
@@ -234,7 +244,7 @@ function settingsFormSubmit(data) {
 	}
 	updateSettings(settings);
 
-	showFeedback(d.getElementById('btn_update_settings'), 'Settings_updated');
+	showFeedback(btn_update_settings, 'Settings_updated');
 	delete settings;
 }
 
@@ -362,7 +372,7 @@ function addTimer(name, description, interval) {
 		starttime: starttime,
 	});
 	updateTimers(arr);
-	showFeedback(d.getElementById('btn_create_timer'), 'Timer_created');
+	showFeedback(btn_create_timer, 'Timer_created');
 	renderTimers(arr);
 	delete arr;
 }
@@ -450,7 +460,7 @@ function renderTimers(arr, paused = false) {
 renderTimers(getTimers());
 
 function getCurrentTime() {
-	const el = d.getElementById('current_time');
+	const el = current_time;
 	const showtime = (el) => {
 		el.innerHTML = getCurrentTimeSimple(true);
 	};
@@ -463,7 +473,7 @@ function getCurrentTime() {
 getCurrentTime();
 
 const currentTime = () => {
-	d.getElementById('current_time').innerHTML = getCurrentTimeSimple(true);
+	current_time.innerHTML = getCurrentTimeSimple(true);
 };
 currentTime();
 
@@ -475,7 +485,7 @@ const getCurrentDate = (lang = getSettings().language) => {
 	});
 };
 const setCurrentDate = (lang = getSettings().language) => {
-	d.getElementById('current_date').innerHTML = getCurrentDate(lang);
+	current_date.innerHTML = getCurrentDate(lang);
 };
 setCurrentDate();
 
@@ -805,40 +815,32 @@ function changeLanguage(lang) {
 	newTextInElements('reset', tl(lang, 'reset'));
 	newTextInElements('remove', tl(lang, 'remove'));
 
-	d.getElementById('timer_new_btn').innerText = tl(lang, 'New_timer');
-	d.getElementById('timer_new_form_head').innerText = tl(lang, 'New_timer');
-	d.getElementById('timer_new_quick').innerText = tl(lang, 'Quick_add');
+	timer_new_btn.innerText = tl(lang, 'New_timer');
+	timer_new_form_head.innerText = tl(lang, 'New_timer');
+	timer_new_quick.innerText = tl(lang, 'Quick_add');
 
-	d.getElementById('new_timer_name').setAttribute('placeholder', tl(lang, 'Name') + '...');
-	d.getElementById('new_timer_description').setAttribute(
-		'placeholder',
-		tl(lang, 'Description') + '...'
-	);
-	d.getElementById('new_timer_interval').setAttribute('placeholder', tl(lang, 'Time') + '...');
-	d.getElementById('new_timer_intervalUnit').options[0].innerText = tl(lang, 'Seconds');
-	d.getElementById('settings_form_intervalUnit').options[0].innerText = tl(lang, 'Seconds');
-	d.getElementById('new_timer_intervalUnit').options[1].innerText = tl(lang, 'Minutes');
-	d.getElementById('settings_form_intervalUnit').options[1].innerText = tl(lang, 'Minutes');
-	d.getElementById('btn_create_timer').setAttribute('value', tl(lang, 'Create_timer'));
+	new_timer_name.setAttribute('placeholder', tl(lang, 'Name') + '...');
+	new_timer_description.setAttribute('placeholder', tl(lang, 'Description') + '...');
+	new_timer_interval.setAttribute('placeholder', tl(lang, 'Time') + '...');
+	new_timer_intervalUnit.options[0].innerText = tl(lang, 'Seconds');
+	setf_intervalUnit.options[0].innerText = tl(lang, 'Seconds');
+	new_timer_intervalUnit.options[1].innerText = tl(lang, 'Minutes');
+	setf_intervalUnit.options[1].innerText = tl(lang, 'Minutes');
 
-	d.getElementById('general_settings_head').innerText = tl(lang, 'General_settings');
-	d.getElementById('settings_form_countDown').options[0].innerText = tl(lang, 'Count_down');
-	d.getElementById('settings_form_countDown').options[1].innerText = tl(lang, 'Count_up');
-	d.getElementById('quick_add_settings_head').innerText = tl(lang, 'Quick_add_settings');
-	d.getElementById('btn_update_settings').setAttribute('value', tl(lang, 'Update_settings'));
+	btn_create_timer.setAttribute('value', tl(lang, 'Create_timer'));
+
+	general_settings_head.innerText = tl(lang, 'General_settings');
+	setf_countDown.options[0].innerText = tl(lang, 'Count_down');
+	setf_countDown.options[1].innerText = tl(lang, 'Count_up');
+	quick_add_settings_head.innerText = tl(lang, 'Quick_add_settings');
+	btn_update_settings.setAttribute('value', tl(lang, 'Update_settings'));
 
 	newTextInElements('starting_time_text', tl(lang, 'Starting_time'));
 	newTextInElements('time_left_text', tl(lang, 'Time_left'));
 	newTextInElements('time_passed_text', tl(lang, 'Time_passed'));
 
-	d.getElementById('settings_form_intervalUnit').setAttribute(
-		'aria-label',
-		tl(lang, 'Select_time_unit')
-	);
-	d.getElementById('new_timer_intervalUnit').setAttribute(
-		'aria-label',
-		tl(lang, 'Select_time_unit')
-	);
+	setf_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'));
+	new_timer_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'));
 
 	// console.log('changing language');
 	setCurrentDate(lang);
