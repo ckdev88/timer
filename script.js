@@ -23,6 +23,7 @@ const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterv
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit');
 const setf_countDown = d.getElementById('settings_form_countDown');
 const setf_language = d.getElementById('settings_form_language');
+
 const statusbar = d.getElementById('statusbar');
 
 const getTimers = () => {
@@ -58,6 +59,11 @@ if (detectAnyActive() === true) {
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
 }
+
+/**
+ * @type {{[string]:{[string]:string}}} - map with translations, strings
+ */
+
 var translationMap = {
 	en: {
 		pause: 'pause',
@@ -124,7 +130,6 @@ var translationMap = {
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
 if (pageInit === true) {
-	// console.log(navigator);
 	var browserLanguage = 'en';
 	if (navigator.language.substring(0, 2) == 'pt') {
 		browserLanguage = 'pt';
@@ -543,7 +548,6 @@ function renderTimerElement(
  */
 function countdownTimer(key, id) {
 	// individual per timer
-	let testvar = 0;
 	const tmpinterval = setInterval(() => {
 		/*
 		TODO: there is still a bug that makes this run the amount of running timers for the only active timer, added by the amount of used pause/resume-toggles, every second (i.e. timer #0 can run 6 times per second) , this is hotfixed for now, by refreshing the page after resuming a timer, providing a clean array of timers, this issue in short is TOOMANYLOADS
@@ -674,12 +678,10 @@ function detectAnyActive(arr = getTimers()) {
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 function countdownAll() {
 	let blinkRunningOn = false;
-	let bufferTitle = '';
 	let finishedTimer;
 	let blinkFinishedOn = false;
-	let arr;
 	var countdownAllPerSecond = setInterval(() => {
-		if (timerspersec.length > 0) {
+		if (timerspersec.length !== null) {
 			arr = timerspersec;
 			for (let i = 0; i < arr.length; i++) {
 				if (arr[i].paused === true) continue;
