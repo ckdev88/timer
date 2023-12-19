@@ -66,6 +66,7 @@ if (detectAnyActive() === true) {
 
 var translationMap = {
 	en: {
+		localeString: 'en-US',
 		pause: 'pause',
 		reset: 'reset',
 		resume: 'resume',
@@ -96,6 +97,7 @@ var translationMap = {
 		now: 'now',
 	},
 	pt: {
+		localeString: 'pt-BR',
 		pause: 'pausar',
 		reset: 'redefinir',
 		resume: 'continuar',
@@ -445,11 +447,9 @@ function renderTimers(arr, paused = false) {
 renderTimers(getTimers());
 
 function getCurrentTime() {
-	const el = d.createElement('div');
-	el.classList.add('current_time');
+	const el = d.getElementById('current_time');
 	const showtime = (el) => {
 		el.innerHTML = getCurrentTimeSimple(true);
-		timer_container.appendChild(el);
 	};
 	showtime(el);
 
@@ -458,6 +458,24 @@ function getCurrentTime() {
 	}, 1000);
 }
 getCurrentTime();
+
+const currentTime = () => {
+	d.getElementById('current_time').innerHTML = getCurrentTimeSimple(true);
+};
+currentTime();
+
+const getCurrentDate = (lang = getSettings().language) => {
+	return new Date().toLocaleString([tl(lang, 'localeString')], {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric',
+	});
+};
+const setCurrentDate = (lang = getSettings().language) => {
+	d.getElementById('current_date').innerHTML = getCurrentDate(lang);
+	console.log('lang:', lang);
+};
+setCurrentDate();
 
 function renderTimer(i, key) {
 	let settings = getSettings();
@@ -819,6 +837,9 @@ function changeLanguage(lang) {
 		'aria-label',
 		tl(lang, 'Select_time_unit')
 	);
+
+	// console.log('changing language');
+	setCurrentDate(lang);
 }
 
 function newTextInElements(classname, newText) {

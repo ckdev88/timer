@@ -460,7 +460,13 @@ button.text-btn.white,
 .timer-countdown-total {
 	display: inline-block;
 }
-.current_time {
-	padding: 1rem 0;
+#current_time,
+#current_date {
 	text-align: right;
+}
+#current_time {
+	padding-top: 1rem;
+}
+#current_date {
+	padding-bottom: 1rem;
 }
