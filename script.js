@@ -709,7 +709,7 @@ function countdownAll() {
 	let finishedTimer;
 	let blinkFinishedOn = false;
 	var countdownAllPerSecond = setInterval(() => {
-		if (timerspersec.length !== null) {
+		if (timerspersec) {
 			arr = timerspersec;
 			for (let i = 0; i < arr.length; i++) {
 				if (arr[i].paused === true) continue;
