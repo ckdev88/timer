@@ -1,5 +1,3 @@
-// Why this? To build a timer, timers and later a sort of agenda function for the day, connected with times, all using local storage, not needing any deployment server, just the html, js & css maybe even all in one html-file, so it's super easy to use.
-
 // ----------------------------- GLOBAL CONSTANTS
 const quicktest = false;
 let pageInit = true;
