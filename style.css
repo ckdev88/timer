@@ -453,12 +453,6 @@ button.text-btn.white,
 #clean_btn {
 	display: none;
 }
-.quicktest #clean_btn {
-	display: block;
-}
-.quicktest h2 {
-	display: none;
-}
 .timer-countdown-current,
 .timer-countdown-total {
 	display: inline-block;

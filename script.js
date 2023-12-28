@@ -1,16 +1,14 @@
 // ----------------------------- GLOBAL CONSTANTS
-const quicktest = false;
 let pageInit = true;
 
 const d = document; // abstraction for loading speed & less code
-const timer_new_btn = d.getElementById('timer_new_btn');
-const timer_new_form = d.getElementById('timer_new_form');
-const timer_new_form_head = d.getElementById('timer_new_form_head');
-const timer_new_name = d.getElementById('new_timer_name');
-const timer_new_description = d.getElementById('new_timer_description');
-const timer_new_interval = d.getElementById('new_timer_interval');
-const timer_new_intervalUnit = d.getElementById('new_timer_intervalUnit');
-const timer_new_quick = d.getElementById('timer_new_quick');
+const new_timer_btn = d.getElementById('new_timer_btn');
+const new_timer_form = d.getElementById('new_timer_form');
+const new_timer_form_head = d.getElementById('new_timer_form_head');
+const new_timer_description = d.getElementById('new_timer_description');
+const new_timer_interval = d.getElementById('new_timer_interval');
+const new_timer_intervalUnit = d.getElementById('new_timer_intervalUnit');
+const new_timer_quick = d.getElementById('new_timer_quick');
 const timer_container = d.getElementById('timer_container');
 const new_timer_name = d.getElementById('new_timer_name');
 const settings_btn = d.getElementById('settings_btn');
@@ -63,7 +61,8 @@ function updateTimers(arr) {
 	}
 }
 
-if (detectAnyActive() === true) {
+if (detectAnyActive() === true && pageInit === true) {
+	// run once on init
 	countdownAll();
 	localStorage.setItem('countDownAllStatus', 'active');
 }
@@ -150,27 +149,15 @@ if (pageInit === true) {
 
 let settings_d;
 
-if (quicktest) {
-	settings_d = {
-		intervalUnit: 1, // in seconds
-		intervalUnitName: '',
-		countDown: true, // true: show time remaining, false: show time passed
-		quickTimerInterval: 10, // totals value multiplied by value of settings.intervalUnit
-		quickTimerName: 'TEST MODUS TASK',
-		quickTimerDescr: '',
-		language: language,
-	};
-} else {
-	settings_d = {
-		intervalUnit: 60, // in seconds
-		intervalUnitName: '',
-		countDown: true, // true: show time remaining, false: show time passed
-		quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
-		quickTimerName: tl(language, 'Quick_timer_default_name'),
-		quickTimerDescr: tl(language, 'Quick_timer_default_description'),
-		language: language,
-	};
-}
+settings_d = {
+	intervalUnit: 60, // in seconds
+	intervalUnitName: '',
+	countDown: true, // true: show time remaining, false: show time passed
+	quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
+	quickTimerName: tl(language, 'Quick_timer_default_name'),
+	quickTimerDescr: tl(language, 'Quick_timer_default_description'),
+	language: language,
+};
 
 settings_d.intervalUnitName = getIntervalUnitName(settings_d.intervalUnit);
 
@@ -191,14 +178,14 @@ function settingsForm(what) {
 	if (what == 'expand') {
 		settings_btn.classList.replace('collapsed', 'expanded');
 		settings_form.className = 'dblock';
-		timer_new_form.className = 'dnone';
-		timer_new_btn.classList.replace('expanded', 'collapsed');
+		new_timer_form.className = 'dnone';
+		new_timer_btn.classList.replace('expanded', 'collapsed');
 	}
 	if (what == 'collapse') {
 		settings_btn.classList.replace('expanded', 'collapsed');
 		settings_form.className = 'dnone';
-		timer_new_form.className = 'dblock';
-		timer_new_btn.classList.replace('collapsed', 'expanded');
+		new_timer_form.className = 'dblock';
+		new_timer_btn.classList.replace('collapsed', 'expanded');
 	}
 }
 
@@ -257,7 +244,8 @@ function selectOption(el, option) {
 
 function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr));
-	selectOption(timer_new_intervalUnit, getSettings().intervalUnit);
+	selectOption(new_timer_intervalUnit, getSettings().intervalUnit);
+
 	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
 		countdownAll();
 		localStorage.setItem('countDownAllStatus', 'active');
@@ -265,33 +253,33 @@ function updateSettings(arr) {
 }
 
 // ----------------------------- ADD TASKS - FORM
-selectOption(timer_new_intervalUnit, settings.intervalUnit);
+selectOption(new_timer_intervalUnit, settings.intervalUnit);
 
-timer_new_btn.addEventListener('click', () => {
-	timer_new_form.className == 'dblock'
+new_timer_btn.addEventListener('click', () => {
+	new_timer_form.className == 'dblock'
 		? expandCollapseForm('collapse')
 		: expandCollapseForm('expand');
 });
 
 function expandCollapseForm(what) {
 	if (what == 'expand') {
-		timer_new_btn.classList.replace('collapsed', 'expanded');
-		timer_new_form.className = 'dblock';
+		new_timer_btn.classList.replace('collapsed', 'expanded');
+		new_timer_form.className = 'dblock';
 		settings_form.className = 'dnone';
 		settings_btn.classList.replace('expanded', 'collapsed');
 	}
 	if (what === 'collapse') {
-		timer_new_form.className = 'dnone';
-		timer_new_btn.classList.replace('expanded', 'collapsed');
+		new_timer_form.className = 'dnone';
+		new_timer_btn.classList.replace('expanded', 'collapsed');
 	}
 }
 
-timer_new_form.addEventListener('submit', (e) => {
+new_timer_form.addEventListener('submit', (e) => {
 	e.preventDefault();
 	/**
 	 * @type {FormData} - Data input of the New Timer form
 	 */
-	var data = new FormData(timer_new_form);
+	var data = new FormData(new_timer_form);
 	timerFormSubmit(data);
 });
 
@@ -332,13 +320,13 @@ function showFeedback(afterElement, textKey) {
 }
 
 function cleanForm() {
-	timer_new_name.value = '';
-	timer_new_description.value = '';
-	timer_new_interval.value = '';
-	timer_new_name.focus();
+	new_timer_name.value = '';
+	new_timer_description.value = '';
+	new_timer_interval.value = '';
+	new_timer_name.focus();
 }
 
-timer_new_quick.addEventListener('click', () => {
+new_timer_quick.addEventListener('click', () => {
 	addQuickTimer();
 });
 
@@ -434,13 +422,6 @@ function removeTimer(key) {
 
 	delete arr;
 	delete newarr;
-}
-
-if (quicktest) {
-	document.body.classList.add('quicktest');
-	clean_btn.addEventListener('click', function () {
-		clearLocalStorage();
-	});
 }
 
 function clearLocalStorage() {
@@ -685,20 +666,20 @@ function detectAnyFinished(arr = getTimers()) {
 	for (i of arr) {
 		if (i.finished === true) return true;
 	}
+	return false;
 }
 
 function detectAnyPaused(arr = getTimers()) {
 	for (i of arr) {
 		if (i.paused === true) return true;
 	}
+	return false;
 }
 
 // Detect any still running timers
 function detectAnyActive(arr = getTimers()) {
-	if (arr) {
-		for (i of arr) {
-			if (i.finished === false) return true;
-		}
+	for (i of arr) {
+		if (i.finished === false) return true;
 	}
 	return false;
 }
@@ -719,7 +700,6 @@ function countdownAll() {
 				}
 				if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 					arr[i].finished = true;
-					if (!quicktest) playSound();
 				}
 				if (arr[i].finished === true) {
 					finishedTimer = arr[i].name;
@@ -732,7 +712,7 @@ function countdownAll() {
 			stopit();
 		}
 
-		// tab/title manipulation for keepalive and notifying user
+		// tab/title manipulation for keepalive and notifying user, refreshed every second
 		if (finishedTimer !== undefined && detectAnyFinished() === true) {
 			blinkFinishedOn = !blinkFinishedOn;
 			if (!blinkFinishedOn) {
@@ -747,8 +727,7 @@ function countdownAll() {
 				document.title = timerTitleBasic;
 			}
 		}
-		// /tab/title manipulation for keepalive and notifying user
-	}, 1000); // run every second/1000ms
+	}, 1000);
 
 	function stopit() {
 		clearInterval(countdownAllPerSecond);
@@ -765,7 +744,6 @@ function playSound() {
 
 function getCurrentTimeSimple(seconds = false) {
 	const now = new Date();
-	// console.log(now);
 	let hours = now.getHours().toString();
 	let minutes = now.getMinutes().toString();
 	hours = !hours.slice(1) ? '0' + hours : hours;
@@ -813,9 +791,9 @@ function changeLanguage(lang) {
 	newTextInElements('reset', tl(lang, 'reset'));
 	newTextInElements('remove', tl(lang, 'remove'));
 
-	timer_new_btn.innerText = tl(lang, 'New_timer');
-	timer_new_form_head.innerText = tl(lang, 'New_timer');
-	timer_new_quick.innerText = tl(lang, 'Quick_add');
+	new_timer_btn.innerText = tl(lang, 'New_timer');
+	new_timer_form_head.innerText = tl(lang, 'New_timer');
+	new_timer_quick.innerText = tl(lang, 'Quick_add');
 
 	new_timer_name.setAttribute('placeholder', tl(lang, 'Name') + '...');
 	new_timer_description.setAttribute('placeholder', tl(lang, 'Description') + '...');
