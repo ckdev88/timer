@@ -18,7 +18,9 @@ const btn_create_timer = d.getElementById('btn_create_timer')
 
 const setf_quickTimerName = d.getElementById('settings_form_quickTimerName')
 const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr')
-const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterval')
+const setf_quickTimerInterval = d.getElementById(
+	'settings_form_quickTimerInterval'
+)
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit')
 const setf_countDown = d.getElementById('settings_form_countDown')
 const setf_language = d.getElementById('settings_form_language')
@@ -129,7 +131,8 @@ var translationMap = {
 		Time_left: 'Tempo restante',
 		Time_passed: 'Tempo passado',
 		Quick_timer_default_name: 'Alongar',
-		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
+		Quick_timer_default_description:
+			'Comer, se movimentar, beber ou alguma coisa.',
 		Timer_created: 'Timer criado',
 		Settings_updated: 'Configurações atualizadas',
 		Select_time_unit: 'Selecione a unidade de tempo',
@@ -724,6 +727,7 @@ function countdownAll() {
 				}
 				if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
 					arr[i].finished = true
+					playSound()
 				}
 				if (arr[i].finished === true) {
 					finishedTimer = arr[i].name
@@ -760,12 +764,21 @@ function countdownAll() {
 }
 
 function playSound() {
+
 	const siren = new Audio('siren1.wav')
 	siren.play()
+
 }
 
 // ----------------------------- MISC METHODS
 
+/**
+ * Returns a simplified time in HH:MM:SS .
+ *
+ * @param {boolean} seconds - optional: to activate seconds display
+ * @returns {string}
+ *
+ */
 function getCurrentTimeSimple(seconds = false) {
 	const now = new Date()
 	let hours = now.getHours().toString()
@@ -807,7 +820,13 @@ function tl(langkey, stringkey) {
 function setHtmlLang(lang) {
 	document.documentElement.lang = lang
 }
-
+/**
+ * Set language of the app.
+ *
+ * @param {string} lang - language code, current options: en,pt. 
+ * @returns {void}
+ *
+ */
 function changeLanguage(lang) {
 	setHtmlLang(lang)
 	newTextInElements('pause', tl(lang, 'pause'))
@@ -848,7 +867,6 @@ function changeLanguage(lang) {
 		tl(lang, 'Select_time_unit')
 	)
 
-	// console.log('changing language');
 	setCurrentDate(lang)
 }
 
