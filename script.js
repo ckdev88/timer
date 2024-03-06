@@ -543,6 +543,14 @@ function renderTimer(i, key) {
 	return el
 }
 
+/**
+ * Render the timer element, meaning 1 per timer.
+ *
+ * @param {string} node - HTML node 
+ * @param {string} className
+ * @returns {void}
+ *
+ */
 function renderTimerElement(
 	node = 'div',
 	className,
@@ -585,7 +593,6 @@ function countdownTimer(key, id) {
 			clearInterval(tmpinterval)
 			stopit()
 		} else {
-			// console.log('timerspersec[key]:', timerspersec[key]);
 			if (
 				timerspersec[key].paused === true ||
 				timerspersec[key].paused === undefined
@@ -764,10 +771,8 @@ function countdownAll() {
 }
 
 function playSound() {
-
 	const siren = new Audio('siren1.wav')
 	siren.play()
-
 }
 
 // ----------------------------- MISC METHODS
@@ -795,6 +800,11 @@ function getCurrentTimeSimple(seconds = false) {
 
 // ----------------------------- BACKGROUND... LITERALLY
 
+/**
+ * Interact with html body background status
+ * @param [] arr - Pass parameters of said timer item, to pass those to HTML body class interaction
+ * @returns {void}
+ */
 function bgStatus(arr) {
 	if (detectAnyFinished(arr)) setBgStatus('alert')
 	else if (detectAnyPaused(arr)) setBgStatus('paused')
@@ -802,6 +812,11 @@ function bgStatus(arr) {
 	else setBgStatus('normal')
 }
 
+/**
+ * Change HTML body class to indicate timer status to user.
+ * @param {string} status - Pass status (alert/paused/running) to change HTML body class 
+ * @returns {void}
+ */
 function setBgStatus(status = 'normal') {
 	if (status === 'alert') statusbar.className = 'statusbar-alert'
 	else if (status === 'paused') statusbar.className = 'statusbar-pause'
@@ -813,19 +828,22 @@ function setBgStatus(status = 'normal') {
 /**
  * @param {string} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
  * @param {string} stringkey - value used in object translationMap, text that needs to be translated
+ * @returns {{[string]:{[string]:string}}}
  */
 function tl(langkey, stringkey) {
 	return translationMap[langkey][stringkey]
 }
+/**
+ * @param {string} lang 
+ */
 function setHtmlLang(lang) {
 	document.documentElement.lang = lang
 }
+
 /**
  * Set language of the app.
- *
  * @param {string} lang - language code, current options: en,pt. 
- * @returns {void}
- *
+ * @returns {void} 
  */
 function changeLanguage(lang) {
 	setHtmlLang(lang)
