@@ -34,24 +34,26 @@ const statusbar = d.getElementById('statusbar')
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
+/**
+ * Turn localstorage-string containing timers into an array and return it.
+ * @var {String} timers
+ * @returns {[]} timers
+*/
 const getTimers = () => {
+	/** @type {[]} timers */
 	let timers = JSON.parse(localStorage.getItem('timerTimers'))
 	if (!timers) updateTimers([])
 	else bgStatus(timers)
 	return timers
 }
 
-/**
- * @type Array - Array of timers, refreshed every second
- */
+/** @type {[]} timerspersec - Array of timers, refreshed every second */
 let timerspersec = getTimers()
 setInterval(() => {
 	timerspersec = getTimers()
 }, 1000)
 
-/**
- * @param {Array<any>} arr - state of localStorage.timerTimers
- */
+/** @param {Array<any>} arr - state of localStorage.timerTimers */
 function updateTimers(arr) {
 	localStorage.setItem('timerTimers', JSON.stringify(arr))
 	if (
@@ -73,7 +75,6 @@ if (detectAnyActive() === true && pageInit === true) {
 /**
  * @type {{[string]:{[string]:string}}} - map with translations, strings
  */
-
 var translationMap = {
 	en: {
 		localeString: 'en-US',
@@ -142,6 +143,9 @@ var translationMap = {
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
+/** @type {boolean} pageInit */
+/** @type {string} language  */
+let language
 if (pageInit === true) {
 	var browserLanguage = 'en'
 	if (navigator.language.substring(0, 2) == 'pt') {
@@ -151,6 +155,7 @@ if (pageInit === true) {
 	language = browserLanguage
 }
 
+/** @type {object} settings_d */
 let settings_d
 
 settings_d = {
@@ -179,7 +184,10 @@ settings_btn.addEventListener('click', () => {
 		? settingsForm('collapse')
 		: settingsForm('expand')
 })
-
+/**
+ * @param {string} what 
+ * @returns {void}
+ */
 function settingsForm(what) {
 	if (what == 'expand') {
 		settings_btn.classList.replace('collapsed', 'expanded')
@@ -213,6 +221,7 @@ settings_form.addEventListener('submit', (e) => {
 	let data = new FormData(settings_form)
 	settingsFormSubmit(data)
 })
+
 
 function getIntervalUnitName(num) {
 	if (num === 1) return tl(language, 'seconds')
@@ -359,6 +368,7 @@ function addQuickTimer() {
  */
 function addTimer(name, description, interval) {
 	let settings = getSettings()
+	/** @type {[]} arr */
 	arr = []
 	const starttime = getCurrentTimeSimple()
 	arr = getTimers()
@@ -417,7 +427,6 @@ function pauseTimerToggle(key) {
 
 function removeTimer(key) {
 	arr = getTimers()
-
 	var newarr = []
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) continue // rebuild with all timers, but skip the specified one
@@ -485,6 +494,11 @@ const setCurrentDate = (lang = getSettings().language) => {
 }
 setCurrentDate()
 
+/**
+ * @param {string} i
+ * @param {number} key
+ * @returns {HTMLElement}
+ */
 function renderTimer(i, key) {
 	let settings = getSettings()
 	let el = d.createElement('div')
@@ -657,6 +671,7 @@ function pauseTimerToggleLink(key, paused = false) {
 	el.addEventListener('click', () => pauseTimerToggle(key))
 	return el
 }
+
 
 function removeTimerLink(key) {
 	let el = d.createElement('button')
@@ -833,9 +848,8 @@ function setBgStatus(status = 'normal') {
 function tl(langkey, stringkey) {
 	return translationMap[langkey][stringkey]
 }
-/**
- * @param {string} lang 
- */
+
+/** @param {string} lang */
 function setHtmlLang(lang) {
 	document.documentElement.lang = lang
 }
