@@ -18,9 +18,7 @@ const btn_create_timer = d.getElementById('btn_create_timer')
 
 const setf_quickTimerName = d.getElementById('settings_form_quickTimerName')
 const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr')
-const setf_quickTimerInterval = d.getElementById(
-	'settings_form_quickTimerInterval'
-)
+const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterval')
 const setf_intervalUnit = d.getElementById('settings_form_intervalUnit')
 const setf_countDown = d.getElementById('settings_form_countDown')
 const setf_language = d.getElementById('settings_form_language')
@@ -38,7 +36,7 @@ const current_date = d.getElementById('current_date')
  * Turn localstorage-string containing timers into an array and return it.
  * @var {String} timers
  * @returns {[]} timers
-*/
+ */
 const getTimers = () => {
 	/** @type {[]} timers */
 	let timers = JSON.parse(localStorage.getItem('timerTimers'))
@@ -57,8 +55,7 @@ setInterval(() => {
 function updateTimers(arr) {
 	localStorage.setItem('timerTimers', JSON.stringify(arr))
 	if (
-		(detectAnyActive() === true &&
-			localStorage.getItem('countDownAllStatus') == 'stopped') ||
+		(detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') ||
 		arr.length === 0
 	) {
 		countdownAll()
@@ -180,12 +177,10 @@ const settings = getSettings()
 // ----------------------------- CONFIGURE SETTINGS
 
 settings_btn.addEventListener('click', () => {
-	settings_form.className == 'dblock'
-		? settingsForm('collapse')
-		: settingsForm('expand')
+	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
 })
 /**
- * @param {string} what 
+ * @param {string} what
  * @returns {void}
  */
 function settingsForm(what) {
@@ -206,10 +201,7 @@ function settingsForm(what) {
 function settingsFormDefaults() {
 	setf_quickTimerName.setAttribute('value', settings.quickTimerName)
 	setf_quickTimerDescr.innerText = settings.quickTimerDescr
-	setf_quickTimerInterval.setAttribute(
-		'value',
-		settings.quickTimerInterval / settings.intervalUnit
-	)
+	setf_quickTimerInterval.setAttribute('value', settings.quickTimerInterval / settings.intervalUnit)
 	selectOption(setf_intervalUnit, settings.intervalUnit)
 	selectOption(setf_countDown, String(settings.countDown))
 	selectOption(setf_language, settings.language)
@@ -222,7 +214,6 @@ settings_form.addEventListener('submit', (e) => {
 	settingsFormSubmit(data)
 })
 
-
 function getIntervalUnitName(num) {
 	if (num === 1) return tl(language, 'seconds')
 	return tl(language, 'minutes')
@@ -230,9 +221,7 @@ function getIntervalUnitName(num) {
 function settingsFormSubmit(data) {
 	var settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
-		intervalUnitName: getIntervalUnitName(
-			Number(data.get('settings_form_intervalUnit'))
-		),
+		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTimerInterval:
 			Number(data.get('settings_form_quickTimerInterval')) *
@@ -263,10 +252,7 @@ function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr))
 	selectOption(new_timer_intervalUnit, getSettings().intervalUnit)
 
-	if (
-		detectAnyActive() === true &&
-		localStorage.getItem('countDownAllStatus') == 'stopped'
-	) {
+	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
 		countdownAll()
 		localStorage.setItem('countDownAllStatus', 'active')
 	}
@@ -310,9 +296,7 @@ function timerFormSubmit(data) {
 	// change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'))
-		settings.intervalUnitName = String(
-			getIntervalUnitName(settings.intervalUnit)
-		)
+		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit))
 		settings.language = getSettings().language
 	}
 	updateSettings(settings)
@@ -354,11 +338,7 @@ new_timer_quick.addEventListener('click', () => {
 
 function addQuickTimer() {
 	let settings = getSettings()
-	addTimer(
-		settings.quickTimerName,
-		settings.quickTimerDescr,
-		settings.quickTimerInterval
-	)
+	addTimer(settings.quickTimerName, settings.quickTimerDescr, settings.quickTimerInterval)
 }
 
 /**
@@ -560,7 +540,7 @@ function renderTimer(i, key) {
 /**
  * Render the timer element, meaning 1 per timer.
  *
- * @param {string} node - HTML node 
+ * @param {string} node - HTML node
  * @param {string} className
  * @returns {void}
  *
@@ -607,24 +587,16 @@ function countdownTimer(key, id) {
 			clearInterval(tmpinterval)
 			stopit()
 		} else {
-			if (
-				timerspersec[key].paused === true ||
-				timerspersec[key].paused === undefined
-			)
-				stopit()
+			if (timerspersec[key].paused === true || timerspersec[key].paused === undefined) stopit()
 			else {
 				if (d.getElementById(id)) {
 					let settings = getSettings()
 					if (settings.countDown)
 						cPrefix =
-							'<span class="time_left_text">' +
-							tl(settings.language, 'Time_left') +
-							'</span>: '
+							'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: '
 					else
 						cPrefix =
-							'<span class="time_passed_text">' +
-							tl(settings.language, 'Time_passed') +
-							'</span>: '
+							'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: '
 					let c = d.getElementById(id)
 
 					if (timerspersec[key].timepast === timerspersec[key].interval) {
@@ -636,13 +608,11 @@ function countdownTimer(key, id) {
 						if (settings.countDown) {
 							timeleft = Math.round(
 								(timerspersec[key].interval - timerspersec[key].timepast) /
-								timerspersec[key].intervalUnit
+									timerspersec[key].intervalUnit
 							)
 							c.innerHTML = cPrefix + timeleft
 						} else {
-							timepast = Math.round(
-								timerspersec[key].timepast / timerspersec[key].intervalUnit
-							)
+							timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
 							c.innerHTML = cPrefix + timepast
 						}
 					}
@@ -671,7 +641,6 @@ function pauseTimerToggleLink(key, paused = false) {
 	el.addEventListener('click', () => pauseTimerToggle(key))
 	return el
 }
-
 
 function removeTimerLink(key) {
 	let el = d.createElement('button')
@@ -829,7 +798,7 @@ function bgStatus(arr) {
 
 /**
  * Change HTML body class to indicate timer status to user.
- * @param {string} status - Pass status (alert/paused/running) to change HTML body class 
+ * @param {string} status - Pass status (alert/paused/running) to change HTML body class
  * @returns {void}
  */
 function setBgStatus(status = 'normal') {
@@ -856,8 +825,8 @@ function setHtmlLang(lang) {
 
 /**
  * Set language of the app.
- * @param {string} lang - language code, current options: en,pt. 
- * @returns {void} 
+ * @param {string} lang - language code, current options: en,pt.
+ * @returns {void}
  */
 function changeLanguage(lang) {
 	setHtmlLang(lang)
@@ -871,10 +840,7 @@ function changeLanguage(lang) {
 	new_timer_quick.innerText = tl(lang, 'Quick_add')
 
 	new_timer_name.setAttribute('placeholder', tl(lang, 'Name') + '...')
-	new_timer_description.setAttribute(
-		'placeholder',
-		tl(lang, 'Description') + '...'
-	)
+	new_timer_description.setAttribute('placeholder', tl(lang, 'Description') + '...')
 	new_timer_interval.setAttribute('placeholder', tl(lang, 'Time') + '...')
 	new_timer_intervalUnit.options[0].innerText = tl(lang, 'Seconds')
 	setf_intervalUnit.options[0].innerText = tl(lang, 'Seconds')
@@ -894,10 +860,7 @@ function changeLanguage(lang) {
 	newTextInElements('time_passed_text', tl(lang, 'Time_passed'))
 
 	setf_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'))
-	new_timer_intervalUnit.setAttribute(
-		'aria-label',
-		tl(lang, 'Select_time_unit')
-	)
+	new_timer_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'))
 
 	setCurrentDate(lang)
 }
