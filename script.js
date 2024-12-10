@@ -95,6 +95,7 @@ var translationMap = {
 		Update_settings: 'Update settings',
 		Quick_add_settings: 'Quick add settings',
 		Starting_time: 'Starting time',
+		Ending_time: 'Ending time',
 		Time_left: 'Time left',
 		Time_passed: 'Tempo passed',
 		Quick_timer_default_name: 'Stretch',
@@ -126,11 +127,11 @@ var translationMap = {
 		Update_settings: 'Atualizar',
 		Quick_add_settings: 'Adição rápida configurações',
 		Starting_time: 'Hora de início',
+		Ending_time: 'Hora de termina',
 		Time_left: 'Tempo restante',
 		Time_passed: 'Tempo passado',
 		Quick_timer_default_name: 'Alongar',
-		Quick_timer_default_description:
-			'Comer, se movimentar, beber ou alguma coisa.',
+		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
 		Timer_created: 'Timer criado',
 		Settings_updated: 'Configurações atualizadas',
 		Select_time_unit: 'Selecione a unidade de tempo',
@@ -351,6 +352,7 @@ function addTimer(name, description, interval) {
 	/** @type {[]} arr */
 	arr = []
 	const starttime = getCurrentTimeSimple()
+	const endtime = getTimeSimple(false, interval)
 	arr = getTimers()
 
 	arr.push({
@@ -363,6 +365,7 @@ function addTimer(name, description, interval) {
 		paused: false,
 		finished: false,
 		starttime: starttime,
+		endtime: endtime,
 	})
 	updateTimers(arr)
 	showFeedback(btn_create_timer, 'Timer_created')
@@ -392,6 +395,7 @@ function pauseTimerToggle(key) {
 			paused: arr[i].paused,
 			finished: arr[i].finished,
 			starttime: arr[i].starttime,
+			endtime: arr[i].endtime,
 		})
 	}
 
@@ -525,6 +529,14 @@ function renderTimer(i, key) {
 			tl(getSettings().language, 'Starting_time') +
 			'</span>: ' +
 			i.starttime
+	el.appendChild(
+		renderTimerElement(
+			'div',
+			'endtime',
+			'<span class="ending_time_text">' +
+				tl(getSettings().language, 'Ending_time') +
+				'</span>: ' +
+				i.endtime
 		)
 	)
 	let el2 = document.createElement('div')
@@ -669,6 +681,7 @@ function resetTimer(key) {
 	var arr = getTimers()
 	arr[key].timepast = 0
 	arr[key].starttime = getCurrentTimeSimple()
+	arr[key].endtime = getTimeSimple(false, arr[key].interval)
 	arr[key].finished = false
 	document.title = 'Timer'
 	updateTimers(arr)
@@ -768,8 +781,27 @@ function playSound() {
  * @returns {string}
  *
  */
+// TODO remove this fuunction when calls are replaced by reference to new getTimeSimple method
 function getCurrentTimeSimple(seconds = false) {
 	const now = new Date()
+	let hours = now.getHours().toString()
+	let minutes = now.getMinutes().toString()
+	hours = !hours.slice(1) ? '0' + hours : hours
+	minutes = !minutes.slice(1) ? '0' + minutes : minutes
+	if (seconds) {
+		let seconds = now.getSeconds().toString()
+		seconds = !seconds.slice(1) ? '0' + seconds : seconds
+		return hours + ':' + minutes + ':' + seconds
+	}
+	return hours + ':' + minutes
+}
+
+function getTimeSimple(seconds = false, secondsToAdd = 0) {
+	let now = new Date()
+	if (secondsToAdd > 0) {
+		let addingSeconds = now.getSeconds() + secondsToAdd
+		now.setSeconds(addingSeconds)
+	}
 	let hours = now.getHours().toString()
 	let minutes = now.getMinutes().toString()
 	hours = !hours.slice(1) ? '0' + hours : hours
@@ -856,6 +888,7 @@ function changeLanguage(lang) {
 	btn_update_settings.setAttribute('value', tl(lang, 'Update_settings'))
 
 	newTextInElements('starting_time_text', tl(lang, 'Starting_time'))
+	newTextInElements('ending_time_text', tl(lang, 'Ending_time'))
 	newTextInElements('time_left_text', tl(lang, 'Time_left'))
 	newTextInElements('time_passed_text', tl(lang, 'Time_passed'))
 
