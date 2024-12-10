@@ -500,12 +500,10 @@ function renderTimer(i, key) {
 			'countdown-' + el.id,
 			key,
 			settings.countDown === true
-				? '<span class="time_left_text">' +
-				tl(getSettings().language, 'Time_left') +
-				'</span>: '
+				? '<span class="time_left_text">' + tl(getSettings().language, 'Time_left') + '</span>: '
 				: '<span class="time_passed_text">' +
-				tl(getSettings().language, 'Time_passed') +
-				'</span>: '
+						tl(getSettings().language, 'Time_passed') +
+						'</span>: '
 		)
 	)
 
@@ -526,9 +524,11 @@ function renderTimer(i, key) {
 			'div',
 			'starttime',
 			'<span class="starting_time_text">' +
-			tl(getSettings().language, 'Starting_time') +
-			'</span>: ' +
-			i.starttime
+				tl(getSettings().language, 'Starting_time') +
+				'</span>: ' +
+				i.starttime
+		)
+	)
 	el.appendChild(
 		renderTimerElement(
 			'div',
