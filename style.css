@@ -22,32 +22,29 @@
 	--border-active: hsl(0, 0%, 40%);
 	--timer-pause-color: var(--pause-color);
 }
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg-color: hsl(60, 70%, 0%);
-		--fg-color: hsl(10, 10%, 90%);
-		--pause-color: hsl(0, 0%, 15%);
-		--alert-bg: hsl(0, 68%, 42%);
-		--running-bg: greenyellow;
-		--alert-color: hsl(0, 68%, 42%);
-		--remove-fg: hsl(16, 100%, 50%);
-		--remove-icon-color: hsl(16, 100%, 70%);
-		--settings-fg: greenyellow;
-		--button-bg: hsl(84, 100%, 59%);
-		--button-bg-hover: hsl(84, 100%, 39%);
-		--button-fg: black;
-		--input-border-color: hsl(0, 0, 80%);
-		--text-button-fg: greenyellow;
-		--separation-border-color: rgba(255, 255, 255, 0.2);
-		--finished-blink-bg: var(--alert-bg);
-		--play-icon-color: hsl(217, 87%, 80%);
-		--input-bg: white;
-		--border-inactive: hsl(0, 0%, 30%);
-		--border-hover: hsl(0, 0%, 40%);
-		--border-active: hsl(0, 0%, 60%);
-		--timer-pause-color: var(--pause-color);
-	}
+:root[data-theme='dark'] {
+	--bg-color: hsl(60, 70%, 0%);
+	--fg-color: hsl(10, 10%, 90%);
+	--pause-color: hsl(0, 0%, 15%);
+	--alert-bg: hsl(0, 68%, 42%);
+	--running-bg: greenyellow;
+	--alert-color: hsl(0, 68%, 42%);
+	--remove-fg: hsl(16, 100%, 50%);
+	--remove-icon-color: hsl(16, 100%, 70%);
+	--settings-fg: greenyellow;
+	--button-bg: hsl(84, 100%, 59%);
+	--button-bg-hover: hsl(84, 100%, 39%);
+	--button-fg: black;
+	--input-border-color: hsl(0, 0, 80%);
+	--text-button-fg: greenyellow;
+	--separation-border-color: rgba(255, 255, 255, 0.2);
+	--finished-blink-bg: var(--alert-bg);
+	--play-icon-color: hsl(217, 87%, 80%);
+	--input-bg: white;
+	--border-inactive: hsl(0, 0%, 30%);
+	--border-hover: hsl(0, 0%, 40%);
+	--border-active: hsl(0, 0%, 60%);
+	--timer-pause-color: var(--pause-color);
 }
 
 * {

@@ -914,4 +914,15 @@ function insertAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
+function detectColorScheme() {
+	let theme = 'dark' // default to dark
+	// local storage is used to override OS theme settings
+	if (localStorage.getItem('theme') && localStorage.getItem('theme') == 'light') theme = 'light'
+	else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark' //OS theme setting detected as light
+	// set preferred theme with a `data-theme` attribute
+	document.documentElement.setAttribute('data-theme', theme)
+	// TODO: create setting so user can override & save setting in localstorage
+}
+detectColorScheme()
+
 pageInit = false
