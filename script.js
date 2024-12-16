@@ -1,3 +1,6 @@
+// FIXME: sometimes, on a timing mismatch, removing a timer causes more than one to be "removed",
+// which probably means the new array isnt completely built, see fn def pauseTimerToggle &
+// fn def removeTimer
 // ----------------------------- GLOBAL CONSTANTS
 let pageInit = true
 
