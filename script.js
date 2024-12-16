@@ -588,8 +588,8 @@ function renderTimerElement(
 
 // ----------------------------- RENDER TASKS - DETAILS
 /**
- * @param { number } key - key in timer in localStorage.timerTimers
- * @param { number } id - id of timer HTMLelement
+ * @param {number} key - key in timer in localStorage.timerTimers
+ * @param {number} id - id of timer HTMLelement
  */
 function countdownTimer(key, id) {
 	// individual per timer
@@ -694,7 +694,7 @@ function resetTimer(key) {
 
 // ----------------------------- DETECTIONS
 /**
- * @param { Object } arr - array of localstorage.timerTimers
+ * @param {Object} arr - array of localstorage.timerTimers
  */
 function detectAnyFinished(arr = getTimers()) {
 	for (i of arr) {
