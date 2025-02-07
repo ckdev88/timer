@@ -1,10 +1,13 @@
-// FIXME: sometimes, on a timing mismatch, removing a timer causes more than one to be "removed",
+// TODO FIXME: sometimes, on a timing mismatch, removing a timer causes more than one to be "removed",
 // which probably means the new array isnt completely built, see fn def pauseTimerToggle &
 // fn def removeTimer
 // ----------------------------- GLOBAL CONSTANTS
+
+/** @type {boolean} pageInit starts with true value, is set to false after first run */
 let pageInit = true
 
-const d = document // abstraction for loading speed & less code
+/** @type {Document} d abbreviation of 'document' for loading speed & less code */
+const d = document
 const new_timer_btn = d.getElementById('new_timer_btn')
 const new_timer_form = d.getElementById('new_timer_form')
 const new_timer_form_head = d.getElementById('new_timer_form_head')
@@ -40,7 +43,7 @@ const current_date = d.getElementById('current_date')
  * @var {String} timers
  * @returns {[]} timers
  */
-const getTimers = () => {
+function getTimers() {
 	/** @type {[]} timers */
 	let timers = JSON.parse(localStorage.getItem('timerTimers'))
 	if (!timers) updateTimers([])
@@ -75,7 +78,7 @@ if (detectAnyActive() === true && pageInit === true) {
 /**
  * @type {{[string]:{[string]:string}}} - map with translations, strings
  */
-var translationMap = {
+const translationMap = {
 	en: {
 		localeString: 'en-US',
 		pause: 'pause',
@@ -144,7 +147,6 @@ var translationMap = {
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
-/** @type {boolean} pageInit */
 /** @type {string} language  */
 let language
 if (pageInit === true) {
@@ -156,10 +158,8 @@ if (pageInit === true) {
 	language = browserLanguage
 }
 
-/** @type {object} settings_d */
-let settings_d
-
-settings_d = {
+/** @interface {object} global settings used a default either per timer of for the entire application  */
+const settings_d = {
 	intervalUnit: 60, // in seconds
 	intervalUnitName: '',
 	countDown: true, // true: show time remaining, false: show time passed
@@ -184,7 +184,7 @@ settings_btn.addEventListener('click', () => {
 	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
 })
 /**
- * @param {string} what
+ * @param {'expand'|'collapse'} what
  * @returns {void}
  */
 function settingsForm(what) {
@@ -193,8 +193,8 @@ function settingsForm(what) {
 		settings_form.className = 'dblock'
 		new_timer_form.className = 'dnone'
 		new_timer_btn.classList.replace('expanded', 'collapsed')
-	}
-	if (what == 'collapse') {
+	} else {
+		// collapse
 		settings_btn.classList.replace('expanded', 'collapsed')
 		settings_form.className = 'dnone'
 		new_timer_form.className = 'dblock'
@@ -222,8 +222,9 @@ function getIntervalUnitName(num) {
 	if (num === 1) return tl(language, 'seconds')
 	return tl(language, 'minutes')
 }
+
 function settingsFormSubmit(data) {
-	var settings = {
+	const settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
 		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
@@ -380,8 +381,8 @@ function addTimer(name, description, interval) {
 
 function pauseTimerToggle(key) {
 	arr = getTimers()
-	var newarr = []
-	var refresh = false // TODO: the refresh-variable is just a hotfix for issue TOOMANYLOADS
+	const newarr = []
+	let refresh = false // TODO: the refresh-variable is just a hotfix for issue TOOMANYLOADS
 	// caused by toggling pause/resume
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) {
@@ -412,9 +413,15 @@ function pauseTimerToggle(key) {
 
 // ----------------------------- REMOVE TASKS
 
+/**
+ * Remove a timer block
+ * @param {number} key key of block containing a single timer
+ */
 function removeTimer(key) {
 	arr = getTimers()
-	var newarr = []
+	/**
+	 * @type {string|number[]} compose all timers except the one to be removed, to compose a new array of  timers */
+	const newarr = []
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) continue // rebuild with all timers, but skip the specified one
 		newarr.push({
@@ -435,6 +442,7 @@ function removeTimer(key) {
 
 	delete arr
 	delete newarr
+	return
 }
 
 function clearLocalStorage() {
@@ -443,6 +451,9 @@ function clearLocalStorage() {
 }
 
 // ----------------------------- RENDER TASKS - MAIN
+/**
+ * @returns {void}
+ */
 function renderTimers(arr, paused = false) {
 	timer_container.innerHTML = ''
 	for (let i = 0; i < arr.length; i++) {
@@ -590,12 +601,13 @@ function renderTimerElement(
 /**
  * @param {number} key - key in timer in localStorage.timerTimers
  * @param {number} id - id of timer HTMLelement
+ * @returns {void}
  */
 function countdownTimer(key, id) {
 	// individual per timer
 	const tmpinterval = setInterval(() => {
 		/*
-		TODO: there is still a bug that makes this run the amount of running timers for the only active timer, added by the amount of used pause/resume-toggles, every second (i.e. timer #0 can run 6 times per second) , this is hotfixed for now, by refreshing the page after resuming a timer, providing a clean array of timers, this issue in short is TOOMANYLOADS
+		TODO: TOOMANYLOADS: there is still a bug that makes this run the amount of running timers for the only active timer, added by the amount of used pause/resume-toggles, every second (i.e. timer #0 can run 6 times per second) , this is hotfixed for now, by refreshing the page after resuming a timer, providing a clean array of timers, this issue in short is TOOMANYLOADS
 		*/
 
 		if (timerspersec[key] === undefined) {
@@ -606,12 +618,13 @@ function countdownTimer(key, id) {
 			else {
 				if (d.getElementById(id)) {
 					let settings = getSettings()
-					if (settings.countDown)
+					if (settings.countDown) {
 						cPrefix =
 							'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: '
-					else
+					} else {
 						cPrefix =
 							'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: '
+					}
 					let c = d.getElementById(id)
 
 					if (timerspersec[key].timepast === timerspersec[key].interval) {
@@ -657,6 +670,10 @@ function pauseTimerToggleLink(key, paused = false) {
 	return el
 }
 
+/**
+ * @param {number} key
+ * @returns {HTMLButtonElement}
+ */
 function removeTimerLink(key) {
 	let el = d.createElement('button')
 	el.innerText = tl(getSettings().language, 'remove')
@@ -664,6 +681,7 @@ function removeTimerLink(key) {
 	el.id = 'del-' + key
 	el.addEventListener('click', () => {
 		removeTimer(key)
+		location.reload()
 	})
 	return el
 }
@@ -779,12 +797,10 @@ function playSound() {
 
 /**
  * Returns a simplified time in HH:MM:SS .
- *
  * @param {boolean} seconds - optional: to activate seconds display
  * @returns {string}
- *
  */
-// TODO remove this fuunction when calls are replaced by reference to new getTimeSimple method
+// TODO remove this function when calls are replaced by reference to new getTimeSimple method
 function getCurrentTimeSimple(seconds = false) {
 	const now = new Date()
 	let hours = now.getHours().toString()
@@ -901,6 +917,9 @@ function changeLanguage(lang) {
 	setCurrentDate(lang)
 }
 
+/**
+ * @returns {void}
+ */
 function newTextInElements(classname, newText) {
 	var elements = d.getElementsByClassName(classname)
 	for (i = 0; i < elements.length; i++) {
