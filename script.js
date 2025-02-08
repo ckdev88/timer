@@ -194,7 +194,6 @@ function settingsForm(what) {
 		new_timer_form.className = 'dnone'
 		new_timer_btn.classList.replace('expanded', 'collapsed')
 	} else {
-		// collapse
 		settings_btn.classList.replace('expanded', 'collapsed')
 		settings_form.className = 'dnone'
 		new_timer_form.className = 'dblock'
@@ -218,11 +217,17 @@ settings_form.addEventListener('submit', (e) => {
 	settingsFormSubmit(data)
 })
 
+/**
+ * @param {number} num
+ * @returns {string}
+ */
 function getIntervalUnitName(num) {
 	if (num === 1) return tl(language, 'seconds')
 	return tl(language, 'minutes')
 }
-
+/**
+ * returns {void}
+ */
 function settingsFormSubmit(data) {
 	const settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
@@ -244,6 +249,9 @@ function settingsFormSubmit(data) {
 	delete settings
 }
 
+/**
+ * returns {void}
+ */
 function selectOption(el, option) {
 	option = option.toString()
 	for (let i = 0; i < el.options.length; i++) {
@@ -253,6 +261,9 @@ function selectOption(el, option) {
 	}
 }
 
+/**
+ * returns {void}
+ */
 function updateSettings(arr) {
 	localStorage.setItem('settings', JSON.stringify(arr))
 	selectOption(new_timer_intervalUnit, getSettings().intervalUnit)
@@ -272,6 +283,9 @@ new_timer_btn.addEventListener('click', () => {
 		: expandCollapseForm('expand')
 })
 
+/**
+ * returns {void}
+ */
 function expandCollapseForm(what) {
 	if (what == 'expand') {
 		new_timer_btn.classList.replace('collapsed', 'expanded')
@@ -330,6 +344,9 @@ function showFeedback(afterElement, textKey) {
 	return insertAfter(afterElement, aftertext)
 }
 
+/**
+ * returns {void}
+ */
 function cleanForm() {
 	new_timer_name.value = ''
 	new_timer_description.value = ''
@@ -341,6 +358,9 @@ new_timer_quick.addEventListener('click', () => {
 	addQuickTimer()
 })
 
+/**
+ * returns {void}
+ */
 function addQuickTimer() {
 	let settings = getSettings()
 	addTimer(settings.quickTimerName, settings.quickTimerDescr, settings.quickTimerInterval)
@@ -474,6 +494,7 @@ function getCurrentTime() {
 	}, 1000)
 }
 getCurrentTime()
+
 
 const currentTime = () => {
 	current_time.innerHTML = getCurrentTimeSimple(true)
@@ -653,6 +674,9 @@ function countdownTimer(key, id) {
 	}
 }
 
+/**
+ * @param {number} key
+ */
 function pauseTimerToggleLink(key, paused = false) {
 	let el = d.createElement('button')
 	el.className = 'text-btn'
@@ -739,8 +763,10 @@ function detectAnyActive(arr = getTimers()) {
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 function countdownAll() {
 	let blinkRunningOn = false
+	/** @type {string|undefined} finishedTimer */
 	let finishedTimer
 	let blinkFinishedOn = false
+
 	var countdownAllPerSecond = setInterval(() => {
 		if (timerspersec) {
 			arr = timerspersec
@@ -837,7 +863,7 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
 
 /**
  * Interact with html body background status
- * @param [] arr - Pass parameters of said timer item, to pass those to HTML body class interaction
+ * @param {[]} arr - Pass parameters of said timer item, to pass those to HTML body class interaction
  * @returns {void}
  */
 function bgStatus(arr) {
