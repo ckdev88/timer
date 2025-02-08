@@ -103,7 +103,7 @@ const translationMap = {
 		Starting_time: 'Starting time',
 		Ending_time: 'Ending time',
 		Time_left: 'Time left',
-		Time_passed: 'Tempo passed',
+		Time_passed: 'Time passed',
 		Quick_timer_default_name: 'Stretch',
 		Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
 		Timer_created: 'Timer created',
