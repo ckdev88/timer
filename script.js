@@ -553,31 +553,41 @@ function renderTimer(i, key) {
 	el.appendChild(
 		// first part of visual countdown: Time left/passed: xxx ...
 		renderTimerElement(
-			'div',
-			'timer-countdown-current',
-			countdownTimer(key, 'countdown-timer-' + key),
-			'countdown-' + el.id,
-			key,
-			settings.countDown === true
-				? '<span class="time_left_text">' + tl(getSettings().language, 'Time_left') + '</span>: '
-				: '<span class="time_passed_text">' +
-						tl(getSettings().language, 'Time_passed') +
-						'</span>: '
+			(node = 'div'),
+			(className = 'timer-countdown-current'),
+			(content = countdownTimer(key, 'countdown-timer-' + key)),
+			(id = 'countdown-' + el.id),
+			(key = key),
+			(content_prefix =
+				settings.countDown === true
+					? '<span class="time_left_text">' +
+					  getTranslation(getSettings().language, 'Time_left') +
+					  '</span>: '
+					: '<span class="time_passed_text">' +
+					  getTranslation(getSettings().language, 'Time_passed') +
+					  '</span>: '),
+			(content_suffix =
+				'&nbsp;/ ' +
+				i.interval / i.intervalUnit +
+				' ' +
+				getTranslation(getSettings().language, i.intervalUnitName))
 		)
 	)
 
-	el.appendChild(
-		// second part of visual countdown: ... / xxx seconds/minutes
-		renderTimerElement(
-			'div',
-			'timer-countdown-total',
-			i.interval / i.intervalUnit,
-			'',
-			'',
-			'&nbsp;/ ',
-			i.intervalUnitName
-		)
-	)
+	// NOTE commented because this will load every second so make translation of second/minute simpler
+	// el.appendChild(
+	// 	// second part of visual countdown: ... / xxx seconds/minutes
+	// 	// FIXME: intervalUnitName doesnt change when language changes
+	// 	renderTimerElement(
+	// 		(node = 'div'),
+	// 		(className = 'timer-countdown-total'),
+	// 		(content = i.interval / i.intervalUnit),
+	// 		(id = ''),
+	// 		(key = ''),
+	// 		(content_prefix = '&nbsp;/ '),
+	// 		(content_suffix = getTranslation(getSettings().language, i.intervalUnitName))
+	// 	)
+	// )
 	el.appendChild(
 		renderTimerElement(
 			'div',
@@ -625,6 +635,7 @@ function renderTimerElement(
 	contentPrefix = '',
 	contentSuffix = ''
 ) {
+	// TODO refactor to remove contentSuffix (and rename contentPrefix to content or something, is not useful anymore since data previously in suffix is now loaded as "prefix", reloaded every second
 	let timerEl = d.createElement(node)
 	timerEl.className = className
 
@@ -637,7 +648,7 @@ function renderTimerElement(
 				: Math.round(i.timepast / i.intervalUnit)
 	}
 
-	timerEl.innerHTML = contentPrefix + content + ' ' + contentSuffix
+	timerEl.innerHTML = contentPrefix + content
 	id !== undefined ? (timerEl.id = id) : ''
 	return timerEl
 }
@@ -666,10 +677,14 @@ function countdownTimer(key, id) {
 					let settings = getSettings()
 					if (settings.countDown) {
 						cPrefix =
-							'<span class="time_left_text">' + tl(settings.language, 'Time_left') + '</span>: '
+							'<span class="time_left_text">' +
+							getTranslation(settings.language, 'Time_left') +
+							'</span>: '
 					} else {
 						cPrefix =
-							'<span class="time_passed_text">' + tl(settings.language, 'Time_passed') + '</span>: '
+							'<span class="time_passed_text">' +
+							getTranslation(settings.language, 'Time_passed') +
+							'</span>: '
 					}
 					let c = d.getElementById(id)
 
@@ -689,6 +704,14 @@ function countdownTimer(key, id) {
 							timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
 							c.innerHTML = cPrefix + timepast
 						}
+
+						c.innerHTML += ' / ' + timerspersec[key].interval / timerspersec[key].intervalUnit
+						c.innerHTML +=
+							' ' +
+							getTranslation(
+								getSettings().language,
+								getIntervalUnitName(timerspersec[key].intervalUnit)
+							)
 					}
 				}
 			}
