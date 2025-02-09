@@ -92,8 +92,10 @@ const translationMap = {
 		Time: 'Time',
 		Seconds: 'Seconds',
 		seconds: 'seconds',
+		s: 'seconds',
 		Minutes: 'Minutes',
 		minutes: 'minutes',
+		m: 'minutes',
 		Create_timer: 'Create timer',
 		General_settings: 'General settings',
 		Count_down: 'Count down to 0',
@@ -124,9 +126,11 @@ const translationMap = {
 		Time: 'Tempo',
 		Seconds: 'Segundos',
 		seconds: 'segundos',
+		s: 'segundos',
 		Minutes: 'Minutos',
-		Create_timer: 'Criar timer',
 		minutes: 'minutos',
+		m: 'minutos',
+		Create_timer: 'Criar timer',
 		General_settings: 'Configurações gerais',
 		Count_down: 'Contagem regressiva até zero',
 		Count_up: 'Contagem a partir do zero',
@@ -160,12 +164,20 @@ if (pageInit === true) {
 
 /** @interface {object} global settings used a default either per timer of for the entire application  */
 const settings_d = {
+	/**
+	 * {number}
+	 * @default 60 (seconds)
+	 */
 	intervalUnit: 60, // in seconds
+	/**
+	 * {string}
+	 * @default ''
+	 */
 	intervalUnitName: '',
 	countDown: true, // true: show time remaining, false: show time passed
 	quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
-	quickTimerName: tl(language, 'Quick_timer_default_name'),
-	quickTimerDescr: tl(language, 'Quick_timer_default_description'),
+	quickTimerName: getTranslation(language, 'Quick_timer_default_name'),
+	quickTimerDescr: getTranslation(language, 'Quick_timer_default_description'),
 	language: language,
 }
 
@@ -176,6 +188,9 @@ if (localStorage.getItem('settings') === null) {
 	localStorage.setItem('settings', JSON.stringify(settings_d))
 }
 const getSettings = () => JSON.parse(localStorage.getItem('settings'))
+/**
+ * {object}
+ */
 const settings = getSettings()
 
 // ----------------------------- CONFIGURE SETTINGS
@@ -222,13 +237,17 @@ settings_form.addEventListener('submit', (e) => {
  * @returns {string}
  */
 function getIntervalUnitName(num) {
-	if (num === 1) return tl(language, 'seconds')
-	return tl(language, 'minutes')
+	// 1 stands for 1 second, 60 is 1 minute
+	if (num === 1) return getTranslation(language, 's')
+	return getTranslation(language, 'm')
 }
+
+// TODO apply proper Interface of data parameter in JSDoc
 /**
  * returns {void}
  */
 function settingsFormSubmit(data) {
+	// TODO apply proper Interface of settings const in JSDoc
 	const settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
 		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
@@ -250,7 +269,10 @@ function settingsFormSubmit(data) {
 }
 
 /**
+ * Apply JS selection to form elements for new tasks & default values
  * returns {void}
+ * @param el {HtmlElement}  -- HTML Element
+ * @param option {FormData.option}
  */
 function selectOption(el, option) {
 	option = option.toString()
@@ -338,7 +360,7 @@ function showFeedback(afterElement, textKey) {
 		document.getElementsByClassName('feedback')[0].remove()
 	}
 	let aftertext = document.createElement('div')
-	aftertext.innerText = tl(getSettings().language, textKey)
+	aftertext.innerText = getTranslation(getSettings().language, textKey)
 	aftertext.className = 'feedback'
 	setTimeout(() => aftertext.remove(), 1500)
 	return insertAfter(afterElement, aftertext)
@@ -398,7 +420,9 @@ function addTimer(name, description, interval) {
 }
 
 // ----------------------------- PAUSE/RESUME TASK
-
+/**
+ * @param key {number}
+ */
 function pauseTimerToggle(key) {
 	arr = getTimers()
 	const newarr = []
@@ -435,7 +459,7 @@ function pauseTimerToggle(key) {
 
 /**
  * Remove a timer block
- * @param {number} key key of block containing a single timer
+ * @param key {number} key of block containing a single timer
  */
 function removeTimer(key) {
 	arr = getTimers()
@@ -495,14 +519,13 @@ function getCurrentTime() {
 }
 getCurrentTime()
 
-
 const currentTime = () => {
 	current_time.innerHTML = getCurrentTimeSimple(true)
 }
 currentTime()
 
 const getCurrentDate = (lang = getSettings().language) => {
-	return new Date().toLocaleString([tl(lang, 'localeString')], {
+	return new Date().toLocaleString([getTranslation(lang, 'localeString')], {
 		weekday: 'long',
 		month: 'long',
 		day: 'numeric',
@@ -514,8 +537,9 @@ const setCurrentDate = (lang = getSettings().language) => {
 setCurrentDate()
 
 /**
- * @param {string} i
- * @param {number} key
+ * Creates the rendering of the timer
+ * @param i {string} -- timer item
+ * @param key {number}
  * @returns {HTMLElement}
  */
 function renderTimer(i, key) {
@@ -559,7 +583,7 @@ function renderTimer(i, key) {
 			'div',
 			'starttime',
 			'<span class="starting_time_text">' +
-				tl(getSettings().language, 'Starting_time') +
+				getTranslation(getSettings().language, 'Starting_time') +
 				'</span>: ' +
 				i.starttime
 		)
@@ -569,7 +593,7 @@ function renderTimer(i, key) {
 			'div',
 			'endtime',
 			'<span class="ending_time_text">' +
-				tl(getSettings().language, 'Ending_time') +
+				getTranslation(getSettings().language, 'Ending_time') +
 				'</span>: ' +
 				i.endtime
 		)
@@ -620,8 +644,9 @@ function renderTimerElement(
 
 // ----------------------------- RENDER TASKS - DETAILS
 /**
- * @param {number} key - key in timer in localStorage.timerTimers
- * @param {number} id - id of timer HTMLelement
+ * Creates and renders the individual timer block
+ * @param key {number} - key in timer in localStorage.timerTimers
+ * @param id {string} - id of timer HTMLelement
  * @returns {void}
  */
 function countdownTimer(key, id) {
@@ -675,17 +700,18 @@ function countdownTimer(key, id) {
 }
 
 /**
- * @param {number} key
+ * @param key {number}
+ * @param paused {boolean}
  */
 function pauseTimerToggleLink(key, paused = false) {
 	let el = d.createElement('button')
 	el.className = 'text-btn'
 	el.classList.add('pause')
 	if (paused === true) {
-		el.innerText = tl(getSettings().language, 'pause')
+		el.innerText = getTranslation(getSettings().language, 'pause')
 		el.id = 'pause-' + key
 	} else {
-		el.innerText = tl(getSettings().language, 'resume')
+		el.innerText = getTranslation(getSettings().language, 'resume')
 		el.id = 'resume-' + key
 		el.classList.replace('pause', 'resume')
 		document.title = 'Timer'
@@ -700,7 +726,7 @@ function pauseTimerToggleLink(key, paused = false) {
  */
 function removeTimerLink(key) {
 	let el = d.createElement('button')
-	el.innerText = tl(getSettings().language, 'remove')
+	el.innerText = getTranslation(getSettings().language, 'remove')
 	el.className = 'text-btn remove'
 	el.id = 'del-' + key
 	el.addEventListener('click', () => {
@@ -712,7 +738,7 @@ function removeTimerLink(key) {
 
 function resetTimerLink(key) {
 	let el = d.createElement('button')
-	el.innerText = tl(getSettings().language, 'reset')
+	el.innerText = getTranslation(getSettings().language, 'reset')
 	el.className = 'text-btn'
 	el.classList.add('reset')
 	el.id = 'reset-' + key
@@ -887,11 +913,11 @@ function setBgStatus(status = 'normal') {
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
 /**
- * @param {string} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
+ * @param {'en'|'pt'} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
  * @param {string} stringkey - value used in object translationMap, text that needs to be translated
  * @returns {{[string]:{[string]:string}}}
  */
-function tl(langkey, stringkey) {
+function getTranslation(langkey, stringkey) {
 	return translationMap[langkey][stringkey]
 }
 
@@ -907,38 +933,42 @@ function setHtmlLang(lang) {
  */
 function changeLanguage(lang) {
 	setHtmlLang(lang)
-	newTextInElements('pause', tl(lang, 'pause'))
-	newTextInElements('resume', tl(lang, 'resume'))
-	newTextInElements('reset', tl(lang, 'reset'))
-	newTextInElements('remove', tl(lang, 'remove'))
+	newTextInElements('pause', getTranslation(lang, 'pause'))
+	newTextInElements('resume', getTranslation(lang, 'resume'))
+	newTextInElements('reset', getTranslation(lang, 'reset'))
+	newTextInElements('remove', getTranslation(lang, 'remove'))
 
-	new_timer_btn.innerText = tl(lang, 'New_timer')
-	new_timer_form_head.innerText = tl(lang, 'New_timer')
-	new_timer_quick.innerText = tl(lang, 'Quick_add')
+	new_timer_btn.innerText = getTranslation(lang, 'New_timer')
+	new_timer_form_head.innerText = getTranslation(lang, 'New_timer')
+	new_timer_quick.innerText = getTranslation(lang, 'Quick_add')
 
-	new_timer_name.setAttribute('placeholder', tl(lang, 'Name') + '...')
-	new_timer_description.setAttribute('placeholder', tl(lang, 'Description') + '...')
-	new_timer_interval.setAttribute('placeholder', tl(lang, 'Time') + '...')
-	new_timer_intervalUnit.options[0].innerText = tl(lang, 'Seconds')
-	setf_intervalUnit.options[0].innerText = tl(lang, 'Seconds')
-	new_timer_intervalUnit.options[1].innerText = tl(lang, 'Minutes')
-	setf_intervalUnit.options[1].innerText = tl(lang, 'Minutes')
+	new_timer_name.setAttribute('placeholder', getTranslation(lang, 'Name') + '...')
+	new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
+	new_timer_interval.setAttribute('placeholder', getTranslation(lang, 'Time') + '...')
+	new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
+	setf_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
+	new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
+	setf_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
+	new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
+	setf_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
+	new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
+	setf_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
 
-	btn_create_timer.setAttribute('value', tl(lang, 'Create_timer'))
+	btn_create_timer.setAttribute('value', getTranslation(lang, 'Create_timer'))
 
-	general_settings_head.innerText = tl(lang, 'General_settings')
-	setf_countDown.options[0].innerText = tl(lang, 'Count_down')
-	setf_countDown.options[1].innerText = tl(lang, 'Count_up')
-	quick_add_settings_head.innerText = tl(lang, 'Quick_add_settings')
-	btn_update_settings.setAttribute('value', tl(lang, 'Update_settings'))
+	general_settings_head.innerText = getTranslation(lang, 'General_settings')
+	setf_countDown.options[0].innerText = getTranslation(lang, 'Count_down')
+	setf_countDown.options[1].innerText = getTranslation(lang, 'Count_up')
+	quick_add_settings_head.innerText = getTranslation(lang, 'Quick_add_settings')
+	btn_update_settings.setAttribute('value', getTranslation(lang, 'Update_settings'))
 
-	newTextInElements('starting_time_text', tl(lang, 'Starting_time'))
-	newTextInElements('ending_time_text', tl(lang, 'Ending_time'))
-	newTextInElements('time_left_text', tl(lang, 'Time_left'))
-	newTextInElements('time_passed_text', tl(lang, 'Time_passed'))
+	newTextInElements('starting_time_text', getTranslation(lang, 'Starting_time'))
+	newTextInElements('ending_time_text', getTranslation(lang, 'Ending_time'))
+	newTextInElements('time_left_text', getTranslation(lang, 'Time_left'))
+	newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
 
-	setf_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'))
-	new_timer_intervalUnit.setAttribute('aria-label', tl(lang, 'Select_time_unit'))
+	setf_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
+	new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
 
 	setCurrentDate(lang)
 }
