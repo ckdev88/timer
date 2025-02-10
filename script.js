@@ -538,16 +538,16 @@ function renderTimer(i, key) {
 			(content_prefix =
 				settings.countDown === true
 					? '<span class="time_left_text">' +
-					  getTranslation(getSettings().language, 'Time_left') +
+					  getTranslation(settings.language, 'Time_left') +
 					  '</span>: '
 					: '<span class="time_passed_text">' +
-					  getTranslation(getSettings().language, 'Time_passed') +
+					  getTranslation(settings.language, 'Time_passed') +
 					  '</span>: '),
 			(content_suffix =
 				'&nbsp;/ ' +
 				i.interval / i.intervalUnit +
 				' ' +
-				getTranslation(getSettings().language, getIntervalUnitName(i.intervalUnit)))
+				getTranslation(settings.language, getIntervalUnitName(i.intervalUnit)))
 		)
 	)
 
@@ -556,7 +556,7 @@ function renderTimer(i, key) {
 			'div',
 			'starttime',
 			'<span class="starting_time_text">' +
-				getTranslation(getSettings().language, 'Starting_time') +
+				getTranslation(settings.language, 'Starting_time') +
 				'</span>: ' +
 				i.starttime
 		)
@@ -566,7 +566,7 @@ function renderTimer(i, key) {
 			'div',
 			'endtime',
 			'<span class="ending_time_text">' +
-				getTranslation(getSettings().language, 'Ending_time') +
+				getTranslation(settings.language, 'Ending_time') +
 				'</span>: ' +
 				i.endtime
 		)
