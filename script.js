@@ -1,6 +1,3 @@
-// TODO FIXME: sometimes, on a timing mismatch, removing a timer causes more than one to be "removed",
-// which probably means the new array isnt completely built, see fn def pauseTimerToggle &
-// fn def removeTimer
 // ----------------------------- GLOBAL CONSTANTS
 
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
@@ -460,22 +457,7 @@ function pauseTimerToggle(key) {
  */
 function removeTimer(key) {
 	arr = getTimers()
-	/**
-	 * @type {string|number[]} compose all timers except the one to be removed, to compose a new array of  timers */
-	const newarr = []
-	for (let i = 0; i < arr.length; i++) {
-		if (i === key) continue // rebuild with all timers, but skip the specified one
-		newarr.push({
-			name: arr[i].name,
-			descr: arr[i].descr,
-			interval: arr[i].interval,
-			timepast: arr[i].timepast,
-			intervalUnit: arr[i].intervalUnit,
-			paused: arr[i].paused,
-			finished: arr[i].finished,
-			starttime: arr[i].starttime,
-		})
-	}
+	const newarr = arr.filter((i, index) => index !== key)
 
 	updateTimers(newarr)
 	renderTimers(newarr)
