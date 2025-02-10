@@ -421,12 +421,9 @@ function addTimer(name, description, interval) {
 function pauseTimerToggle(key) {
 	arr = getTimers()
 	const newarr = []
-	let refresh = false // TODO: the refresh-variable is just a hotfix for issue TOOMANYLOADS
-	// caused by toggling pause/resume
 	for (let i = 0; i < arr.length; i++) {
 		if (i === key) {
 			arr[i].paused = !arr[i].paused
-			if (arr[i].paused === false) refresh = true
 		}
 		newarr.push({
 			name: arr[i].name,
@@ -442,11 +439,7 @@ function pauseTimerToggle(key) {
 	}
 
 	updateTimers(newarr)
-	renderTimers(newarr, false) // TODO: false isnt doing anything useful here, but somewhere here should be the proper bugfix for issue TOOMANYLOADS
-	if (refresh === true) location.reload()
-
-	delete arr
-	delete newarr
+	renderTimers(newarr, false) // TODO: false isnt doing anything useful here, or is it?
 }
 
 // ----------------------------- REMOVE TASKS
@@ -586,7 +579,6 @@ function renderTimer(i, key) {
  * @param {string} node - HTML node
  * @param {string} className
  * @returns {void}
- *
  */
 function renderTimerElement(
 	node = 'div',
@@ -624,55 +616,51 @@ function renderTimerElement(
 function countdownTimer(key, id) {
 	// individual per timer
 	const tmpinterval = setInterval(() => {
-		/*
-		TODO: TOOMANYLOADS: there is still a bug that makes this run the amount of running timers for the only active timer, added by the amount of used pause/resume-toggles, every second (i.e. timer #0 can run 6 times per second) , this is hotfixed for now, by refreshing the page after resuming a timer, providing a clean array of timers, this issue in short is TOOMANYLOADS
-		*/
-
-		if (timerspersec[key] === undefined) {
-			clearInterval(tmpinterval)
+		if (
+			timerspersec[key] === undefined ||
+			timerspersec[key].paused === true ||
+			timerspersec[key].paused === undefined
+		) {
 			stopit()
 		} else {
-			if (timerspersec[key].paused === true || timerspersec[key].paused === undefined) stopit()
-			else {
-				if (d.getElementById(id)) {
-					let settings = getSettings()
-					if (settings.countDown) {
-						cPrefix =
-							'<span class="time_left_text">' +
-							getTranslation(settings.language, 'Time_left') +
-							'</span>: '
-					} else {
-						cPrefix =
-							'<span class="time_passed_text">' +
-							getTranslation(settings.language, 'Time_passed') +
-							'</span>: '
-					}
-					var cSuffix =
-						' ' +
-						getTranslation(settings.language, getIntervalUnitName(timerspersec[key].intervalUnit))
-					let c = d.getElementById(id)
+			if (d.getElementById(id)) {
+				let settings = getSettings()
+				if (settings.countDown) {
+					cPrefix =
+						'<span class="time_left_text">' +
+						getTranslation(settings.language, 'Time_left') +
+						'</span>: '
+				} else {
+					cPrefix =
+						'<span class="time_passed_text">' +
+						getTranslation(settings.language, 'Time_passed') +
+						'</span>: '
+				}
+				var cSuffix =
+					' ' +
+					getTranslation(settings.language, getIntervalUnitName(timerspersec[key].intervalUnit))
+				let c = d.getElementById(id)
 
-					if (timerspersec[key].timepast === timerspersec[key].interval) {
-						stopit()
-					}
-					if (timerspersec[key].paused === true) {
-						// console.log('arr paused');
+				if (timerspersec[key].timepast === timerspersec[key].interval) {
+					stopit()
+				}
+				if (timerspersec[key].paused === true) {
+					// console.log('arr paused');
+				} else {
+					if (settings.countDown) {
+						timeleft = Math.round(
+							(timerspersec[key].interval - timerspersec[key].timepast) /
+								timerspersec[key].intervalUnit
+						)
+						c.innerHTML =
+							cPrefix +
+							timeleft +
+							' / ' +
+							timerspersec[key].interval / timerspersec[key].intervalUnit +
+							cSuffix
 					} else {
-						if (settings.countDown) {
-							timeleft = Math.round(
-								(timerspersec[key].interval - timerspersec[key].timepast) /
-									timerspersec[key].intervalUnit
-							)
-							c.innerHTML =
-								cPrefix +
-								timeleft +
-								' / ' +
-								timerspersec[key].interval / timerspersec[key].intervalUnit +
-								cSuffix
-						} else {
-							timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
-							c.innerHTML = cPrefix + timepast + cSuffix
-						}
+						timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
+						c.innerHTML = cPrefix + timepast + cSuffix
 					}
 				}
 			}
@@ -778,6 +766,15 @@ function detectAnyActive(arr = getTimers()) {
 	return false
 }
 
+function detectAllPaused(arr = getTimers()) {
+	let count = 0
+	for (i = 0; i < arr.length; i++) {
+		if (arr[i].paused === true) count++
+	}
+	if (count === arr.length) return true
+	return false
+}
+
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 function countdownAll() {
 	let blinkRunningOn = false
@@ -788,9 +785,11 @@ function countdownAll() {
 	var countdownAllPerSecond = setInterval(() => {
 		if (timerspersec) {
 			arr = timerspersec
+			// console.log('arr:', arr)
+
 			for (let i = 0; i < arr.length; i++) {
-				if (arr[i].paused === true) continue
-				// re-render timers that are not paused
+				if (arr[i].paused === true || arr[i].finished) continue
+				// re-render timers that are not paused or finished
 				if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
 					arr[i].timepast++
 				}
@@ -805,7 +804,7 @@ function countdownAll() {
 				updateTimers(arr)
 			}
 		}
-		if (!detectAnyActive()) {
+		if (detectAllPaused() === true || !detectAnyActive()) {
 			stopit()
 		}
 
@@ -838,7 +837,6 @@ function playSound() {
 }
 
 // ----------------------------- MISC METHODS
-
 /**
  * Returns a simplified time in HH:MM:SS .
  * @param {boolean} seconds - optional: to activate seconds display
