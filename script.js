@@ -533,7 +533,7 @@ const setCurrentDate = (lang = getSettings().language) => {
 setCurrentDate()
 
 /**
- * Creates the rendering of the timer
+ * Creates the rendering of the timer, serves as a base for showing in renders: first, paused
  * @param i {string} -- timer item
  * @param key {number}
  * @returns {HTMLElement}
@@ -547,7 +547,6 @@ function renderTimer(i, key) {
 	el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
 	el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
 	el.appendChild(
-		// first part of visual countdown: Time left/passed: xxx ...
 		renderTimerElement(
 			(node = 'div'),
 			(className = 'timer-countdown-current'),
@@ -570,20 +569,6 @@ function renderTimer(i, key) {
 		)
 	)
 
-	// NOTE commented because this will load every second so make translation of second/minute simpler
-	// el.appendChild(
-	// 	// second part of visual countdown: ... / xxx seconds/minutes
-	// 	// FIXME: intervalUnitName doesnt change when language changes
-	// 	renderTimerElement(
-	// 		(node = 'div'),
-	// 		(className = 'timer-countdown-total'),
-	// 		(content = i.interval / i.intervalUnit),
-	// 		(id = ''),
-	// 		(key = ''),
-	// 		(content_prefix = '&nbsp;/ '),
-	// 		(content_suffix = getTranslation(getSettings().language, i.intervalUnitName))
-	// 	)
-	// )
 	el.appendChild(
 		renderTimerElement(
 			'div',
@@ -616,7 +601,6 @@ function renderTimer(i, key) {
 
 /**
  * Render the timer element, meaning 1 per timer.
- *
  * @param {string} node - HTML node
  * @param {string} className
  * @returns {void}
@@ -631,7 +615,6 @@ function renderTimerElement(
 	contentPrefix = '',
 	contentSuffix = ''
 ) {
-	// TODO refactor to remove contentSuffix (and rename contentPrefix to content or something, is not useful anymore since data previously in suffix is now loaded as "prefix", reloaded every second
 	let timerEl = d.createElement(node)
 	timerEl.className = className
 
@@ -644,7 +627,7 @@ function renderTimerElement(
 				: Math.round(i.timepast / i.intervalUnit)
 	}
 
-	timerEl.innerHTML = contentPrefix + content
+	timerEl.innerHTML = contentPrefix + content + contentSuffix
 	id !== undefined ? (timerEl.id = id) : ''
 	return timerEl
 }
@@ -682,6 +665,9 @@ function countdownTimer(key, id) {
 							getTranslation(settings.language, 'Time_passed') +
 							'</span>: '
 					}
+					var cSuffix =
+						' ' +
+						getTranslation(settings.language, getIntervalUnitName(timerspersec[key].intervalUnit))
 					let c = d.getElementById(id)
 
 					if (timerspersec[key].timepast === timerspersec[key].interval) {
@@ -695,19 +681,16 @@ function countdownTimer(key, id) {
 								(timerspersec[key].interval - timerspersec[key].timepast) /
 									timerspersec[key].intervalUnit
 							)
-							c.innerHTML = cPrefix + timeleft
+							c.innerHTML =
+								cPrefix +
+								timeleft +
+								' / ' +
+								timerspersec[key].interval / timerspersec[key].intervalUnit +
+								cSuffix
 						} else {
 							timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
-							c.innerHTML = cPrefix + timepast
+							c.innerHTML = cPrefix + timepast + cSuffix
 						}
-
-						c.innerHTML += ' / ' + timerspersec[key].interval / timerspersec[key].intervalUnit
-						c.innerHTML +=
-							' ' +
-							getTranslation(
-								getSettings().language,
-								getIntervalUnitName(timerspersec[key].intervalUnit)
-							)
 					}
 				}
 			}
@@ -719,8 +702,10 @@ function countdownTimer(key, id) {
 }
 
 /**
+ * Creates the pause/resume toggle button per timer
  * @param key {number}
  * @param paused {boolean}
+ * @returns {HTMLButtonElement}
  */
 function pauseTimerToggleLink(key, paused = false) {
 	let el = d.createElement('button')
@@ -740,6 +725,7 @@ function pauseTimerToggleLink(key, paused = false) {
 }
 
 /**
+ * Creates the remove button per timer
  * @param {number} key
  * @returns {HTMLButtonElement}
  */
@@ -755,6 +741,11 @@ function removeTimerLink(key) {
 	return el
 }
 
+/**
+ * Creates the remove button per timer
+ * @param {number} key
+ * @returns {HTMLButtonElement}
+ */
 function resetTimerLink(key) {
 	let el = d.createElement('button')
 	el.innerText = getTranslation(getSettings().language, 'reset')
@@ -934,13 +925,16 @@ function setBgStatus(status = 'normal') {
 /**
  * @param {'en'|'pt'} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
  * @param {string} stringkey - value used in object translationMap, text that needs to be translated
- * @returns {{[string]:{[string]:string}}}
+ * @returns {string}
  */
 function getTranslation(langkey, stringkey) {
 	return translationMap[langkey][stringkey]
 }
 
-/** @param {string} lang */
+/**
+ * @param lang {'en'|'pt'}
+ * @returns void
+ */
 function setHtmlLang(lang) {
 	document.documentElement.lang = lang
 }
