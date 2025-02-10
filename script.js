@@ -233,13 +233,13 @@ settings_form.addEventListener('submit', (e) => {
 })
 
 /**
- * @param {number} num
- * @returns {string}
+ * Takes in either 1 or 60, returns s(econd) for 1, m(inute) for 60. Can further be handled by getTranslation
+ * @param num {number}
+ * @returns {'s'|'m'}
  */
 function getIntervalUnitName(num) {
-	// 1 stands for 1 second, 60 is 1 minute
-	if (num === 1) return getTranslation(language, 's')
-	return getTranslation(language, 'm')
+	if (num === 1) return 's'
+	return 'm'
 }
 
 // TODO apply proper Interface of data parameter in JSDoc
@@ -250,7 +250,6 @@ function settingsFormSubmit(data) {
 	// TODO apply proper Interface of settings const in JSDoc
 	const settings = {
 		intervalUnit: Number(data.get('settings_form_intervalUnit')),
-		intervalUnitName: getIntervalUnitName(Number(data.get('settings_form_intervalUnit'))),
 		countDown: Boolean(data.get('settings_form_countDown')),
 		quickTimerInterval:
 			Number(data.get('settings_form_quickTimerInterval')) *
@@ -337,7 +336,7 @@ function timerFormSubmit(data) {
 	// change some default settings first
 	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
 		settings.intervalUnit = Number(data.get('timer_intervalUnit'))
-		settings.intervalUnitName = String(getIntervalUnitName(settings.intervalUnit))
+		settings.intervalUnitName = getIntervalUnitName(settings.intervalUnit, getSettings().language)
 		settings.language = getSettings().language
 	}
 	updateSettings(settings)
@@ -406,7 +405,6 @@ function addTimer(name, description, interval) {
 		descr: description,
 		interval: interval,
 		intervalUnit: settings.intervalUnit,
-		intervalUnitName: settings.intervalUnitName,
 		timepast: 0,
 		paused: false,
 		finished: false,
@@ -439,7 +437,6 @@ function pauseTimerToggle(key) {
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
 			intervalUnit: arr[i].intervalUnit,
-			intervalUnitName: arr[i].intervalUnitName,
 			paused: arr[i].paused,
 			finished: arr[i].finished,
 			starttime: arr[i].starttime,
@@ -474,7 +471,6 @@ function removeTimer(key) {
 			interval: arr[i].interval,
 			timepast: arr[i].timepast,
 			intervalUnit: arr[i].intervalUnit,
-			intervalUnitName: arr[i].intervalUnitName,
 			paused: arr[i].paused,
 			finished: arr[i].finished,
 			starttime: arr[i].starttime,
@@ -570,7 +566,7 @@ function renderTimer(i, key) {
 				'&nbsp;/ ' +
 				i.interval / i.intervalUnit +
 				' ' +
-				getTranslation(getSettings().language, i.intervalUnitName))
+				getTranslation(getSettings().language, getIntervalUnitName(i.intervalUnit)))
 		)
 	)
 
