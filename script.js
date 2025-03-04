@@ -41,109 +41,109 @@ const current_date = d.getElementById('current_date')
  * @returns {[]} timers
  */
 function getTimers() {
-	/** @type {[]} timers */
-	let timers = JSON.parse(localStorage.getItem('timerTimers'))
-	if (!timers) updateTimers([])
-	else bgStatus(timers)
-	return timers
+    /** @type {[]} timers */
+    let timers = JSON.parse(localStorage.getItem('timerTimers'))
+    if (!timers) updateTimers([])
+    else bgStatus(timers)
+    return timers
 }
 
 /** @type {[]} timerspersec - Array of timers, refreshed every second */
 let timerspersec = getTimers()
 setInterval(() => {
-	timerspersec = getTimers()
+    timerspersec = getTimers()
 }, 1000)
 
 /** @param {Array<any>} arr - state of localStorage.timerTimers */
 function updateTimers(arr) {
-	localStorage.setItem('timerTimers', JSON.stringify(arr))
-	if (
-		(detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') ||
-		arr.length === 0
-	) {
-		countdownAll()
-		localStorage.setItem('countDownAllStatus', 'active')
-	}
+    localStorage.setItem('timerTimers', JSON.stringify(arr))
+    if (
+        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') ||
+        arr.length === 0
+    ) {
+        countdownAll()
+        localStorage.setItem('countDownAllStatus', 'active')
+    }
 }
 
 if (detectAnyActive() === true && pageInit === true) {
-	// run once on init
-	countdownAll()
-	localStorage.setItem('countDownAllStatus', 'active')
+    // run once on init
+    countdownAll()
+    localStorage.setItem('countDownAllStatus', 'active')
 }
 
 /**
  * @type {{[string]:{[string]:string}}} - map with translations, strings
  */
 const translationMap = {
-	en: {
-		localeString: 'en-US',
-		pause: 'pause',
-		reset: 'reset',
-		resume: 'resume',
-		remove: 'remove',
-		New_timer: 'New timer',
-		Quick_add: 'Quick add',
-		Name: 'Name',
-		Description: 'Description',
-		Time: 'Time',
-		Seconds: 'Seconds',
-		seconds: 'seconds',
-		s: 'seconds',
-		Minutes: 'Minutes',
-		minutes: 'minutes',
-		m: 'minutes',
-		Create_timer: 'Create timer',
-		General_settings: 'General settings',
-		Count_down: 'Count down to 0',
-		Count_up: 'Count up from 0',
-		Update_settings: 'Update settings',
-		Quick_add_settings: 'Quick add settings',
-		Starting_time: 'Starting time',
-		Ending_time: 'Ending time',
-		Time_left: 'Time left',
-		Time_passed: 'Time passed',
-		Quick_timer_default_name: 'Stretch',
-		Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
-		Timer_created: 'Timer created',
-		Settings_updated: 'Settings updated',
-		Select_time_unit: 'Select time unit',
-		now: 'now',
-	},
-	pt: {
-		localeString: 'pt-BR',
-		pause: 'pausar',
-		reset: 'redefinir',
-		resume: 'continuar',
-		remove: 'remover',
-		New_timer: 'Novo timer',
-		Quick_add: 'Adição rápida',
-		Name: 'Nome',
-		Description: 'Descrição',
-		Time: 'Tempo',
-		Seconds: 'Segundos',
-		seconds: 'segundos',
-		s: 'segundos',
-		Minutes: 'Minutos',
-		minutes: 'minutos',
-		m: 'minutos',
-		Create_timer: 'Criar timer',
-		General_settings: 'Configurações gerais',
-		Count_down: 'Contagem regressiva até zero',
-		Count_up: 'Contagem a partir do zero',
-		Update_settings: 'Atualizar',
-		Quick_add_settings: 'Adição rápida configurações',
-		Starting_time: 'Hora de início',
-		Ending_time: 'Hora de termina',
-		Time_left: 'Tempo restante',
-		Time_passed: 'Tempo passado',
-		Quick_timer_default_name: 'Alongar',
-		Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
-		Timer_created: 'Timer criado',
-		Settings_updated: 'Configurações atualizadas',
-		Select_time_unit: 'Selecione a unidade de tempo',
-		now: 'agora',
-	},
+    en: {
+        localeString: 'en-US',
+        pause: 'pause',
+        reset: 'reset',
+        resume: 'resume',
+        remove: 'remove',
+        New_timer: 'New timer',
+        Quick_add: 'Quick add',
+        Name: 'Name',
+        Description: 'Description',
+        Time: 'Time',
+        Seconds: 'Seconds',
+        seconds: 'seconds',
+        s: 'seconds',
+        Minutes: 'Minutes',
+        minutes: 'minutes',
+        m: 'minutes',
+        Create_timer: 'Create timer',
+        General_settings: 'General settings',
+        Count_down: 'Count down to 0',
+        Count_up: 'Count up from 0',
+        Update_settings: 'Update settings',
+        Quick_add_settings: 'Quick add settings',
+        Starting_time: 'Starting time',
+        Ending_time: 'Ending time',
+        Time_left: 'Time left',
+        Time_passed: 'Time passed',
+        Quick_timer_default_name: 'Stretch',
+        Quick_timer_default_description: 'Eat, walk, push-up, drink, some or all.',
+        Timer_created: 'Timer created',
+        Settings_updated: 'Settings updated',
+        Select_time_unit: 'Select time unit',
+        now: 'now',
+    },
+    pt: {
+        localeString: 'pt-BR',
+        pause: 'pausar',
+        reset: 'redefinir',
+        resume: 'continuar',
+        remove: 'remover',
+        New_timer: 'Novo timer',
+        Quick_add: 'Adição rápida',
+        Name: 'Nome',
+        Description: 'Descrição',
+        Time: 'Tempo',
+        Seconds: 'Segundos',
+        seconds: 'segundos',
+        s: 'segundos',
+        Minutes: 'Minutos',
+        minutes: 'minutos',
+        m: 'minutos',
+        Create_timer: 'Criar timer',
+        General_settings: 'Configurações gerais',
+        Count_down: 'Contagem regressiva até zero',
+        Count_up: 'Contagem a partir do zero',
+        Update_settings: 'Atualizar',
+        Quick_add_settings: 'Adição rápida configurações',
+        Starting_time: 'Hora de início',
+        Ending_time: 'Hora de termina',
+        Time_left: 'Tempo restante',
+        Time_passed: 'Tempo passado',
+        Quick_timer_default_name: 'Alongar',
+        Quick_timer_default_description: 'Comer, se movimentar, beber ou alguma coisa.',
+        Timer_created: 'Timer criado',
+        Settings_updated: 'Configurações atualizadas',
+        Select_time_unit: 'Selecione a unidade de tempo',
+        now: 'agora',
+    },
 }
 
 // ----------------------------- SETUP DEFAULTS & SETTINGS
@@ -151,38 +151,38 @@ const translationMap = {
 /** @type {string} language  */
 let language
 if (pageInit === true) {
-	var browserLanguage = 'en'
-	if (navigator.language.substring(0, 2) == 'pt') {
-		browserLanguage = 'pt'
-		setHtmlLang(browserLanguage)
-	}
-	language = browserLanguage
+    var browserLanguage = 'en'
+    if (navigator.language.substring(0, 2) == 'pt') {
+        browserLanguage = 'pt'
+        setHtmlLang(browserLanguage)
+    }
+    language = browserLanguage
 }
 
 /** @interface {object} global settings used a default either per timer of for the entire application  */
 const settings_d = {
-	/**
-	 * {number}
-	 * @default 60 (seconds)
-	 */
-	intervalUnit: 60, // in seconds
-	/**
-	 * {string}
-	 * @default ''
-	 */
-	intervalUnitName: '',
-	countDown: true, // true: show time remaining, false: show time passed
-	quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
-	quickTimerName: getTranslation(language, 'Quick_timer_default_name'),
-	quickTimerDescr: getTranslation(language, 'Quick_timer_default_description'),
-	language: language,
+    /**
+     * {number}
+     * @default 60 (seconds)
+     */
+    intervalUnit: 60, // in seconds
+    /**
+     * {string}
+     * @default ''
+     */
+    intervalUnitName: '',
+    countDown: true, // true: show time remaining, false: show time passed
+    quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
+    quickTimerName: getTranslation(language, 'Quick_timer_default_name'),
+    quickTimerDescr: getTranslation(language, 'Quick_timer_default_description'),
+    language: language,
 }
 
 settings_d.intervalUnitName = getIntervalUnitName(settings_d.intervalUnit)
 
 if (localStorage.getItem('settings') === null) {
-	localStorage.setItem('settings', [])
-	localStorage.setItem('settings', JSON.stringify(settings_d))
+    localStorage.setItem('settings', [])
+    localStorage.setItem('settings', JSON.stringify(settings_d))
 }
 const getSettings = () => JSON.parse(localStorage.getItem('settings'))
 /**
@@ -193,40 +193,43 @@ const settings = getSettings()
 // ----------------------------- CONFIGURE SETTINGS
 
 settings_btn.addEventListener('click', () => {
-	settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
+    settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
 })
 /**
  * @param {'expand'|'collapse'} what
  * @returns {void}
  */
 function settingsForm(what) {
-	if (what == 'expand') {
-		settings_btn.classList.replace('collapsed', 'expanded')
-		settings_form.className = 'dblock'
-		new_timer_form.className = 'dnone'
-		new_timer_btn.classList.replace('expanded', 'collapsed')
-	} else {
-		settings_btn.classList.replace('expanded', 'collapsed')
-		settings_form.className = 'dnone'
-		new_timer_form.className = 'dblock'
-		new_timer_btn.classList.replace('collapsed', 'expanded')
-	}
+    if (what == 'expand') {
+        settings_btn.classList.replace('collapsed', 'expanded')
+        settings_form.className = 'dblock'
+        new_timer_form.className = 'dnone'
+        new_timer_btn.classList.replace('expanded', 'collapsed')
+    } else {
+        settings_btn.classList.replace('expanded', 'collapsed')
+        settings_form.className = 'dnone'
+        new_timer_form.className = 'dblock'
+        new_timer_btn.classList.replace('collapsed', 'expanded')
+    }
 }
 
 function settingsFormDefaults() {
-	setf_quickTimerName.setAttribute('value', settings.quickTimerName)
-	setf_quickTimerDescr.innerText = settings.quickTimerDescr
-	setf_quickTimerInterval.setAttribute('value', settings.quickTimerInterval / settings.intervalUnit)
-	selectOption(setf_intervalUnit, settings.intervalUnit)
-	selectOption(setf_countDown, String(settings.countDown))
-	selectOption(setf_language, settings.language)
+    setf_quickTimerName.setAttribute('value', settings.quickTimerName)
+    setf_quickTimerDescr.innerText = settings.quickTimerDescr
+    setf_quickTimerInterval.setAttribute(
+        'value',
+        settings.quickTimerInterval / settings.intervalUnit
+    )
+    selectOption(setf_intervalUnit, settings.intervalUnit)
+    selectOption(setf_countDown, String(settings.countDown))
+    selectOption(setf_language, settings.language)
 }
 settingsFormDefaults()
 
 settings_form.addEventListener('submit', (e) => {
-	e.preventDefault()
-	let data = new FormData(settings_form)
-	settingsFormSubmit(data)
+    e.preventDefault()
+    let data = new FormData(settings_form)
+    settingsFormSubmit(data)
 })
 
 /**
@@ -235,8 +238,8 @@ settings_form.addEventListener('submit', (e) => {
  * @returns {'s'|'m'}
  */
 function getIntervalUnitName(num) {
-	if (num === 1) return 's'
-	return 'm'
+    if (num === 1) return 's'
+    return 'm'
 }
 
 // TODO apply proper Interface of data parameter in JSDoc
@@ -244,24 +247,24 @@ function getIntervalUnitName(num) {
  * returns {void}
  */
 function settingsFormSubmit(data) {
-	// TODO apply proper Interface of settings const in JSDoc
-	const settings = {
-		intervalUnit: Number(data.get('settings_form_intervalUnit')),
-		countDown: Boolean(data.get('settings_form_countDown')),
-		quickTimerInterval:
-			Number(data.get('settings_form_quickTimerInterval')) *
-			Number(data.get('settings_form_intervalUnit')),
-		quickTimerName: data.get('settings_form_quickTimerName'),
-		quickTimerDescr: data.get('settings_form_quickTimerDescr'),
-		language: data.get('settings_form_language'),
-	}
-	if (settings.language !== getSettings().language) {
-		changeLanguage(settings.language)
-	}
-	updateSettings(settings)
+    // TODO apply proper Interface of settings const in JSDoc
+    const settings = {
+        intervalUnit: Number(data.get('settings_form_intervalUnit')),
+        countDown: Boolean(data.get('settings_form_countDown')),
+        quickTimerInterval:
+            Number(data.get('settings_form_quickTimerInterval')) *
+            Number(data.get('settings_form_intervalUnit')),
+        quickTimerName: data.get('settings_form_quickTimerName'),
+        quickTimerDescr: data.get('settings_form_quickTimerDescr'),
+        language: data.get('settings_form_language'),
+    }
+    if (settings.language !== getSettings().language) {
+        changeLanguage(settings.language)
+    }
+    updateSettings(settings)
 
-	showFeedback(btn_update_settings, 'Settings_updated')
-	delete settings
+    showFeedback(btn_update_settings, 'Settings_updated')
+    delete settings
 }
 
 /**
@@ -271,80 +274,83 @@ function settingsFormSubmit(data) {
  * @param option {FormData.option}
  */
 function selectOption(el, option) {
-	option = option.toString()
-	for (let i = 0; i < el.options.length; i++) {
-		if (el.options[i].getAttribute('value') == option) {
-			el.options[i].setAttribute('selected', 'selected')
-		} else el.options[i].removeAttribute('selected')
-	}
+    option = option.toString()
+    for (let i = 0; i < el.options.length; i++) {
+        if (el.options[i].getAttribute('value') == option) {
+            el.options[i].setAttribute('selected', 'selected')
+        } else el.options[i].removeAttribute('selected')
+    }
 }
 
 /**
  * returns {void}
  */
 function updateSettings(arr) {
-	localStorage.setItem('settings', JSON.stringify(arr))
-	selectOption(new_timer_intervalUnit, getSettings().intervalUnit)
+    localStorage.setItem('settings', JSON.stringify(arr))
+    selectOption(new_timer_intervalUnit, getSettings().intervalUnit)
 
-	if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
-		countdownAll()
-		localStorage.setItem('countDownAllStatus', 'active')
-	}
+    if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') {
+        countdownAll()
+        localStorage.setItem('countDownAllStatus', 'active')
+    }
 }
 
 // ----------------------------- ADD TASKS - FORM
 selectOption(new_timer_intervalUnit, settings.intervalUnit)
 
 new_timer_btn.addEventListener('click', () => {
-	new_timer_form.className == 'dblock'
-		? expandCollapseForm('collapse')
-		: expandCollapseForm('expand')
+    new_timer_form.className == 'dblock'
+        ? expandCollapseForm('collapse')
+        : expandCollapseForm('expand')
 })
 
 /**
  * returns {void}
  */
 function expandCollapseForm(what) {
-	if (what == 'expand') {
-		new_timer_btn.classList.replace('collapsed', 'expanded')
-		new_timer_form.className = 'dblock'
-		settings_form.className = 'dnone'
-		settings_btn.classList.replace('expanded', 'collapsed')
-	}
-	if (what === 'collapse') {
-		new_timer_form.className = 'dnone'
-		new_timer_btn.classList.replace('expanded', 'collapsed')
-	}
+    if (what == 'expand') {
+        new_timer_btn.classList.replace('collapsed', 'expanded')
+        new_timer_form.className = 'dblock'
+        settings_form.className = 'dnone'
+        settings_btn.classList.replace('expanded', 'collapsed')
+    }
+    if (what === 'collapse') {
+        new_timer_form.className = 'dnone'
+        new_timer_btn.classList.replace('expanded', 'collapsed')
+    }
 }
 
 new_timer_form.addEventListener('submit', (e) => {
-	e.preventDefault()
-	/**
-	 * @type {FormData} - Data input of the New Timer form
-	 */
-	var data = new FormData(new_timer_form)
-	timerFormSubmit(data)
+    e.preventDefault()
+    /**
+     * @type {FormData} - Data input of the New Timer form
+     */
+    var data = new FormData(new_timer_form)
+    timerFormSubmit(data)
 })
 
 /**
  * @param {FormData} data - data input of the New Timer form
  */
 function timerFormSubmit(data) {
-	// change some default settings first
-	if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
-		settings.intervalUnit = Number(data.get('timer_intervalUnit'))
-		settings.intervalUnitName = getIntervalUnitName(settings.intervalUnit, getSettings().language)
-		settings.language = getSettings().language
-	}
-	updateSettings(settings)
+    // change some default settings first
+    if (data.get('timer_intervalUnit') !== settings.intervalUnit) {
+        settings.intervalUnit = Number(data.get('timer_intervalUnit'))
+        settings.intervalUnitName = getIntervalUnitName(
+            settings.intervalUnit,
+            getSettings().language
+        )
+        settings.language = getSettings().language
+    }
+    updateSettings(settings)
 
-	addTimer(
-		data.get('timer_name'),
-		data.get('timer_description'),
-		data.get('timer_interval') * Number(data.get('timer_intervalUnit'))
-	)
+    addTimer(
+        data.get('timer_name'),
+        data.get('timer_description'),
+        data.get('timer_interval') * Number(data.get('timer_intervalUnit'))
+    )
 
-	cleanForm()
+    cleanForm()
 }
 
 /**
@@ -352,36 +358,36 @@ function timerFormSubmit(data) {
  * @param {string} textKey - translation key present in object translationMap
  */
 function showFeedback(afterElement, textKey) {
-	if (document.getElementsByClassName('feedback').length > 0) {
-		document.getElementsByClassName('feedback')[0].remove()
-	}
-	let aftertext = document.createElement('div')
-	aftertext.innerText = getTranslation(getSettings().language, textKey)
-	aftertext.className = 'feedback'
-	setTimeout(() => aftertext.remove(), 1500)
-	return insertAfter(afterElement, aftertext)
+    if (document.getElementsByClassName('feedback').length > 0) {
+        document.getElementsByClassName('feedback')[0].remove()
+    }
+    let aftertext = document.createElement('div')
+    aftertext.innerText = getTranslation(getSettings().language, textKey)
+    aftertext.className = 'feedback'
+    setTimeout(() => aftertext.remove(), 1500)
+    return insertAfter(afterElement, aftertext)
 }
 
 /**
  * returns {void}
  */
 function cleanForm() {
-	new_timer_name.value = ''
-	new_timer_description.value = ''
-	new_timer_interval.value = ''
-	new_timer_name.focus()
+    new_timer_name.value = ''
+    new_timer_description.value = ''
+    new_timer_interval.value = ''
+    new_timer_name.focus()
 }
 
 new_timer_quick.addEventListener('click', () => {
-	addQuickTimer()
+    addQuickTimer()
 })
 
 /**
  * returns {void}
  */
 function addQuickTimer() {
-	let settings = getSettings()
-	addTimer(settings.quickTimerName, settings.quickTimerDescr, settings.quickTimerInterval)
+    let settings = getSettings()
+    addTimer(settings.quickTimerName, settings.quickTimerDescr, settings.quickTimerInterval)
 }
 
 /**
@@ -390,28 +396,28 @@ function addQuickTimer() {
  * @param {number} interval - Number of seconds or minutes for the new timer
  */
 function addTimer(name, description, interval) {
-	let settings = getSettings()
-	/** @type {[]} arr */
-	arr = []
-	const starttime = getCurrentTimeSimple()
-	const endtime = getTimeSimple(false, interval)
-	arr = getTimers()
+    let settings = getSettings()
+    /** @type {[]} arr */
+    arr = []
+    const starttime = getCurrentTimeSimple()
+    const endtime = getTimeSimple(false, interval)
+    arr = getTimers()
 
-	arr.push({
-		name: name,
-		descr: description,
-		interval: interval,
-		intervalUnit: settings.intervalUnit,
-		timepast: 0,
-		paused: false,
-		finished: false,
-		starttime: starttime,
-		endtime: endtime,
-	})
-	updateTimers(arr)
-	showFeedback(btn_create_timer, 'Timer_created')
-	renderTimers(arr)
-	delete arr
+    arr.push({
+        name: name,
+        descr: description,
+        interval: interval,
+        intervalUnit: settings.intervalUnit,
+        timepast: 0,
+        paused: false,
+        finished: false,
+        starttime: starttime,
+        endtime: endtime,
+    })
+    updateTimers(arr)
+    showFeedback(btn_create_timer, 'Timer_created')
+    renderTimers(arr)
+    delete arr
 }
 
 // ----------------------------- PAUSE/RESUME TASK
@@ -419,27 +425,27 @@ function addTimer(name, description, interval) {
  * @param key {number}
  */
 function pauseTimerToggle(key) {
-	arr = getTimers()
-	const newarr = []
-	for (let i = 0; i < arr.length; i++) {
-		if (i === key) {
-			arr[i].paused = !arr[i].paused
-		}
-		newarr.push({
-			name: arr[i].name,
-			descr: arr[i].descr,
-			interval: arr[i].interval,
-			timepast: arr[i].timepast,
-			intervalUnit: arr[i].intervalUnit,
-			paused: arr[i].paused,
-			finished: arr[i].finished,
-			starttime: arr[i].starttime,
-			endtime: arr[i].endtime,
-		})
-	}
+    arr = getTimers()
+    const newarr = []
+    for (let i = 0; i < arr.length; i++) {
+        if (i === key) {
+            arr[i].paused = !arr[i].paused
+        }
+        newarr.push({
+            name: arr[i].name,
+            descr: arr[i].descr,
+            interval: arr[i].interval,
+            timepast: arr[i].timepast,
+            intervalUnit: arr[i].intervalUnit,
+            paused: arr[i].paused,
+            finished: arr[i].finished,
+            starttime: arr[i].starttime,
+            endtime: arr[i].endtime,
+        })
+    }
 
-	updateTimers(newarr)
-	renderTimers(newarr, false) // TODO: false isnt doing anything useful here, or is it?
+    updateTimers(newarr)
+    renderTimers(newarr, false) // TODO: false isnt doing anything useful here, or is it?
 }
 
 // ----------------------------- REMOVE TASKS
@@ -449,20 +455,20 @@ function pauseTimerToggle(key) {
  * @param key {number} key of block containing a single timer
  */
 function removeTimer(key) {
-	arr = getTimers()
-	const newarr = arr.filter((i, index) => index !== key)
+    arr = getTimers()
+    const newarr = arr.filter((i, index) => index !== key)
 
-	updateTimers(newarr)
-	renderTimers(newarr)
+    updateTimers(newarr)
+    renderTimers(newarr)
 
-	delete arr
-	delete newarr
-	return
+    delete arr
+    delete newarr
+    return
 }
 
 function clearLocalStorage() {
-	localStorage.clear()
-	document.location = location
+    localStorage.clear()
+    document.location = location
 }
 
 // ----------------------------- RENDER TASKS - MAIN
@@ -470,40 +476,40 @@ function clearLocalStorage() {
  * @returns {void}
  */
 function renderTimers(arr, paused = false) {
-	timer_container.innerHTML = ''
-	for (let i = 0; i < arr.length; i++) {
-		if (paused === false) timer_container.appendChild(renderTimer(arr[i], i))
-	}
+    timer_container.innerHTML = ''
+    for (let i = 0; i < arr.length; i++) {
+        if (paused === false) timer_container.appendChild(renderTimer(arr[i], i))
+    }
 }
 renderTimers(getTimers())
 
 function getCurrentTime() {
-	const el = current_time
-	const showtime = (el) => {
-		el.innerHTML = getCurrentTimeSimple(true)
-	}
-	showtime(el)
+    const el = current_time
+    const showtime = (el) => {
+        el.innerHTML = getCurrentTimeSimple(true)
+    }
+    showtime(el)
 
-	setInterval(() => {
-		showtime(el)
-	}, 1000)
+    setInterval(() => {
+        showtime(el)
+    }, 1000)
 }
 getCurrentTime()
 
 const currentTime = () => {
-	current_time.innerHTML = getCurrentTimeSimple(true)
+    current_time.innerHTML = getCurrentTimeSimple(true)
 }
 currentTime()
 
 const getCurrentDate = (lang = getSettings().language) => {
-	return new Date().toLocaleString([getTranslation(lang, 'localeString')], {
-		weekday: 'long',
-		month: 'long',
-		day: 'numeric',
-	})
+    return new Date().toLocaleString([getTranslation(lang, 'localeString')], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+    })
 }
 const setCurrentDate = (lang = getSettings().language) => {
-	current_date.innerHTML = getCurrentDate(lang)
+    current_date.innerHTML = getCurrentDate(lang)
 }
 setCurrentDate()
 
@@ -514,64 +520,64 @@ setCurrentDate()
  * @returns {HTMLElement}
  */
 function renderTimer(i, key) {
-	let settings = getSettings()
-	let el = d.createElement('div')
-	el.className = 'timer'
-	if (i.paused) el.classList.add('paused')
-	el.id = 'timer-' + key
-	el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
-	el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
-	el.appendChild(
-		renderTimerElement(
-			(node = 'div'),
-			(className = 'timer-countdown-current'),
-			(content = countdownTimer(key, 'countdown-timer-' + key)),
-			(id = 'countdown-' + el.id),
-			(key = key),
-			(content_prefix =
-				settings.countDown === true
-					? '<span class="time_left_text">' +
-					  getTranslation(settings.language, 'Time_left') +
-					  '</span>: '
-					: '<span class="time_passed_text">' +
-					  getTranslation(settings.language, 'Time_passed') +
-					  '</span>: '),
-			(content_suffix =
-				'&nbsp;/ ' +
-				i.interval / i.intervalUnit +
-				' ' +
-				getTranslation(settings.language, getIntervalUnitName(i.intervalUnit)))
-		)
-	)
+    let settings = getSettings()
+    let el = d.createElement('div')
+    el.className = 'timer'
+    if (i.paused) el.classList.add('paused')
+    el.id = 'timer-' + key
+    el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
+    el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
+    el.appendChild(
+        renderTimerElement(
+            (node = 'div'),
+            (className = 'timer-countdown-current'),
+            (content = countdownTimer(key, 'countdown-timer-' + key)),
+            (id = 'countdown-' + el.id),
+            (key = key),
+            (content_prefix =
+                settings.countDown === true
+                    ? '<span class="time_left_text">' +
+                      getTranslation(settings.language, 'Time_left') +
+                      '</span>: '
+                    : '<span class="time_passed_text">' +
+                      getTranslation(settings.language, 'Time_passed') +
+                      '</span>: '),
+            (content_suffix =
+                '&nbsp;/ ' +
+                i.interval / i.intervalUnit +
+                ' ' +
+                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit)))
+        )
+    )
 
-	el.appendChild(
-		renderTimerElement(
-			'div',
-			'starttime',
-			'<span class="starting_time_text">' +
-				getTranslation(settings.language, 'Starting_time') +
-				'</span>: ' +
-				i.starttime
-		)
-	)
-	el.appendChild(
-		renderTimerElement(
-			'div',
-			'endtime',
-			'<span class="ending_time_text">' +
-				getTranslation(settings.language, 'Ending_time') +
-				'</span>: ' +
-				i.endtime
-		)
-	)
-	let el2 = document.createElement('div')
-	el2.className = 'buttons'
-	if (!i.finished) el2.appendChild(pauseTimerToggleLink(key, !i.paused))
-	el2.appendChild(resetTimerLink(key))
-	el2.appendChild(removeTimerLink(key))
-	el.appendChild(el2)
+    el.appendChild(
+        renderTimerElement(
+            'div',
+            'starttime',
+            '<span class="starting_time_text">' +
+                getTranslation(settings.language, 'Starting_time') +
+                '</span>: ' +
+                i.starttime
+        )
+    )
+    el.appendChild(
+        renderTimerElement(
+            'div',
+            'endtime',
+            '<span class="ending_time_text">' +
+                getTranslation(settings.language, 'Ending_time') +
+                '</span>: ' +
+                i.endtime
+        )
+    )
+    let el2 = document.createElement('div')
+    el2.className = 'buttons'
+    if (!i.finished) el2.appendChild(pauseTimerToggleLink(key, !i.paused))
+    el2.appendChild(resetTimerLink(key))
+    el2.appendChild(removeTimerLink(key))
+    el.appendChild(el2)
 
-	return el
+    return el
 }
 
 /**
@@ -581,29 +587,29 @@ function renderTimer(i, key) {
  * @returns {void}
  */
 function renderTimerElement(
-	node = 'div',
-	className,
-	content,
-	id = undefined,
-	key,
-	contentPrefix = '',
-	contentSuffix = ''
+    node = 'div',
+    className,
+    content,
+    id = undefined,
+    key,
+    contentPrefix = '',
+    contentSuffix = ''
 ) {
-	let timerEl = d.createElement(node)
-	timerEl.className = className
+    let timerEl = d.createElement(node)
+    timerEl.className = className
 
-	if (content === undefined) {
-		// first draw of Time left/Time past
-		let i = getTimers()[key]
-		content =
-			settings.countDown === true
-				? Math.round((i.interval - i.timepast) / i.intervalUnit)
-				: Math.round(i.timepast / i.intervalUnit)
-	}
+    if (content === undefined) {
+        // first draw of Time left/Time past
+        let i = getTimers()[key]
+        content =
+            settings.countDown === true
+                ? Math.round((i.interval - i.timepast) / i.intervalUnit)
+                : Math.round(i.timepast / i.intervalUnit)
+    }
 
-	timerEl.innerHTML = contentPrefix + content + contentSuffix
-	id !== undefined ? (timerEl.id = id) : ''
-	return timerEl
+    timerEl.innerHTML = contentPrefix + content + contentSuffix
+    id !== undefined ? (timerEl.id = id) : ''
+    return timerEl
 }
 
 // ----------------------------- RENDER TASKS - DETAILS
@@ -614,61 +620,66 @@ function renderTimerElement(
  * @returns {void}
  */
 function countdownTimer(key, id) {
-	// individual per timer
-	const tmpinterval = setInterval(() => {
-		if (
-			timerspersec[key] === undefined ||
-			timerspersec[key].paused === true ||
-			timerspersec[key].paused === undefined
-		) {
-			stopit()
-		} else {
-			if (d.getElementById(id)) {
-				let settings = getSettings()
-				if (settings.countDown) {
-					cPrefix =
-						'<span class="time_left_text">' +
-						getTranslation(settings.language, 'Time_left') +
-						'</span>: '
-				} else {
-					cPrefix =
-						'<span class="time_passed_text">' +
-						getTranslation(settings.language, 'Time_passed') +
-						'</span>: '
-				}
-				var cSuffix =
-					' ' +
-					getTranslation(settings.language, getIntervalUnitName(timerspersec[key].intervalUnit))
-				let c = d.getElementById(id)
+    // individual per timer
+    const tmpinterval = setInterval(() => {
+        if (
+            timerspersec[key] === undefined ||
+            timerspersec[key].paused === true ||
+            timerspersec[key].paused === undefined
+        ) {
+            stopit()
+        } else {
+            if (d.getElementById(id)) {
+                let settings = getSettings()
+                if (settings.countDown) {
+                    cPrefix =
+                        '<span class="time_left_text">' +
+                        getTranslation(settings.language, 'Time_left') +
+                        '</span>: '
+                } else {
+                    cPrefix =
+                        '<span class="time_passed_text">' +
+                        getTranslation(settings.language, 'Time_passed') +
+                        '</span>: '
+                }
+                var cSuffix =
+                    ' ' +
+                    getTranslation(
+                        settings.language,
+                        getIntervalUnitName(timerspersec[key].intervalUnit)
+                    )
+                let c = d.getElementById(id)
 
-				if (timerspersec[key].timepast === timerspersec[key].interval) {
-					stopit()
-				}
-				if (timerspersec[key].paused === true) {
-					// console.log('arr paused');
-				} else {
-					if (settings.countDown) {
-						timeleft = Math.round(
-							(timerspersec[key].interval - timerspersec[key].timepast) /
-								timerspersec[key].intervalUnit
-						)
-						c.innerHTML =
-							cPrefix +
-							timeleft +
-							' / ' +
-							timerspersec[key].interval / timerspersec[key].intervalUnit +
-							cSuffix
-					} else {
-						timepast = Math.round(timerspersec[key].timepast / timerspersec[key].intervalUnit)
-						c.innerHTML = cPrefix + timepast + cSuffix
-					}
-				}
-			}
-		}
-	}, 1000)
-	function stopit() {
-		clearInterval(tmpinterval)
-	}
+                if (timerspersec[key].timepast === timerspersec[key].interval) {
+                    stopit()
+                }
+                if (timerspersec[key].paused === true) {
+                    // console.log('arr paused');
+                } else {
+                    if (settings.countDown) {
+                        timeleft = Math.round(
+                            (timerspersec[key].interval - timerspersec[key].timepast) /
+                                timerspersec[key].intervalUnit
+                        )
+                        c.innerHTML =
+                            cPrefix +
+                            timeleft +
+                            ' / ' +
+                            timerspersec[key].interval / timerspersec[key].intervalUnit +
+                            cSuffix
+                    } else {
+                        timepast = Math.round(
+                            timerspersec[key].timepast / timerspersec[key].intervalUnit
+                        )
+                        c.innerHTML = cPrefix + timepast + cSuffix
+                    }
+                }
+            }
+        }
+    }, 1000)
+    function stopit() {
+        clearInterval(tmpinterval)
+    }
 }
 
 /**
@@ -678,20 +689,20 @@ function countdownTimer(key, id) {
  * @returns {HTMLButtonElement}
  */
 function pauseTimerToggleLink(key, paused = false) {
-	let el = d.createElement('button')
-	el.className = 'text-btn'
-	el.classList.add('pause')
-	if (paused === true) {
-		el.innerText = getTranslation(getSettings().language, 'pause')
-		el.id = 'pause-' + key
-	} else {
-		el.innerText = getTranslation(getSettings().language, 'resume')
-		el.id = 'resume-' + key
-		el.classList.replace('pause', 'resume')
-		document.title = 'Timer'
-	}
-	el.addEventListener('click', () => pauseTimerToggle(key))
-	return el
+    let el = d.createElement('button')
+    el.className = 'text-btn'
+    el.classList.add('pause')
+    if (paused === true) {
+        el.innerText = getTranslation(getSettings().language, 'pause')
+        el.id = 'pause-' + key
+    } else {
+        el.innerText = getTranslation(getSettings().language, 'resume')
+        el.id = 'resume-' + key
+        el.classList.replace('pause', 'resume')
+        document.title = 'Timer'
+    }
+    el.addEventListener('click', () => pauseTimerToggle(key))
+    return el
 }
 
 /**
@@ -700,15 +711,15 @@ function pauseTimerToggleLink(key, paused = false) {
  * @returns {HTMLButtonElement}
  */
 function removeTimerLink(key) {
-	let el = d.createElement('button')
-	el.innerText = getTranslation(getSettings().language, 'remove')
-	el.className = 'text-btn remove'
-	el.id = 'del-' + key
-	el.addEventListener('click', () => {
-		removeTimer(key)
-		location.reload()
-	})
-	return el
+    let el = d.createElement('button')
+    el.innerText = getTranslation(getSettings().language, 'remove')
+    el.className = 'text-btn remove'
+    el.id = 'del-' + key
+    el.addEventListener('click', () => {
+        removeTimer(key)
+        location.reload()
+    })
+    return el
 }
 
 /**
@@ -717,27 +728,27 @@ function removeTimerLink(key) {
  * @returns {HTMLButtonElement}
  */
 function resetTimerLink(key) {
-	let el = d.createElement('button')
-	el.innerText = getTranslation(getSettings().language, 'reset')
-	el.className = 'text-btn'
-	el.classList.add('reset')
-	el.id = 'reset-' + key
-	el.addEventListener('click', () => {
-		resetTimer(key)
-	})
-	return el
+    let el = d.createElement('button')
+    el.innerText = getTranslation(getSettings().language, 'reset')
+    el.className = 'text-btn'
+    el.classList.add('reset')
+    el.id = 'reset-' + key
+    el.addEventListener('click', () => {
+        resetTimer(key)
+    })
+    return el
 }
 
 function resetTimer(key) {
-	var arr = getTimers()
-	arr[key].timepast = 0
-	arr[key].starttime = getCurrentTimeSimple()
-	arr[key].endtime = getTimeSimple(false, arr[key].interval)
-	arr[key].finished = false
-	document.title = 'Timer'
-	updateTimers(arr)
-	renderTimers(arr)
-	delete arr
+    var arr = getTimers()
+    arr[key].timepast = 0
+    arr[key].starttime = getCurrentTimeSimple()
+    arr[key].endtime = getTimeSimple(false, arr[key].interval)
+    arr[key].finished = false
+    document.title = 'Timer'
+    updateTimers(arr)
+    renderTimers(arr)
+    delete arr
 }
 
 // ----------------------------- DETECTIONS
@@ -745,95 +756,95 @@ function resetTimer(key) {
  * @param {Object} arr - array of localstorage.timerTimers
  */
 function detectAnyFinished(arr = getTimers()) {
-	for (i of arr) {
-		if (i.finished === true) return true
-	}
-	return false
+    for (i of arr) {
+        if (i.finished === true) return true
+    }
+    return false
 }
 
 function detectAnyPaused(arr = getTimers()) {
-	for (i of arr) {
-		if (i.paused === true) return true
-	}
-	return false
+    for (i of arr) {
+        if (i.paused === true) return true
+    }
+    return false
 }
 
 // Detect any still running timers
 function detectAnyActive(arr = getTimers()) {
-	for (i of arr) {
-		if (i.finished === false) return true
-	}
-	return false
+    for (i of arr) {
+        if (i.finished === false) return true
+    }
+    return false
 }
 
 function detectAllPaused(arr = getTimers()) {
-	let count = 0
-	for (i = 0; i < arr.length; i++) {
-		if (arr[i].paused === true) count++
-	}
-	if (count === arr.length) return true
-	return false
+    let count = 0
+    for (i = 0; i < arr.length; i++) {
+        if (arr[i].paused === true) count++
+    }
+    if (count === arr.length) return true
+    return false
 }
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 function countdownAll() {
-	let blinkRunningOn = false
-	/** @type {string|undefined} finishedTimer */
-	let finishedTimer
-	let blinkFinishedOn = false
+    let blinkRunningOn = false
+    /** @type {string|undefined} finishedTimer */
+    let finishedTimer
+    let blinkFinishedOn = false
 
-	var countdownAllPerSecond = setInterval(() => {
-		if (timerspersec) {
-			arr = timerspersec
-			// console.log('arr:', arr)
+    var countdownAllPerSecond = setInterval(() => {
+        if (timerspersec) {
+            arr = timerspersec
+            // console.log('arr:', arr)
 
-			for (let i = 0; i < arr.length; i++) {
-				if (arr[i].paused === true || arr[i].finished) continue
-				// re-render timers that are not paused or finished
-				if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
-					arr[i].timepast++
-				}
-				if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-					arr[i].finished = true
-					playSound()
-				}
-				if (arr[i].finished === true) {
-					finishedTimer = arr[i].name
-					d.getElementById('timer-' + i).classList.add('finished')
-				}
-				updateTimers(arr)
-			}
-		}
-		if (detectAllPaused() === true || !detectAnyActive()) {
-			stopit()
-		}
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].paused === true || arr[i].finished) continue
+                // re-render timers that are not paused or finished
+                if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
+                    arr[i].timepast++
+                }
+                if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
+                    arr[i].finished = true
+                    playSound()
+                }
+                if (arr[i].finished === true) {
+                    finishedTimer = arr[i].name
+                    d.getElementById('timer-' + i).classList.add('finished')
+                }
+                updateTimers(arr)
+            }
+        }
+        if (detectAllPaused() === true || !detectAnyActive()) {
+            stopit()
+        }
 
-		// tab/title manipulation for keepalive and notifying user, refreshed every second
-		if (finishedTimer !== undefined && detectAnyFinished() === true) {
-			blinkFinishedOn = !blinkFinishedOn
-			if (!blinkFinishedOn) {
-				document.title = finishedTimer + '!'
-			} else document.title = finishedTimer
-		} else {
-			blinkRunningOn = !blinkRunningOn
-			timerTitleBasic = 'Timer'
-			if (!blinkRunningOn && document.title === timerTitleBasic) {
-				document.title = timerTitleBasic + '.'
-			} else {
-				document.title = timerTitleBasic
-			}
-		}
-	}, 1000)
+        // tab/title manipulation for keepalive and notifying user, refreshed every second
+        if (finishedTimer !== undefined && detectAnyFinished() === true) {
+            blinkFinishedOn = !blinkFinishedOn
+            if (!blinkFinishedOn) {
+                document.title = finishedTimer + '!'
+            } else document.title = finishedTimer
+        } else {
+            blinkRunningOn = !blinkRunningOn
+            timerTitleBasic = 'Timer'
+            if (!blinkRunningOn && document.title === timerTitleBasic) {
+                document.title = timerTitleBasic + '.'
+            } else {
+                document.title = timerTitleBasic
+            }
+        }
+    }, 1000)
 
-	function stopit() {
-		clearInterval(countdownAllPerSecond)
-		localStorage.setItem('countDownAllStatus', 'stopped')
-	}
+    function stopit() {
+        clearInterval(countdownAllPerSecond)
+        localStorage.setItem('countDownAllStatus', 'stopped')
+    }
 }
 
 function playSound() {
-	const siren = new Audio('siren1.wav')
-	siren.play()
+    const siren = new Audio('siren1.wav')
+    siren.play()
 }
 
 // ----------------------------- MISC METHODS
@@ -844,35 +855,35 @@ function playSound() {
  */
 // TODO remove this function when calls are replaced by reference to new getTimeSimple method
 function getCurrentTimeSimple(seconds = false) {
-	const now = new Date()
-	let hours = now.getHours().toString()
-	let minutes = now.getMinutes().toString()
-	hours = !hours.slice(1) ? '0' + hours : hours
-	minutes = !minutes.slice(1) ? '0' + minutes : minutes
-	if (seconds) {
-		let seconds = now.getSeconds().toString()
-		seconds = !seconds.slice(1) ? '0' + seconds : seconds
-		return hours + ':' + minutes + ':' + seconds
-	}
-	return hours + ':' + minutes
+    const now = new Date()
+    let hours = now.getHours().toString()
+    let minutes = now.getMinutes().toString()
+    hours = !hours.slice(1) ? '0' + hours : hours
+    minutes = !minutes.slice(1) ? '0' + minutes : minutes
+    if (seconds) {
+        let seconds = now.getSeconds().toString()
+        seconds = !seconds.slice(1) ? '0' + seconds : seconds
+        return hours + ':' + minutes + ':' + seconds
+    }
+    return hours + ':' + minutes
 }
 
 function getTimeSimple(seconds = false, secondsToAdd = 0) {
-	let now = new Date()
-	if (secondsToAdd > 0) {
-		let addingSeconds = now.getSeconds() + secondsToAdd
-		now.setSeconds(addingSeconds)
-	}
-	let hours = now.getHours().toString()
-	let minutes = now.getMinutes().toString()
-	hours = !hours.slice(1) ? '0' + hours : hours
-	minutes = !minutes.slice(1) ? '0' + minutes : minutes
-	if (seconds) {
-		let seconds = now.getSeconds().toString()
-		seconds = !seconds.slice(1) ? '0' + seconds : seconds
-		return hours + ':' + minutes + ':' + seconds
-	}
-	return hours + ':' + minutes
+    let now = new Date()
+    if (secondsToAdd > 0) {
+        let addingSeconds = now.getSeconds() + secondsToAdd
+        now.setSeconds(addingSeconds)
+    }
+    let hours = now.getHours().toString()
+    let minutes = now.getMinutes().toString()
+    hours = !hours.slice(1) ? '0' + hours : hours
+    minutes = !minutes.slice(1) ? '0' + minutes : minutes
+    if (seconds) {
+        let seconds = now.getSeconds().toString()
+        seconds = !seconds.slice(1) ? '0' + seconds : seconds
+        return hours + ':' + minutes + ':' + seconds
+    }
+    return hours + ':' + minutes
 }
 
 // ----------------------------- BACKGROUND... LITERALLY
@@ -883,10 +894,10 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
  * @returns {void}
  */
 function bgStatus(arr) {
-	if (detectAnyFinished(arr)) setBgStatus('alert')
-	else if (detectAnyPaused(arr)) setBgStatus('paused')
-	else if (detectAnyActive(arr)) setBgStatus('running')
-	else setBgStatus('normal')
+    if (detectAnyFinished(arr)) setBgStatus('alert')
+    else if (detectAnyPaused(arr)) setBgStatus('paused')
+    else if (detectAnyActive(arr)) setBgStatus('running')
+    else setBgStatus('normal')
 }
 
 /**
@@ -895,10 +906,10 @@ function bgStatus(arr) {
  * @returns {void}
  */
 function setBgStatus(status = 'normal') {
-	if (status === 'alert') statusbar.className = 'statusbar-alert'
-	else if (status === 'paused') statusbar.className = 'statusbar-pause'
-	else if (status === 'running') statusbar.className = 'statusbar-running'
-	else statusbar.className = 'statusbar-default'
+    if (status === 'alert') statusbar.className = 'statusbar-alert'
+    else if (status === 'paused') statusbar.className = 'statusbar-pause'
+    else if (status === 'running') statusbar.className = 'statusbar-running'
+    else statusbar.className = 'statusbar-default'
 }
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
@@ -908,7 +919,7 @@ function setBgStatus(status = 'normal') {
  * @returns {string}
  */
 function getTranslation(langkey, stringkey) {
-	return translationMap[langkey][stringkey]
+    return translationMap[langkey][stringkey]
 }
 
 /**
@@ -916,7 +927,7 @@ function getTranslation(langkey, stringkey) {
  * @returns void
  */
 function setHtmlLang(lang) {
-	document.documentElement.lang = lang
+    document.documentElement.lang = lang
 }
 
 /**
@@ -925,74 +936,74 @@ function setHtmlLang(lang) {
  * @returns {void}
  */
 function changeLanguage(lang) {
-	setHtmlLang(lang)
-	newTextInElements('pause', getTranslation(lang, 'pause'))
-	newTextInElements('resume', getTranslation(lang, 'resume'))
-	newTextInElements('reset', getTranslation(lang, 'reset'))
-	newTextInElements('remove', getTranslation(lang, 'remove'))
+    setHtmlLang(lang)
+    newTextInElements('pause', getTranslation(lang, 'pause'))
+    newTextInElements('resume', getTranslation(lang, 'resume'))
+    newTextInElements('reset', getTranslation(lang, 'reset'))
+    newTextInElements('remove', getTranslation(lang, 'remove'))
 
-	new_timer_btn.innerText = getTranslation(lang, 'New_timer')
-	new_timer_form_head.innerText = getTranslation(lang, 'New_timer')
-	new_timer_quick.innerText = getTranslation(lang, 'Quick_add')
+    new_timer_btn.innerText = getTranslation(lang, 'New_timer')
+    new_timer_form_head.innerText = getTranslation(lang, 'New_timer')
+    new_timer_quick.innerText = getTranslation(lang, 'Quick_add')
 
-	new_timer_name.setAttribute('placeholder', getTranslation(lang, 'Name') + '...')
-	new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
-	new_timer_interval.setAttribute('placeholder', getTranslation(lang, 'Time') + '...')
-	new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
-	setf_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
-	new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
-	setf_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
-	new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
-	setf_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
-	new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
-	setf_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
+    new_timer_name.setAttribute('placeholder', getTranslation(lang, 'Name') + '...')
+    new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
+    new_timer_interval.setAttribute('placeholder', getTranslation(lang, 'Time') + '...')
+    new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
+    setf_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
+    new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
+    setf_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
+    new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
+    setf_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
+    new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
+    setf_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
 
-	btn_create_timer.setAttribute('value', getTranslation(lang, 'Create_timer'))
+    btn_create_timer.setAttribute('value', getTranslation(lang, 'Create_timer'))
 
-	general_settings_head.innerText = getTranslation(lang, 'General_settings')
-	setf_countDown.options[0].innerText = getTranslation(lang, 'Count_down')
-	setf_countDown.options[1].innerText = getTranslation(lang, 'Count_up')
-	quick_add_settings_head.innerText = getTranslation(lang, 'Quick_add_settings')
-	btn_update_settings.setAttribute('value', getTranslation(lang, 'Update_settings'))
+    general_settings_head.innerText = getTranslation(lang, 'General_settings')
+    setf_countDown.options[0].innerText = getTranslation(lang, 'Count_down')
+    setf_countDown.options[1].innerText = getTranslation(lang, 'Count_up')
+    quick_add_settings_head.innerText = getTranslation(lang, 'Quick_add_settings')
+    btn_update_settings.setAttribute('value', getTranslation(lang, 'Update_settings'))
 
-	newTextInElements('starting_time_text', getTranslation(lang, 'Starting_time'))
-	newTextInElements('ending_time_text', getTranslation(lang, 'Ending_time'))
-	newTextInElements('time_left_text', getTranslation(lang, 'Time_left'))
-	newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
+    newTextInElements('starting_time_text', getTranslation(lang, 'Starting_time'))
+    newTextInElements('ending_time_text', getTranslation(lang, 'Ending_time'))
+    newTextInElements('time_left_text', getTranslation(lang, 'Time_left'))
+    newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
 
-	setf_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
-	new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
+    setf_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
+    new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
 
-	setCurrentDate(lang)
+    setCurrentDate(lang)
 }
 
 /**
  * @returns {void}
  */
 function newTextInElements(classname, newText) {
-	var elements = d.getElementsByClassName(classname)
-	for (i = 0; i < elements.length; i++) {
-		elements[i].innerText = newText
-	}
-	delete elements
+    var elements = d.getElementsByClassName(classname)
+    for (i = 0; i < elements.length; i++) {
+        elements[i].innerText = newText
+    }
+    delete elements
 }
 
 if (pageInit === true && settings.language === 'pt') {
-	changeLanguage('pt')
+    changeLanguage('pt')
 }
 
 function insertAfter(referenceNode, newNode) {
-	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
 function detectColorScheme() {
-	let theme = 'dark' // default to dark
-	// local storage is used to override OS theme settings
-	if (localStorage.getItem('theme') && localStorage.getItem('theme') == 'light') theme = 'light'
-	else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark' //OS theme setting detected as light
-	// set preferred theme with a `data-theme` attribute
-	document.documentElement.setAttribute('data-theme', theme)
-	// TODO: create setting so user can override & save setting in localstorage
+    let theme = 'dark' // default to dark
+    // local storage is used to override OS theme settings
+    if (localStorage.getItem('theme') && localStorage.getItem('theme') == 'light') theme = 'light'
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark' //OS theme setting detected as light
+    // set preferred theme with a `data-theme` attribute
+    document.documentElement.setAttribute('data-theme', theme)
+    // TODO: create setting so user can override & save setting in localstorage
 }
 detectColorScheme()
 
