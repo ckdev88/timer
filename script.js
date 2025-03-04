@@ -712,7 +712,7 @@ function removeTimerLink(key) {
 }
 
 /**
- * Creates the remove button per timer
+ * Creates the reset button per timer
  * @param {number} key
  * @returns {HTMLButtonElement}
  */
