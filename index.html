@@ -105,9 +105,22 @@
                 </div>
             </form>
             <div id="timer_container"></div>
-            <div id="current_time"></div>
-            <div id="current_date"></div>
-            <audio src="siren1.wav" />
+			<div id="audio_container">
+				<button onclick="audioPlayer('play')" class="text-btn play" id="audio_play">
+					<span class="dimmed">Play audio</span>
+				</button>
+				<button
+						onclick="audioPlayer('pause')"
+						class="text-btn pause dnone"
+						id="audio_pause"
+						>
+						<span class="dimmed">Pause audio</span>
+				</button>
+			</div>
+            <div>
+                <div id="current_time"></div>
+                <div id="current_date"></div>
+            </div>
         </div>
         <script src="script.js"></script>
     </body>
