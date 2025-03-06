@@ -3,6 +3,8 @@
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
 let pageInit = true
 
+const TIMEOUT_SHORT = 80
+
 /** @type {Document} d abbreviation of 'document' for loading speed & less code */
 const d = document
 const new_timer_btn = d.getElementById('new_timer_btn')
@@ -34,6 +36,12 @@ const statusbar = d.getElementById('statusbar')
 
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
+
+const backgroundAudio = new Audio('./audio/waves.opus')
+const alertAudio = new Audio('./audio/alert.wav')
+const audio_play_button = d.getElementById('audio_play')
+const audio_pause_button = d.getElementById('audio_pause')
+
 
 /**
  * Turn localstorage-string containing timers into an array and return it.
@@ -693,10 +701,10 @@ function pauseTimerToggleLink(key, paused = false) {
     el.className = 'text-btn'
     el.classList.add('pause')
     if (paused === true) {
-        el.innerText = getTranslation(getSettings().language, 'pause')
+        el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'pause')+'</span>'
         el.id = 'pause-' + key
     } else {
-        el.innerText = getTranslation(getSettings().language, 'resume')
+        el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'resume')+'</span>'
         el.id = 'resume-' + key
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
@@ -712,7 +720,7 @@ function pauseTimerToggleLink(key, paused = false) {
  */
 function removeTimerLink(key) {
     let el = d.createElement('button')
-    el.innerText = getTranslation(getSettings().language, 'remove')
+    el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'remove')+'</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
     el.addEventListener('click', () => {
@@ -729,7 +737,7 @@ function removeTimerLink(key) {
  */
 function resetTimerLink(key) {
     let el = d.createElement('button')
-    el.innerText = getTranslation(getSettings().language, 'reset')
+    el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'reset')+'</span>'
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
@@ -806,7 +814,12 @@ function countdownAll() {
                 }
                 if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
                     arr[i].finished = true
-                    playSound()
+                    setTimeout(() => {
+                        audioPlayer('pause')
+                        setTimeout(() => {
+                            playAlert()
+                        }, TIMEOUT_SHORT)
+                    }, TIMEOUT_SHORT)
                 }
                 if (arr[i].finished === true) {
                     finishedTimer = arr[i].name
@@ -842,9 +855,27 @@ function countdownAll() {
     }
 }
 
-function playSound() {
-    const siren = new Audio('siren1.wav')
-    siren.play()
+/**
+ * Plays audio for the duration of a timer (only 1 at a time), when timer is up, stop audio and play alert
+ * @param {'play'|'pause'} state - trigger play or stop, defaults to play
+ * @returns {void}
+ */
+function audioPlayer(state = 'play') {
+    if (state === 'play') {
+        backgroundAudio.loop = true
+        backgroundAudio.play()
+        audio_play_button.classList.add('dnone')
+        audio_pause_button.classList.remove('dnone')
+    } else {
+        audio_play_button.classList.remove('dnone')
+        audio_pause_button.classList.add('dnone')
+        console.log('pause audio!')
+        backgroundAudio.pause()
+    }
+}
+
+function playAlert() {
+    alertAudio.play()
 }
 
 // ----------------------------- MISC METHODS
