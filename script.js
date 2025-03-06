@@ -42,6 +42,19 @@ const alertAudio = new Audio('./audio/alert.wav')
 const audio_play_button = d.getElementById('audio_play')
 const audio_pause_button = d.getElementById('audio_pause')
 
+/**
+ * @typedef {'en'|'pt'} LanguageOptions
+ */
+
+/**
+ * @typedef {object} Settings
+ * @property {number} intervalUnit
+ * @property {boolean} countDown
+ * @property {number} quickTimerInterval
+ * @property {string} quickTimerName
+ * @property {string} quickTimerDescr
+ * @property {LanguageOptions} language
+ */
 
 /**
  * Turn localstorage-string containing timers into an array and return it.
@@ -204,6 +217,7 @@ settings_btn.addEventListener('click', () => {
     settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
 })
 /**
+ * Expands or collapses the settings form
  * @param {'expand'|'collapse'} what
  * @returns {void}
  */
@@ -221,6 +235,10 @@ function settingsForm(what) {
     }
 }
 
+/**
+ * Sets the settings for timer added with `Quick add`
+ * @returns {void}
+ */
 function settingsFormDefaults() {
     setf_quickTimerName.setAttribute('value', settings.quickTimerName)
     setf_quickTimerDescr.innerText = settings.quickTimerDescr
@@ -255,7 +273,7 @@ function getIntervalUnitName(num) {
  * returns {void}
  */
 function settingsFormSubmit(data) {
-    // TODO apply proper Interface of settings const in JSDoc
+    /** @type Settings */
     const settings = {
         intervalUnit: Number(data.get('settings_form_intervalUnit')),
         countDown: Boolean(data.get('settings_form_countDown')),
@@ -291,6 +309,7 @@ function selectOption(el, option) {
 }
 
 /**
+ * @param {Settings} arr
  * returns {void}
  */
 function updateSettings(arr) {
@@ -313,10 +332,11 @@ new_timer_btn.addEventListener('click', () => {
 })
 
 /**
+ * @param {'expand'|'collapse'} what
  * returns {void}
  */
 function expandCollapseForm(what) {
-    if (what == 'expand') {
+    if (what === 'expand') {
         new_timer_btn.classList.replace('collapsed', 'expanded')
         new_timer_form.className = 'dblock'
         settings_form.className = 'dnone'
@@ -701,10 +721,12 @@ function pauseTimerToggleLink(key, paused = false) {
     el.className = 'text-btn'
     el.classList.add('pause')
     if (paused === true) {
-        el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'pause')+'</span>'
+        el.innerHTML =
+            '<span class="dimmed">' + getTranslation(getSettings().language, 'pause') + '</span>'
         el.id = 'pause-' + key
     } else {
-        el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'resume')+'</span>'
+        el.innerHTML =
+            '<span class="dimmed">' + getTranslation(getSettings().language, 'resume') + '</span>'
         el.id = 'resume-' + key
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
@@ -720,7 +742,8 @@ function pauseTimerToggleLink(key, paused = false) {
  */
 function removeTimerLink(key) {
     let el = d.createElement('button')
-    el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'remove')+'</span>'
+    el.innerHTML =
+        '<span class="dimmed">' + getTranslation(getSettings().language, 'remove') + '</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
     el.addEventListener('click', () => {
@@ -731,13 +754,14 @@ function removeTimerLink(key) {
 }
 
 /**
- * Creates the remove button per timer
+ * Creates the reset button per timer
  * @param {number} key
  * @returns {HTMLButtonElement}
  */
 function resetTimerLink(key) {
     let el = d.createElement('button')
-    el.innerHTML = '<span class="dimmed">'+getTranslation(getSettings().language, 'reset')+'</span>'
+    el.innerHTML =
+        '<span class="dimmed">' + getTranslation(getSettings().language, 'reset') + '</span>'
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
@@ -869,7 +893,6 @@ function audioPlayer(state = 'play') {
     } else {
         audio_play_button.classList.remove('dnone')
         audio_pause_button.classList.add('dnone')
-        console.log('pause audio!')
         backgroundAudio.pause()
     }
 }
@@ -945,16 +968,19 @@ function setBgStatus(status = 'normal') {
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
 /**
- * @param {'en'|'pt'} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
+ * @param {LanguageOptions} langkey - key used in object translationMap, key for language, either 'en' or 'pt'
  * @param {string} stringkey - value used in object translationMap, text that needs to be translated
  * @returns {string}
  */
 function getTranslation(langkey, stringkey) {
+    /** @type Settings.language */
+    const bla = 'kt'
+    console.log(bla)
     return translationMap[langkey][stringkey]
 }
 
 /**
- * @param lang {'en'|'pt'}
+ * @param {LanguageOptions} lang
  * @returns void
  */
 function setHtmlLang(lang) {
