@@ -57,6 +57,21 @@ const audio_pause_button = d.getElementById('audio_pause')
  */
 
 /**
+ * @typedef {[]} Timer
+ * @property {string} name
+ * @property {string} descr
+ * @property {number} interval
+ * @property {number} intervalUnit
+ * @property {number} timepast
+ * @property {boolean} paused
+ * @property {boolean} finished
+ * @property {string} starttime
+ * @property {string} endtime
+ */
+
+/** @typedef {Timer[]} Timers */
+
+/**
  * Turn localstorage-string containing timers into an array and return it.
  * @var {String} timers
  * @returns {[]} timers
@@ -75,7 +90,7 @@ setInterval(() => {
     timerspersec = getTimers()
 }, 1000)
 
-/** @param {Array<any>} arr - state of localStorage.timerTimers */
+/** @param {Timers} arr - state of localStorage.timerTimers */
 function updateTimers(arr) {
     localStorage.setItem('timerTimers', JSON.stringify(arr))
     if (
@@ -382,6 +397,7 @@ function timerFormSubmit(data) {
 }
 
 /**
+ * Feedback is something like 'Timer created' or 'Settings updated'
  * @param {HTMLElement} afterElement - next to which the feedback will be inserted
  * @param {string} textKey - translation key present in object translationMap
  */
@@ -509,7 +525,6 @@ function renderTimers(arr, paused = false) {
         if (paused === false) timer_container.appendChild(renderTimer(arr[i], i))
     }
 }
-renderTimers(getTimers())
 
 function getCurrentTime() {
     const el = current_time
@@ -522,12 +537,10 @@ function getCurrentTime() {
         showtime(el)
     }, 1000)
 }
-getCurrentTime()
 
 const currentTime = () => {
     current_time.innerHTML = getCurrentTimeSimple(true)
 }
-currentTime()
 
 const getCurrentDate = (lang = getSettings().language) => {
     return new Date().toLocaleString([getTranslation(lang, 'localeString')], {
@@ -539,6 +552,11 @@ const getCurrentDate = (lang = getSettings().language) => {
 const setCurrentDate = (lang = getSettings().language) => {
     current_date.innerHTML = getCurrentDate(lang)
 }
+
+// load current timers & clock on load
+renderTimers(getTimers())
+getCurrentTime()
+currentTime()
 setCurrentDate()
 
 /**
@@ -974,8 +992,6 @@ function setBgStatus(status = 'normal') {
  */
 function getTranslation(langkey, stringkey) {
     /** @type Settings.language */
-    const bla = 'kt'
-    console.log(bla)
     return translationMap[langkey][stringkey]
 }
 
