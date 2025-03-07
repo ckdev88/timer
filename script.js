@@ -79,7 +79,7 @@ setInterval(() => {
 function updateTimers(arr) {
     localStorage.setItem('timerTimers', JSON.stringify(arr))
     if (
-        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') == 'stopped') ||
+        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         arr.length === 0
     ) {
         countdownAll()
@@ -87,7 +87,7 @@ function updateTimers(arr) {
     }
 }
 
-if (detectAnyActive() === true && pageInit === true) {
+if (pageInit === true) {
     // run once on init
     countdownAll()
     localStorage.setItem('countDownAllStatus', 'active')
