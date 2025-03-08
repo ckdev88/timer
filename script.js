@@ -338,13 +338,6 @@ function updateSettings(arr) {
 }
 
 // ----------------------------- ADD TASKS - FORM
-selectOption(new_timer_intervalUnit, settings.intervalUnit)
-
-new_timer_btn.addEventListener('click', () => {
-    new_timer_form.className == 'dblock'
-        ? expandCollapseForm('collapse')
-        : expandCollapseForm('expand')
-})
 
 /**
  * @param {'expand'|'collapse'} what
@@ -421,10 +414,6 @@ function cleanForm() {
     new_timer_interval.value = ''
     new_timer_name.focus()
 }
-
-new_timer_quick.addEventListener('click', () => {
-    addQuickTimer()
-})
 
 /**
  * returns {void}
@@ -552,12 +541,6 @@ const getCurrentDate = (lang = getSettings().language) => {
 const setCurrentDate = (lang = getSettings().language) => {
     current_date.innerHTML = getCurrentDate(lang)
 }
-
-// load current timers & clock on load
-renderTimers(getTimers())
-getCurrentTime()
-currentTime()
-setCurrentDate()
 
 /**
  * Creates the rendering of the timer, serves as a base for showing in renders: first, paused
@@ -1078,6 +1061,23 @@ function detectColorScheme() {
     document.documentElement.setAttribute('data-theme', theme)
     // TODO: create setting so user can override & save setting in localstorage
 }
-detectColorScheme()
 
+// Starting methods
+detectColorScheme()
+getCurrentTime()
+currentTime()
+setCurrentDate()
+renderTimers(getTimers())
+selectOption(new_timer_intervalUnit, settings.intervalUnit)
 pageInit = false
+
+// Event listeners
+new_timer_quick.addEventListener('click', () => {
+    addQuickTimer()
+})
+
+new_timer_btn.addEventListener('click', () => {
+    new_timer_form.className == 'dblock'
+        ? expandCollapseForm('collapse')
+        : expandCollapseForm('expand')
+})
