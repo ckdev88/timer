@@ -74,7 +74,7 @@ const audio_pause_button = d.getElementById('audio_pause')
 /**
  * Turn localstorage-string containing timers into an array and return it.
  * @var {String} timers
- * @returns {[]} timers
+ * @returns {Timers} timers
  */
 function getTimers() {
     /** @type {[]} timers */
@@ -427,11 +427,12 @@ function addQuickTimer() {
  * @param {string} name - Name for the new timer
  * @param {string} description - (optional) Description for the new timer
  * @param {number} interval - Number of seconds or minutes for the new timer
+ * @returns {void}
  */
 function addTimer(name, description, interval) {
     let settings = getSettings()
-    /** @type {[]} arr */
-    arr = []
+    /** @type {Timers} */
+    let arr = []
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
     arr = getTimers()
@@ -1052,6 +1053,10 @@ function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
+/**
+ * Set theme to dark if OS theme is dark
+ * @returns void
+ */
 function detectColorScheme() {
     let theme = 'dark' // default to dark
     // local storage is used to override OS theme settings
