@@ -750,7 +750,7 @@ function pauseTimerToggleLink(key, paused = false) {
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
     }
-    el.addEventListener('click', () => pauseTimerToggle(key))
+    el.setAttribute('onClick', `pauseTimerToggle(${key})`)
     return el
 }
 
@@ -765,10 +765,7 @@ function removeTimerLink(key) {
         '<span class="dimmed">' + getTranslation(getSettings().language, 'remove') + '</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
-    el.addEventListener('click', () => {
-        removeTimer(key)
-        location.reload()
-    })
+    el.setAttribute('onClick', `removeTimer(${key})`)
     return el
 }
 
@@ -784,9 +781,7 @@ function resetTimerLink(key) {
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
-    el.addEventListener('click', () => {
-        resetTimer(key)
-    })
+    el.setAttribute('onClick', `resetTimer(${key})`)
     return el
 }
 
