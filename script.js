@@ -873,17 +873,14 @@ function countdownAll() {
         // tab/title manipulation for keepalive and notifying user, refreshed every second
         if (finishedTimer !== undefined && detectAnyFinished() === true) {
             blinkFinishedOn = !blinkFinishedOn
-            if (!blinkFinishedOn) {
-                document.title = finishedTimer + '!'
-            } else document.title = finishedTimer
+            if (!blinkFinishedOn) document.title = finishedTimer + '!'
+            else document.title = finishedTimer
         } else {
             blinkRunningOn = !blinkRunningOn
             timerTitleBasic = 'Timer'
-            if (!blinkRunningOn && document.title === timerTitleBasic) {
+            if (!blinkRunningOn && document.title === timerTitleBasic)
                 document.title = timerTitleBasic + '.'
-            } else {
-                document.title = timerTitleBasic
-            }
+            else document.title = timerTitleBasic
         }
     }, 1000)
 
@@ -1057,9 +1054,7 @@ function newTextInElements(classname, newText) {
     delete elements
 }
 
-if (pageInit === true && settings.language === 'pt') {
-    changeLanguage('pt')
-}
+if (pageInit === true && settings.language === 'pt') changeLanguage('pt')
 
 function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
