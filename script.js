@@ -218,9 +218,6 @@ const settings = getSettings()
 
 // ----------------------------- CONFIGURE SETTINGS
 
-settings_btn.addEventListener('click', () => {
-    settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
-})
 /**
  * Expands or collapses the settings form
  * @param {'expand'|'collapse'} what
@@ -256,12 +253,6 @@ function settingsFormDefaults() {
     selectOption(setf_language, settings.language)
 }
 settingsFormDefaults()
-
-settings_form.addEventListener('submit', (e) => {
-    e.preventDefault()
-    let data = new FormData(settings_form)
-    settingsFormSubmit(data)
-})
 
 /**
  * Takes in either 1 or 60, returns s(econd) for 1, m(inute) for 60. Can further be handled by getTranslation
@@ -330,12 +321,6 @@ function updateSettings(arr) {
 // ----------------------------- ADD TASKS - FORM
 selectOption(new_timer_intervalUnit, settings.intervalUnit)
 
-new_timer_btn.addEventListener('click', () => {
-    new_timer_form.className == 'dblock'
-        ? expandCollapseForm('collapse')
-        : expandCollapseForm('expand')
-})
-
 /**
  * @param {'expand'|'collapse'} what
  * returns {void}
@@ -352,15 +337,6 @@ function expandCollapseForm(what) {
         new_timer_btn.classList.replace('expanded', 'collapsed')
     }
 }
-
-new_timer_form.addEventListener('submit', (e) => {
-    e.preventDefault()
-    /**
-     * @type {FormData} - Data input of the New Timer form
-     */
-    var data = new FormData(new_timer_form)
-    timerFormSubmit(data)
-})
 
 /**
  * @param {FormData} data - data input of the New Timer form
@@ -411,10 +387,6 @@ function cleanForm() {
     new_timer_interval.value = ''
     new_timer_name.focus()
 }
-
-new_timer_quick.addEventListener('click', () => {
-    addQuickTimer()
-})
 
 /**
  * returns {void}
@@ -1061,3 +1033,25 @@ function detectColorScheme() {
 detectColorScheme()
 
 pageInit = false
+
+// global button event listeners
+settings_btn.addEventListener('click', () => {
+    settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
+})
+settings_form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    let data = new FormData(settings_form)
+    settingsFormSubmit(data)
+})
+new_timer_btn.addEventListener('click', () => {
+    new_timer_form.className == 'dblock'
+        ? expandCollapseForm('collapse')
+        : expandCollapseForm('expand')
+})
+new_timer_form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    /** @type {FormData} - Data input of the New Timer form */
+    var data = new FormData(new_timer_form)
+    timerFormSubmit(data)
+})
+new_timer_quick.addEventListener('click', () => addQuickTimer())
