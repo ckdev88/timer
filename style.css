@@ -77,6 +77,12 @@ body {
 }
 #statusbar {
     height: 0.5rem;
+    position: fixed;
+    width: 100vw;
+    display: block;
+    z-index: 2;
+    top: 0;
+    animation: blink-statusbar-default 3s infinite;
 }
 
 .statusbar-default {
@@ -92,7 +98,17 @@ body {
     background-color: var(--alert-bg);
     animation: blink-statusbar 1.5s infinite;
 }
-
+@keyframes blink-statusbar-default {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 @keyframes blink-statusbar {
     0% {
         background-color: transparent;
