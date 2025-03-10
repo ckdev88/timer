@@ -80,11 +80,12 @@ function getTimers() {
     /** @type {[]} timers */
     let timers = JSON.parse(localStorage.getItem('timerTimers'))
     if (!timers) updateTimers([])
-    else bgStatus(timers)
+    else bgStatus(timers) // TODO should just trigger whenever state of timer changes
     return timers
 }
 
 /** @type {[]} timerspersec - Array of timers, refreshed every second */
+// TODO should do nothing when anyActive is false
 let timerspersec = getTimers()
 setInterval(() => {
     timerspersec = getTimers()
@@ -103,7 +104,6 @@ function updateTimers(arr) {
 }
 
 if (pageInit === true) {
-    // run once on init
     countdownAll()
     localStorage.setItem('countDownAllStatus', 'active')
 }
@@ -195,17 +195,9 @@ if (pageInit === true) {
     language = browserLanguage
 }
 
-/** @interface {object} global settings used a default either per timer of for the entire application  */
+/** @interface {Settings} global settings used by default either per timer of for the entire application  */
 const settings_d = {
-    /**
-     * {number}
-     * @default 60 (seconds)
-     */
     intervalUnit: 60, // in seconds
-    /**
-     * {string}
-     * @default ''
-     */
     intervalUnitName: '',
     countDown: true, // true: show time remaining, false: show time passed
     quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
@@ -221,9 +213,7 @@ if (localStorage.getItem('settings') === null) {
     localStorage.setItem('settings', JSON.stringify(settings_d))
 }
 const getSettings = () => JSON.parse(localStorage.getItem('settings'))
-/**
- * {object}
- */
+/** @type {Settings} settings */
 const settings = getSettings()
 
 // ----------------------------- CONFIGURE SETTINGS
@@ -288,7 +278,7 @@ function getIntervalUnitName(num) {
  * returns {void}
  */
 function settingsFormSubmit(data) {
-    /** @type Settings */
+    /** @type { Settings } settings - Global settings config */
     const settings = {
         intervalUnit: Number(data.get('settings_form_intervalUnit')),
         countDown: Boolean(data.get('settings_form_countDown')),
@@ -437,7 +427,7 @@ function addQuickTimer() {
 /**
  * @param {string} name - Name for the new timer
  * @param {string} description - (optional) Description for the new timer
- * @param {number} interval - Number of seconds or minutes for the new timer
+ * @param {number} interval - Number of seconds for the new timer
  * @returns {void}
  */
 function addTimer(name, description, interval) {
@@ -736,6 +726,7 @@ function countdownTimer(key, id) {
  * @returns {HTMLButtonElement}
  */
 function pauseTimerToggleLink(key, paused = false) {
+    /** @type {HTMLButtonElement} el - rendering for button pause/resume */
     let el = d.createElement('button')
     el.className = 'text-btn'
     el.classList.add('pause')
