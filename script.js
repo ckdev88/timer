@@ -501,11 +501,6 @@ function removeTimer(key) {
     return
 }
 
-function clearLocalStorage() {
-    localStorage.clear()
-    document.location = location
-}
-
 // ----------------------------- RENDER TASKS - MAIN
 /**
  * @returns {void}
