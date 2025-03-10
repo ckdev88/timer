@@ -517,13 +517,12 @@ function renderTimers(arr, paused = false) {
     }
 }
 
-function getCurrentTime() {
+function runCurrentTime() {
     const el = current_time
     const showtime = (el) => {
         el.innerHTML = getCurrentTimeSimple(true)
     }
     showtime(el)
-
     setInterval(() => {
         showtime(el)
     }, 1000)
@@ -546,7 +545,7 @@ const setCurrentDate = (lang = getSettings().language) => {
 
 // load current timers & clock on load
 renderTimers(getTimers())
-getCurrentTime()
+runCurrentTime()
 currentTime()
 setCurrentDate()
 
