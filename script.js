@@ -810,8 +810,8 @@ function countdownAll() {
                     finishedTimer = timerspersec[i].name
                     d.getElementById('timer-' + i).classList.add('finished')
                 }
-                updateTimers(arr)
             }
+            updateTimers(timerspersec)
         }
         if (detectAllPaused() === true || !detectAnyActive()) {
             stopit()
