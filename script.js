@@ -46,9 +46,11 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @typedef {'en'|'pt'} LanguageOptions
  */
 
+/** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
+
 /**
  * @typedef {object} Settings
- * @property {number} intervalUnit
+ * @property {number} [intervalUnit=60]
  * @property {boolean} countDown
  * @property {number} quickTimerInterval
  * @property {string} quickTimerName
@@ -61,9 +63,9 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @property {string} name
  * @property {string} descr
  * @property {number} interval
- * @property {number} intervalUnit
+ * @property {number} [intervalUnit=60]
  * @property {number} timepast
- * @property {boolean} paused
+ * @property {boolean} [paused=false]
  * @property {boolean} finished
  * @property {string} starttime
  * @property {string} endtime
@@ -74,17 +76,18 @@ const audio_pause_button = d.getElementById('audio_pause')
 /**
  * Turn localstorage-string containing timers into an array and return it.
  * @var {String} timers
- * @returns {[]} timers
+ * @returns {Timers} timers
  */
 function getTimers() {
     /** @type {[]} timers */
     let timers = JSON.parse(localStorage.getItem('timerTimers'))
     if (!timers) updateTimers([])
-    else bgStatus(timers)
+    else bgStatus(timers) // TODO should just trigger whenever state of timer changes
     return timers
 }
 
-/** @type {[]} timerspersec - Array of timers, refreshed every second */
+/** @type {Timers} timerspersec - Array of timers, refreshed every second */
+// TODO should do nothing when anyActive is false
 let timerspersec = getTimers()
 setInterval(() => {
     timerspersec = getTimers()
@@ -97,13 +100,12 @@ function updateTimers(arr) {
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         arr.length === 0
     ) {
-        countdownAll()
-        localStorage.setItem('countDownAllStatus', 'active')
+        runTimers()
     }
+    renderTimers(arr)
 }
 
 if (pageInit === true) {
-    // run once on init
     countdownAll()
     localStorage.setItem('countDownAllStatus', 'active')
 }
@@ -195,17 +197,9 @@ if (pageInit === true) {
     language = browserLanguage
 }
 
-/** @interface {object} global settings used a default either per timer of for the entire application  */
+/** @interface {Settings} global settings used by default either per timer of for the entire application  */
 const settings_d = {
-    /**
-     * {number}
-     * @default 60 (seconds)
-     */
     intervalUnit: 60, // in seconds
-    /**
-     * {string}
-     * @default ''
-     */
     intervalUnitName: '',
     countDown: true, // true: show time remaining, false: show time passed
     quickTimerInterval: 45 * 60, // totals value multiplied by value of settings.intervalUnit
@@ -220,17 +214,13 @@ if (localStorage.getItem('settings') === null) {
     localStorage.setItem('settings', [])
     localStorage.setItem('settings', JSON.stringify(settings_d))
 }
+
 const getSettings = () => JSON.parse(localStorage.getItem('settings'))
-/**
- * {object}
- */
+/** @type {Settings} settings */
 const settings = getSettings()
 
 // ----------------------------- CONFIGURE SETTINGS
 
-settings_btn.addEventListener('click', () => {
-    settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
-})
 /**
  * Expands or collapses the settings form
  * @param {'expand'|'collapse'} what
@@ -267,12 +257,6 @@ function settingsFormDefaults() {
 }
 settingsFormDefaults()
 
-settings_form.addEventListener('submit', (e) => {
-    e.preventDefault()
-    let data = new FormData(settings_form)
-    settingsFormSubmit(data)
-})
-
 /**
  * Takes in either 1 or 60, returns s(econd) for 1, m(inute) for 60. Can further be handled by getTranslation
  * @param num {number}
@@ -288,7 +272,7 @@ function getIntervalUnitName(num) {
  * returns {void}
  */
 function settingsFormSubmit(data) {
-    /** @type Settings */
+    /** @type { Settings } settings - Global settings config */
     const settings = {
         intervalUnit: Number(data.get('settings_form_intervalUnit')),
         countDown: Boolean(data.get('settings_form_countDown')),
@@ -340,12 +324,6 @@ function updateSettings(arr) {
 // ----------------------------- ADD TASKS - FORM
 selectOption(new_timer_intervalUnit, settings.intervalUnit)
 
-new_timer_btn.addEventListener('click', () => {
-    new_timer_form.className == 'dblock'
-        ? expandCollapseForm('collapse')
-        : expandCollapseForm('expand')
-})
-
 /**
  * @param {'expand'|'collapse'} what
  * returns {void}
@@ -362,15 +340,6 @@ function expandCollapseForm(what) {
         new_timer_btn.classList.replace('expanded', 'collapsed')
     }
 }
-
-new_timer_form.addEventListener('submit', (e) => {
-    e.preventDefault()
-    /**
-     * @type {FormData} - Data input of the New Timer form
-     */
-    var data = new FormData(new_timer_form)
-    timerFormSubmit(data)
-})
 
 /**
  * @param {FormData} data - data input of the New Timer form
@@ -422,10 +391,6 @@ function cleanForm() {
     new_timer_name.focus()
 }
 
-new_timer_quick.addEventListener('click', () => {
-    addQuickTimer()
-})
-
 /**
  * returns {void}
  */
@@ -437,17 +402,16 @@ function addQuickTimer() {
 /**
  * @param {string} name - Name for the new timer
  * @param {string} description - (optional) Description for the new timer
- * @param {number} interval - Number of seconds or minutes for the new timer
+ * @param {number} interval - Number of seconds for the new timer
+ * @returns {void}
  */
 function addTimer(name, description, interval) {
     let settings = getSettings()
-    /** @type {[]} arr */
-    arr = []
+    /** @type {SimpleTime} */
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
-    arr = getTimers()
 
-    arr.push({
+    timerspersec.push({
         name: name,
         descr: description,
         interval: interval,
@@ -458,38 +422,30 @@ function addTimer(name, description, interval) {
         starttime: starttime,
         endtime: endtime,
     })
-    updateTimers(arr)
+    updateTimers(timerspersec)
     showFeedback(btn_create_timer, 'Timer_created')
-    renderTimers(arr)
-    delete arr
+}
+
+function runTimers() {
+    if (
+        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
+        timerspersec.length === 0
+    ) {
+        countdownAll()
+        localStorage.setItem('countDownAllStatus', 'active')
+    }
 }
 
 // ----------------------------- PAUSE/RESUME TASK
 /**
  * @param key {number}
+ * @returns {void}
  */
 function pauseTimerToggle(key) {
-    arr = getTimers()
-    const newarr = []
-    for (let i = 0; i < arr.length; i++) {
-        if (i === key) {
-            arr[i].paused = !arr[i].paused
-        }
-        newarr.push({
-            name: arr[i].name,
-            descr: arr[i].descr,
-            interval: arr[i].interval,
-            timepast: arr[i].timepast,
-            intervalUnit: arr[i].intervalUnit,
-            paused: arr[i].paused,
-            finished: arr[i].finished,
-            starttime: arr[i].starttime,
-            endtime: arr[i].endtime,
-        })
+    for (let i = 0; i < timerspersec.length; i++) {
+        if (i === key) timerspersec[i].paused = !timerspersec[i].paused
     }
-
-    updateTimers(newarr)
-    renderTimers(newarr, false) // TODO: false isnt doing anything useful here, or is it?
+    updateTimers(timerspersec)
 }
 
 // ----------------------------- REMOVE TASKS
@@ -497,26 +453,17 @@ function pauseTimerToggle(key) {
 /**
  * Remove a timer block
  * @param key {number} key of block containing a single timer
+ * @returns {void}
  */
 function removeTimer(key) {
-    arr = getTimers()
-    const newarr = arr.filter((i, index) => index !== key)
-
-    updateTimers(newarr)
-    renderTimers(newarr)
-
-    delete arr
-    delete newarr
-    return
-}
-
-function clearLocalStorage() {
-    localStorage.clear()
-    document.location = location
+    const newTimers = timerspersec.filter((i, index) => index !== key)
+    updateTimers(newTimers)
 }
 
 // ----------------------------- RENDER TASKS - MAIN
 /**
+ * @param {Timers} arr
+ * @param {boolean} paused
  * @returns {void}
  */
 function renderTimers(arr, paused = false) {
@@ -526,13 +473,12 @@ function renderTimers(arr, paused = false) {
     }
 }
 
-function getCurrentTime() {
+function runCurrentTime() {
     const el = current_time
     const showtime = (el) => {
         el.innerHTML = getCurrentTimeSimple(true)
     }
     showtime(el)
-
     setInterval(() => {
         showtime(el)
     }, 1000)
@@ -549,13 +495,14 @@ const getCurrentDate = (lang = getSettings().language) => {
         day: 'numeric',
     })
 }
+
 const setCurrentDate = (lang = getSettings().language) => {
     current_date.innerHTML = getCurrentDate(lang)
 }
 
 // load current timers & clock on load
 renderTimers(getTimers())
-getCurrentTime()
+runCurrentTime()
 currentTime()
 setCurrentDate()
 
@@ -570,6 +517,7 @@ function renderTimer(i, key) {
     let el = d.createElement('div')
     el.className = 'timer'
     if (i.paused) el.classList.add('paused')
+    if (i.finished) el.classList.add('finished')
     el.id = 'timer-' + key
     el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
     el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
@@ -735,6 +683,7 @@ function countdownTimer(key, id) {
  * @returns {HTMLButtonElement}
  */
 function pauseTimerToggleLink(key, paused = false) {
+    /** @type {HTMLButtonElement} el - rendering for button pause/resume */
     let el = d.createElement('button')
     el.className = 'text-btn'
     el.classList.add('pause')
@@ -749,7 +698,7 @@ function pauseTimerToggleLink(key, paused = false) {
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
     }
-    el.addEventListener('click', () => pauseTimerToggle(key))
+    el.setAttribute('onClick', `pauseTimerToggle(${key})`)
     return el
 }
 
@@ -764,10 +713,7 @@ function removeTimerLink(key) {
         '<span class="dimmed">' + getTranslation(getSettings().language, 'remove') + '</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
-    el.addEventListener('click', () => {
-        removeTimer(key)
-        location.reload()
-    })
+    el.setAttribute('onClick', `removeTimer(${key})`)
     return el
 }
 
@@ -783,36 +729,31 @@ function resetTimerLink(key) {
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
-    el.addEventListener('click', () => {
-        resetTimer(key)
-    })
+    el.setAttribute('onClick', `resetTimer(${key})`)
     return el
 }
 
 function resetTimer(key) {
-    var arr = getTimers()
-    arr[key].timepast = 0
-    arr[key].starttime = getCurrentTimeSimple()
-    arr[key].endtime = getTimeSimple(false, arr[key].interval)
-    arr[key].finished = false
+    timerspersec[key].timepast = 0
+    timerspersec[key].starttime = getCurrentTimeSimple()
+    timerspersec[key].endtime = getTimeSimple(false, timerspersec[key].interval)
+    timerspersec[key].finished = false
     document.title = 'Timer'
-    updateTimers(arr)
-    renderTimers(arr)
-    delete arr
+    updateTimers(timerspersec)
 }
 
 // ----------------------------- DETECTIONS
 /**
  * @param {Object} arr - array of localstorage.timerTimers
  */
-function detectAnyFinished(arr = getTimers()) {
+function detectAnyFinished(arr = timerspersec) {
     for (i of arr) {
         if (i.finished === true) return true
     }
     return false
 }
 
-function detectAnyPaused(arr = getTimers()) {
+function detectAnyPaused(arr = timerspersec) {
     for (i of arr) {
         if (i.paused === true) return true
     }
@@ -820,14 +761,14 @@ function detectAnyPaused(arr = getTimers()) {
 }
 
 // Detect any still running timers
-function detectAnyActive(arr = getTimers()) {
+function detectAnyActive(arr = timerspersec) {
     for (i of arr) {
         if (i.finished === false) return true
     }
     return false
 }
 
-function detectAllPaused(arr = getTimers()) {
+function detectAllPaused(arr = timerspersec) {
     let count = 0
     for (i = 0; i < arr.length; i++) {
         if (arr[i].paused === true) count++
@@ -845,17 +786,19 @@ function countdownAll() {
 
     var countdownAllPerSecond = setInterval(() => {
         if (timerspersec) {
-            arr = timerspersec
-            // console.log('arr:', arr)
-
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i].paused === true || arr[i].finished) continue
+            for (let i = 0; i < timerspersec.length; i++) {
+                if (timerspersec[i].paused === true || timerspersec[i].finished) continue
                 // re-render timers that are not paused or finished
-                if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
-                    arr[i].timepast++
-                }
-                if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-                    arr[i].finished = true
+                if (
+                    timerspersec[i].timepast < timerspersec[i].interval &&
+                    timerspersec[i].paused === false
+                )
+                    timerspersec[i].timepast++
+                if (
+                    timerspersec[i].timepast == timerspersec[i].interval &&
+                    timerspersec[i].finished !== true
+                ) {
+                    timerspersec[i].finished = true
                     setTimeout(() => {
                         audioPlayer('pause')
                         setTimeout(() => {
@@ -863,12 +806,12 @@ function countdownAll() {
                         }, TIMEOUT_SHORT)
                     }, TIMEOUT_SHORT)
                 }
-                if (arr[i].finished === true) {
-                    finishedTimer = arr[i].name
+                if (timerspersec[i].finished === true) {
+                    finishedTimer = timerspersec[i].name
                     d.getElementById('timer-' + i).classList.add('finished')
                 }
-                updateTimers(arr)
             }
+            updateTimers(timerspersec)
         }
         if (detectAllPaused() === true || !detectAnyActive()) {
             stopit()
@@ -877,17 +820,14 @@ function countdownAll() {
         // tab/title manipulation for keepalive and notifying user, refreshed every second
         if (finishedTimer !== undefined && detectAnyFinished() === true) {
             blinkFinishedOn = !blinkFinishedOn
-            if (!blinkFinishedOn) {
-                document.title = finishedTimer + '!'
-            } else document.title = finishedTimer
+            if (!blinkFinishedOn) document.title = finishedTimer + '!'
+            else document.title = finishedTimer
         } else {
             blinkRunningOn = !blinkRunningOn
             timerTitleBasic = 'Timer'
-            if (!blinkRunningOn && document.title === timerTitleBasic) {
+            if (!blinkRunningOn && document.title === timerTitleBasic)
                 document.title = timerTitleBasic + '.'
-            } else {
-                document.title = timerTitleBasic
-            }
+            else document.title = timerTitleBasic
         }
     }, 1000)
 
@@ -923,7 +863,7 @@ function playAlert() {
 /**
  * Returns a simplified time in HH:MM:SS .
  * @param {boolean} seconds - optional: to activate seconds display
- * @returns {string}
+ * @returns {SimpleTime}
  */
 // TODO remove this function when calls are replaced by reference to new getTimeSimple method
 function getCurrentTimeSimple(seconds = false) {
@@ -940,6 +880,11 @@ function getCurrentTimeSimple(seconds = false) {
     return hours + ':' + minutes
 }
 
+/**
+ * @param {boolean} seconds
+ * @param {number} secondsToAdd
+ * @returns {SimpleTime}
+ */
 function getTimeSimple(seconds = false, secondsToAdd = 0) {
     let now = new Date()
     if (secondsToAdd > 0) {
@@ -967,7 +912,7 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
  */
 function bgStatus(arr) {
     if (detectAnyFinished(arr)) setBgStatus('alert')
-    else if (detectAnyPaused(arr)) setBgStatus('paused')
+    else if (detectAllPaused(arr)) setBgStatus('paused')
     else if (detectAnyActive(arr)) setBgStatus('running')
     else setBgStatus('normal')
 }
@@ -1061,14 +1006,16 @@ function newTextInElements(classname, newText) {
     delete elements
 }
 
-if (pageInit === true && settings.language === 'pt') {
-    changeLanguage('pt')
-}
+if (pageInit === true && settings.language === 'pt') changeLanguage('pt')
 
 function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
 }
 
+/**
+ * Set theme to dark if OS theme is dark
+ * @returns void
+ */
 function detectColorScheme() {
     let theme = 'dark' // default to dark
     // local storage is used to override OS theme settings
@@ -1081,3 +1028,25 @@ function detectColorScheme() {
 detectColorScheme()
 
 pageInit = false
+
+// global button event listeners
+settings_btn.addEventListener('click', () => {
+    settings_form.className == 'dblock' ? settingsForm('collapse') : settingsForm('expand')
+})
+settings_form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    let data = new FormData(settings_form)
+    settingsFormSubmit(data)
+})
+new_timer_btn.addEventListener('click', () => {
+    new_timer_form.className == 'dblock'
+        ? expandCollapseForm('collapse')
+        : expandCollapseForm('expand')
+})
+new_timer_form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    /** @type {FormData} - Data input of the New Timer form */
+    var data = new FormData(new_timer_form)
+    timerFormSubmit(data)
+})
+new_timer_quick.addEventListener('click', () => addQuickTimer())
