@@ -48,7 +48,7 @@ const audio_pause_button = d.getElementById('audio_pause')
 
 /**
  * @typedef {object} Settings
- * @property {number} intervalUnit
+ * @property {number} [intervalUnit=60]
  * @property {boolean} countDown
  * @property {number} quickTimerInterval
  * @property {string} quickTimerName
@@ -61,9 +61,9 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @property {string} name
  * @property {string} descr
  * @property {number} interval
- * @property {number} intervalUnit
+ * @property {number} [intervalUnit=60]
  * @property {number} timepast
- * @property {boolean} paused
+ * @property {boolean} [paused=false]
  * @property {boolean} finished
  * @property {string} starttime
  * @property {string} endtime
@@ -84,7 +84,7 @@ function getTimers() {
     return timers
 }
 
-/** @type {[]} timerspersec - Array of timers, refreshed every second */
+/** @type {Timers} timerspersec - Array of timers, refreshed every second */
 // TODO should do nothing when anyActive is false
 let timerspersec = getTimers()
 setInterval(() => {
@@ -97,10 +97,10 @@ function updateTimers(arr) {
     if (
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         arr.length === 0
-    ) {
-        countdownAll()
-        localStorage.setItem('countDownAllStatus', 'active')
-    }
+    )
+        runTimers()
+
+    renderTimers(arr)
 }
 
 if (pageInit === true) {
@@ -212,6 +212,7 @@ if (localStorage.getItem('settings') === null) {
     localStorage.setItem('settings', [])
     localStorage.setItem('settings', JSON.stringify(settings_d))
 }
+
 const getSettings = () => JSON.parse(localStorage.getItem('settings'))
 /** @type {Settings} settings */
 const settings = getSettings()
@@ -405,12 +406,10 @@ function addQuickTimer() {
 function addTimer(name, description, interval) {
     let settings = getSettings()
     /** @type {Timers} */
-    let arr = []
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
-    arr = getTimers()
 
-    arr.push({
+    timerspersec.push({
         name: name,
         descr: description,
         interval: interval,
@@ -421,38 +420,30 @@ function addTimer(name, description, interval) {
         starttime: starttime,
         endtime: endtime,
     })
-    updateTimers(arr)
+    updateTimers(timerspersec)
     showFeedback(btn_create_timer, 'Timer_created')
-    renderTimers(arr)
-    delete arr
+}
+
+function runTimers() {
+    if (
+        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
+        timerspersec.length === 0
+    ) {
+        countdownAll()
+        localStorage.setItem('countDownAllStatus', 'active')
+    }
 }
 
 // ----------------------------- PAUSE/RESUME TASK
 /**
  * @param key {number}
+ * @returns {void}
  */
 function pauseTimerToggle(key) {
-    arr = getTimers()
-    const newarr = []
-    for (let i = 0; i < arr.length; i++) {
-        if (i === key) {
-            arr[i].paused = !arr[i].paused
-        }
-        newarr.push({
-            name: arr[i].name,
-            descr: arr[i].descr,
-            interval: arr[i].interval,
-            timepast: arr[i].timepast,
-            intervalUnit: arr[i].intervalUnit,
-            paused: arr[i].paused,
-            finished: arr[i].finished,
-            starttime: arr[i].starttime,
-            endtime: arr[i].endtime,
-        })
+    for (let i = 0; i < timerspersec.length; i++) {
+        if (i === key) timerspersec[i].paused = !timerspersec[i].paused
     }
-
-    updateTimers(newarr)
-    renderTimers(newarr, false) // TODO: false isnt doing anything useful here, or is it?
+    updateTimers(timerspersec)
 }
 
 // ----------------------------- REMOVE TASKS
@@ -460,21 +451,17 @@ function pauseTimerToggle(key) {
 /**
  * Remove a timer block
  * @param key {number} key of block containing a single timer
+ * @returns {void}
  */
 function removeTimer(key) {
-    arr = getTimers()
-    const newarr = arr.filter((i, index) => index !== key)
-
-    updateTimers(newarr)
-    renderTimers(newarr)
-
-    delete arr
-    delete newarr
-    return
+    const newTimers = timerspersec.filter((i, index) => index !== key)
+    updateTimers(newTimers)
 }
 
 // ----------------------------- RENDER TASKS - MAIN
 /**
+ * @param {Timers} arr
+ * @param {boolean} paused
  * @returns {void}
  */
 function renderTimers(arr, paused = false) {
@@ -506,6 +493,7 @@ const getCurrentDate = (lang = getSettings().language) => {
         day: 'numeric',
     })
 }
+
 const setCurrentDate = (lang = getSettings().language) => {
     current_date.innerHTML = getCurrentDate(lang)
 }
@@ -527,6 +515,7 @@ function renderTimer(i, key) {
     let el = d.createElement('div')
     el.className = 'timer'
     if (i.paused) el.classList.add('paused')
+    if (i.finished) el.classList.add('finished')
     el.id = 'timer-' + key
     el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
     el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
@@ -743,29 +732,26 @@ function resetTimerLink(key) {
 }
 
 function resetTimer(key) {
-    var arr = getTimers()
-    arr[key].timepast = 0
-    arr[key].starttime = getCurrentTimeSimple()
-    arr[key].endtime = getTimeSimple(false, arr[key].interval)
-    arr[key].finished = false
+    timerspersec[key].timepast = 0
+    timerspersec[key].starttime = getCurrentTimeSimple()
+    timerspersec[key].endtime = getTimeSimple(false, timerspersec[key].interval)
+    timerspersec[key].finished = false
     document.title = 'Timer'
-    updateTimers(arr)
-    renderTimers(arr)
-    delete arr
+    updateTimers(timerspersec)
 }
 
 // ----------------------------- DETECTIONS
 /**
  * @param {Object} arr - array of localstorage.timerTimers
  */
-function detectAnyFinished(arr = getTimers()) {
+function detectAnyFinished(arr = timerspersec) {
     for (i of arr) {
         if (i.finished === true) return true
     }
     return false
 }
 
-function detectAnyPaused(arr = getTimers()) {
+function detectAnyPaused(arr = timerspersec) {
     for (i of arr) {
         if (i.paused === true) return true
     }
@@ -773,14 +759,14 @@ function detectAnyPaused(arr = getTimers()) {
 }
 
 // Detect any still running timers
-function detectAnyActive(arr = getTimers()) {
+function detectAnyActive(arr = timerspersec) {
     for (i of arr) {
         if (i.finished === false) return true
     }
     return false
 }
 
-function detectAllPaused(arr = getTimers()) {
+function detectAllPaused(arr = timerspersec) {
     let count = 0
     for (i = 0; i < arr.length; i++) {
         if (arr[i].paused === true) count++
@@ -798,17 +784,19 @@ function countdownAll() {
 
     var countdownAllPerSecond = setInterval(() => {
         if (timerspersec) {
-            arr = timerspersec
-            // console.log('arr:', arr)
-
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i].paused === true || arr[i].finished) continue
+            for (let i = 0; i < timerspersec.length; i++) {
+                if (timerspersec[i].paused === true || timerspersec[i].finished) continue
                 // re-render timers that are not paused or finished
-                if (arr[i].timepast < arr[i].interval && arr[i].paused === false) {
-                    arr[i].timepast++
-                }
-                if (arr[i].timepast == arr[i].interval && arr[i].finished !== true) {
-                    arr[i].finished = true
+                if (
+                    timerspersec[i].timepast < timerspersec[i].interval &&
+                    timerspersec[i].paused === false
+                )
+                    timerspersec[i].timepast++
+                if (
+                    timerspersec[i].timepast == timerspersec[i].interval &&
+                    timerspersec[i].finished !== true
+                ) {
+                    timerspersec[i].finished = true
                     setTimeout(() => {
                         audioPlayer('pause')
                         setTimeout(() => {
@@ -816,8 +804,8 @@ function countdownAll() {
                         }, TIMEOUT_SHORT)
                     }, TIMEOUT_SHORT)
                 }
-                if (arr[i].finished === true) {
-                    finishedTimer = arr[i].name
+                if (timerspersec[i].finished === true) {
+                    finishedTimer = timerspersec[i].name
                     d.getElementById('timer-' + i).classList.add('finished')
                 }
                 updateTimers(arr)
