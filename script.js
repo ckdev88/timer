@@ -912,7 +912,7 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
  */
 function bgStatus(arr) {
     if (detectAnyFinished(arr)) setBgStatus('alert')
-    else if (detectAnyPaused(arr)) setBgStatus('paused')
+    else if (detectAllPaused(arr)) setBgStatus('paused')
     else if (detectAnyActive(arr)) setBgStatus('running')
     else setBgStatus('normal')
 }
