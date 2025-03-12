@@ -46,6 +46,8 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @typedef {'en'|'pt'} LanguageOptions
  */
 
+/** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
+
 /**
  * @typedef {object} Settings
  * @property {number} [intervalUnit=60]
@@ -97,9 +99,9 @@ function updateTimers(arr) {
     if (
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         arr.length === 0
-    )
+    ) {
         runTimers()
-
+    }
     renderTimers(arr)
 }
 
@@ -405,7 +407,7 @@ function addQuickTimer() {
  */
 function addTimer(name, description, interval) {
     let settings = getSettings()
-    /** @type {Timers} */
+    /** @type {SimpleTime} */
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
 
@@ -861,7 +863,7 @@ function playAlert() {
 /**
  * Returns a simplified time in HH:MM:SS .
  * @param {boolean} seconds - optional: to activate seconds display
- * @returns {string}
+ * @returns {SimpleTime}
  */
 // TODO remove this function when calls are replaced by reference to new getTimeSimple method
 function getCurrentTimeSimple(seconds = false) {
@@ -878,6 +880,11 @@ function getCurrentTimeSimple(seconds = false) {
     return hours + ':' + minutes
 }
 
+/**
+ * @param {boolean} seconds
+ * @param {number} secondsToAdd
+ * @returns {SimpleTime}
+ */
 function getTimeSimple(seconds = false, secondsToAdd = 0) {
     let now = new Date()
     if (secondsToAdd > 0) {
