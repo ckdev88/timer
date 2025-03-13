@@ -689,11 +689,11 @@ function pauseTimerToggleLink(key, paused = false) {
     el.classList.add('pause')
     if (paused === true) {
         el.innerHTML =
-            '<span class="dimmed">' + getTranslation(getSettings().language, 'pause') + '</span>'
+            '<span>' + getTranslation(getSettings().language, 'pause') + '</span>'
         el.id = 'pause-' + key
     } else {
         el.innerHTML =
-            '<span class="dimmed">' + getTranslation(getSettings().language, 'resume') + '</span>'
+            '<span>' + getTranslation(getSettings().language, 'resume') + '</span>'
         el.id = 'resume-' + key
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
@@ -710,7 +710,7 @@ function pauseTimerToggleLink(key, paused = false) {
 function removeTimerLink(key) {
     let el = d.createElement('button')
     el.innerHTML =
-        '<span class="dimmed">' + getTranslation(getSettings().language, 'remove') + '</span>'
+        '<span>' + getTranslation(getSettings().language, 'remove') + '</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
     el.setAttribute('onClick', `removeTimer(${key})`)
@@ -725,7 +725,7 @@ function removeTimerLink(key) {
 function resetTimerLink(key) {
     let el = d.createElement('button')
     el.innerHTML =
-        '<span class="dimmed">' + getTranslation(getSettings().language, 'reset') + '</span>'
+        '<span>' + getTranslation(getSettings().language, 'reset') + '</span>'
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key

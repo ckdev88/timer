@@ -26,6 +26,9 @@
     --border-hover: hsl(0, 0%, 60%);
     --border-active: hsl(0, 0%, 40%);
     --timer-pause-color: var(--pause-color);
+    --transition-time-short: 0.12s;
+    --transition-time-long: 0.19s;
+    --opacity-dimmed: 0.6;
 }
 :root[data-theme='dark'] {
     --bg-color: hsl(60, 70%, 0%);
@@ -103,7 +106,7 @@ body {
         opacity: 1;
     }
     50% {
-        opacity: 0.7;
+        opacity: var(--opacity-dimmed);
     }
     100% {
         opacity: 1;
@@ -159,10 +162,6 @@ body {
         color: var(--fg-color);
     }
 }
-.timer {
-    padding: 1rem;
-    margin: -1rem;
-}
 .timer-name {
     margin: 0;
     padding: 0;
@@ -182,12 +181,12 @@ input[type='submit'] {
     background: var(--button-bg);
     color: var(--button-fg);
     font-weight: bold;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color var(--transition-time-short) ease-in-out;
 }
 button:hover,
 a.btn:hover,
 input[type='submit']:hover {
-    background: var(--button-bg-hover);
+    background-color: var(--button-bg-hover);
 }
 label {
     cursor: pointer;
@@ -272,9 +271,6 @@ form.dblock {
     height: 100%;
 }
 /* --------------------------- / FORM & INPUT */
-.timer button {
-    margin-bottom: 0;
-}
 a,
 button.text-btn,
 .btn.text-btn,
@@ -355,20 +351,29 @@ button {
     padding-top: 1rem;
 }
 .timer {
+    padding: 1rem;
+    margin: 0 -1rem 0;
     border-bottom: 1px dashed var(--separation-border-color);
-    margin-top: 0;
-    margin-bottom: 0;
+    transition: opacity var(--transition-time-long) ease-in-out;
+    opacity: 1;
+    button {
+        margin-bottom: 0;
+    }
     &.paused {
         background-color: var(--timer-pause-color);
-        > *:not(.buttons),
-        .buttons .reset,
-        .buttons .remove {
-            opacity: 0.5;
+        > *:not(.buttons) {
+            opacity: var(--opacity-dimmed);
         }
-        .buttons {
-            .resume .dimmed,
-            .reset:hover,
-            .remove:hover {
+    }
+    .buttons {
+        justify-content: flex-start;
+        button {
+            padding: 0;
+            margin-left: 0;
+            margin-right: 1.6rem;
+            transition: opacity var(--transition-time-short) ease-in-out;
+            opacity: var(--opacity-dimmed);
+            &:hover {
                 opacity: 1;
             }
         }
@@ -393,16 +398,6 @@ button {
 }
 .buttons .text-btn {
     text-decoration: none;
-}
-.timer {
-    .buttons {
-        justify-content: flex-start;
-        button {
-            padding: 0;
-            margin-left: 0;
-            margin-right: 1.6rem;
-        }
-    }
 }
 .timer .buttons .text-btn,
 #audio_container .text-btn {
@@ -522,8 +517,19 @@ button.text-btn.dnone,
     display: none;
 }
 .dimmed {
-    opacity: 0.6;
+    opacity: var(--opacity-dimmed);
     &:hover {
         opacity: 1;
     }
+}
+
+.shown {
+    opacity: 1;
+    height: auto;
+    overflow: auto;
+}
+.hidden {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
 }
