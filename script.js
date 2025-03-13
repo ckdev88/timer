@@ -331,12 +331,12 @@ selectOption(new_timer_intervalUnit, settings.intervalUnit)
 function expandCollapseForm(what) {
     if (what === 'expand') {
         new_timer_btn.classList.replace('collapsed', 'expanded')
-        new_timer_form.className = 'dblock'
-        settings_form.className = 'dnone'
+        new_timer_form.classList.replace('dnone', 'dblock') 
+        settings_form.classList.replace('dblock',  'dnone')
         settings_btn.classList.replace('expanded', 'collapsed')
     }
     if (what === 'collapse') {
-        new_timer_form.className = 'dnone'
+        new_timer_form.classList.replace('dblock', 'dnone')
         new_timer_btn.classList.replace('expanded', 'collapsed')
     }
 }
@@ -1039,7 +1039,7 @@ settings_form.addEventListener('submit', (e) => {
     settingsFormSubmit(data)
 })
 new_timer_btn.addEventListener('click', () => {
-    new_timer_form.className == 'dblock'
+    new_timer_form.classList.contains('dblock')
         ? expandCollapseForm('collapse')
         : expandCollapseForm('expand')
 })
