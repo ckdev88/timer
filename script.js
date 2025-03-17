@@ -331,8 +331,8 @@ selectOption(new_timer_intervalUnit, settings.intervalUnit)
 function expandCollapseForm(what) {
     if (what === 'expand') {
         new_timer_btn.classList.replace('collapsed', 'expanded')
-        new_timer_form.classList.replace('dnone', 'dblock') 
-        settings_form.classList.replace('dblock',  'dnone')
+        new_timer_form.classList.replace('dnone', 'dblock')
+        settings_form.classList.replace('dblock', 'dnone')
         settings_btn.classList.replace('expanded', 'collapsed')
     }
     if (what === 'collapse') {
@@ -544,7 +544,15 @@ function renderTimer(i, key) {
         )
     )
 
-    el.appendChild(
+    const startEndTimeActionsWrapper = document.createElement('div')
+    startEndTimeActionsWrapper.className = 'start_end_time_actions_wrapper'
+    el.appendChild(startEndTimeActionsWrapper)
+
+    const startTimeEndTimeWrapper = document.createElement('div')
+    startTimeEndTimeWrapper.className = 'starttime_endtime_wrapper'
+
+    startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
+    startTimeEndTimeWrapper.appendChild(
         renderTimerElement(
             'div',
             'starttime',
@@ -554,7 +562,7 @@ function renderTimer(i, key) {
                 i.starttime
         )
     )
-    el.appendChild(
+    startTimeEndTimeWrapper.appendChild(
         renderTimerElement(
             'div',
             'endtime',
@@ -564,12 +572,13 @@ function renderTimer(i, key) {
                 i.endtime
         )
     )
-    let el2 = document.createElement('div')
-    el2.className = 'buttons'
-    if (!i.finished) el2.appendChild(pauseTimerToggleLink(key, !i.paused))
-    el2.appendChild(resetTimerLink(key))
-    el2.appendChild(removeTimerLink(key))
-    el.appendChild(el2)
+    const timerActionsWrapper = document.createElement('div')
+    timerActionsWrapper.className = 'timer_actions_wrapper buttons'
+
+    if (!i.finished) timerActionsWrapper.appendChild(pauseTimerToggleLink(key, !i.paused))
+    timerActionsWrapper.appendChild(resetTimerLink(key))
+    timerActionsWrapper.appendChild(removeTimerLink(key))
+    startEndTimeActionsWrapper.appendChild(timerActionsWrapper)
 
     return el
 }
@@ -688,12 +697,11 @@ function pauseTimerToggleLink(key, paused = false) {
     el.className = 'text-btn'
     el.classList.add('pause')
     if (paused === true) {
-        el.innerHTML =
-            '<span>' + getTranslation(getSettings().language, 'pause') + '</span>'
+        // FIXME this condition is wrong, it works inverse (paused = false shows the resume button)
+        el.innerHTML = '<span>' + getTranslation(getSettings().language, 'pause') + '</span>'
         el.id = 'pause-' + key
     } else {
-        el.innerHTML =
-            '<span>' + getTranslation(getSettings().language, 'resume') + '</span>'
+        el.innerHTML = '<span>' + getTranslation(getSettings().language, 'resume') + '</span>'
         el.id = 'resume-' + key
         el.classList.replace('pause', 'resume')
         document.title = 'Timer'
@@ -709,8 +717,7 @@ function pauseTimerToggleLink(key, paused = false) {
  */
 function removeTimerLink(key) {
     let el = d.createElement('button')
-    el.innerHTML =
-        '<span>' + getTranslation(getSettings().language, 'remove') + '</span>'
+    el.innerHTML = '<span>' + getTranslation(getSettings().language, 'remove') + '</span>'
     el.className = 'text-btn remove'
     el.id = 'del-' + key
     el.setAttribute('onClick', `removeTimer(${key})`)
@@ -724,8 +731,7 @@ function removeTimerLink(key) {
  */
 function resetTimerLink(key) {
     let el = d.createElement('button')
-    el.innerHTML =
-        '<span>' + getTranslation(getSettings().language, 'reset') + '</span>'
+    el.innerHTML = '<span>' + getTranslation(getSettings().language, 'reset') + '</span>'
     el.className = 'text-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
