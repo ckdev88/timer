@@ -31,7 +31,7 @@
     --timer-icon-pause: url('data:image/svg+xml,\
 <svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
     --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
-    --timer-icon-remove: url('data:image/svg+xml, <svg fill="black" width="800px" height="800px" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+    --timer-icon-remove: url('data:image/svg+xml, <svg fill="black" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
     /* non-theme related */
     --transition-time-short: 0.12s;
     --transition-time-long: 0.19s;
@@ -62,11 +62,11 @@
     --border-active: hsl(0, 0%, 60%);
     --timer-pause-color: var(--pause-color);
     --timer-icon-play: url('data:image/svg+xml,\
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="white"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="greenyellow"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
     --timer-icon-pause: url('data:image/svg+xml,\
-<svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="white"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
-    --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
-    --timer-icon-remove: url('data:image/svg+xml, <svg fill="white" width="800px" height="800px" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+<svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="orange"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="lightblue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
+    --timer-icon-remove: url('data:image/svg+xml, <svg fill="red" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
 }
 
 * {
@@ -288,19 +288,20 @@ form.dblock {
 }
 /* --------------------------- / FORM & INPUT */
 a,
-button.text-btn,
-.btn.text-btn,
+button.text-btn,/* TODO still relevant? */
+.btn.text-btn, /* TODO still relevant? */
 button.icon {
     color: var(--text-button-fg);
     background: transparent;
     border: 0;
 }
-button.text-btn,
+button.text-btn,/* TODO still relevant? */
 .btn.text-btn {
     display: inline-block;
 }
 button {
     &.text-btn:after {
+        /* TODO still relevant? */
         font-size: 0.8em;
     }
     &.text-btn.expanded::after,
@@ -383,7 +384,7 @@ button {
     .buttons {
         justify-items: right;
         justify-content: flex-start;
-        .text-btn {
+        .control-btn {
             padding: 0;
             margin-left: 0;
             transition: opacity var(--transition-time-short) ease-in-out,
@@ -412,7 +413,7 @@ button {
 .timer.finished {
     animation: blink-finished 1.5s infinite;
 }
-.timer.finished .buttons .text-btn.pause {
+.timer.finished .buttons .control-btn.pause {
     display: none;
 }
 @keyframes blink-finished {
@@ -426,16 +427,17 @@ button {
         background-color: transparent;
     }
 }
-.buttons .text-btn {
+.buttons .text-btn,
+.buttons .control-btn {
     text-decoration: none;
 }
-.timer .buttons .text-btn,
+.timer .buttons .control-btn,
 #audio_container .text-btn {
     display: flex;
     align-items: center;
     /* gap: 0.3rem; */
 }
-.timer .buttons button.text-btn {
+.timer .buttons button.control-btn {
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center center;
@@ -446,10 +448,16 @@ button {
     font-size: 1rem;
     font-weight: bold;
     margin: 0;
+    border: 0;
     opacity: 0.7;
     /* filter: brightness(70%); */
-    transition: opacity var(--transition-time-short) ease-in-out,
-        background-color var(--transition-time-short) ease-in-out;
+    transition: opacity var(--transition-time-short) ease-in-out;
+    filter: brightness(1) grayscale(100%);
+    &:hover {
+        filter: none;
+        opacity: 1;
+        background-color: var(--pause-color);
+    }
 
     &.resume {
         background-image: var(--timer-icon-play);
@@ -459,7 +467,7 @@ button {
     &.pause {
         background-image: var(--timer-icon-pause);
         background-size: 0.8em auto;
-        background-position: 51% 55%;
+        background-position: 53.9% 55%;
     }
     &.reset {
         background-image: var(--timer-icon-reset);
@@ -467,16 +475,21 @@ button {
     }
     &.remove {
         background-image: var(--timer-icon-remove);
+        filter: invert(100%) saturate(0);
         background-size: 1.35em auto;
-        background-position: 50%;
-    }
-    &:hover {
-        background-color: var(--pause-color);
-        /* filter: brightness(100%); */
-        opacity: 1;
+        background-position: 63% 50% !important;
+        &:hover {
+            filter: none;
+        }
     }
 }
-.timer.paused .buttons button.text-btn {
+[data-theme='light'] .timer .buttons button.control-btn {
+    &.remove {
+        filter: none;
+    }
+}
+
+.timer.paused .buttons button.control-btn {
     &:hover {
         background-color: var(--bg-color);
     }
@@ -494,21 +507,18 @@ button {
         color: var(--fg-color);
         padding: 0 0 0 1rem;
         margin: 0;
+        background-size: 0.5em;
+        background-position: 0 50%;
+        background-repeat: no-repeat;
+        background-color: transparent;
+
         &.play {
             color: var(--text-button-fg);
-            background-color: transparent;
             background-image: var(--timer-icon-play);
-            background-size: 0.5em;
-            background-position: 0 50%;
-            background-repeat: no-repeat;
         }
         &.pause {
             color: var(--remove-fg);
-            background-color: transparent;
             background-image: var(--timer-icon-pause);
-            background-size: 0.5em;
-            background-position: 0 50%;
-            background-repeat: no-repeat;
         }
     }
 }
@@ -523,9 +533,6 @@ a.white,
 button.text-btn.white,
 .btn.text-btn.white {
     color: var(--fg-color);
-}
-.text-btn.remove {
-    color: var(--remove-fg);
 }
 .statusbar-alert + #wrapper .text-btn.remove {
     color: var(--fg-color);
@@ -549,8 +556,8 @@ button.text-btn.white,
 }
 /* miniclasses */
 .dnone,
-button.text-btn.dnone,
-.text-btn.dnone,
+button.control-btn.dnone,
+.control-btn.dnone, /* TODO redundant? */
 #audio_container .text-btn.dnone {
     display: none;
 }

@@ -694,7 +694,7 @@ function countdownTimer(key, id) {
 function pauseTimerToggleLink(key, paused = false) {
     /** @type {HTMLButtonElement} el - rendering for button pause/resume */
     let el = d.createElement('button')
-    el.className = 'text-btn'
+    el.className = 'control-btn'
     el.classList.add('pause')
     if (paused === true) {
         // FIXME this condition is wrong, it works inverse (paused = false shows the resume button)
@@ -718,7 +718,7 @@ function pauseTimerToggleLink(key, paused = false) {
 function removeTimerLink(key) {
     let el = d.createElement('button')
     el.innerHTML = '<span>' + getTranslation(getSettings().language, 'remove') + '</span>'
-    el.className = 'text-btn remove'
+    el.className = 'control-btn remove'
     el.id = 'del-' + key
     el.setAttribute('onClick', `removeTimer(${key})`)
     return el
@@ -732,7 +732,7 @@ function removeTimerLink(key) {
 function resetTimerLink(key) {
     let el = d.createElement('button')
     el.innerHTML = '<span>' + getTranslation(getSettings().language, 'reset') + '</span>'
-    el.className = 'text-btn'
+    el.className = 'control-btn'
     el.classList.add('reset')
     el.id = 'reset-' + key
     el.setAttribute('onClick', `resetTimer(${key})`)
@@ -1023,6 +1023,7 @@ function insertAfter(referenceNode, newNode) {
  * @returns void
  */
 function detectColorScheme() {
+    /** {'light'|'dark'} theme */
     let theme = 'dark' // default to dark
     // local storage is used to override OS theme settings
     if (localStorage.getItem('theme') && localStorage.getItem('theme') == 'light') theme = 'light'
