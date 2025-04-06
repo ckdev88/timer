@@ -26,6 +26,17 @@
     --border-hover: hsl(0, 0%, 60%);
     --border-active: hsl(0, 0%, 40%);
     --timer-pause-color: var(--pause-color);
+    --timer-icon-play: url('data:image/svg+xml,\
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
+    --timer-icon-pause: url('data:image/svg+xml,\
+<svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
+    --timer-icon-remove: url('data:image/svg+xml, <svg fill="black" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+    /* non-theme related */
+    --transition-time-short: 0.12s;
+    --transition-time-long: 0.19s;
+    --transition-time-xlong: 1s;
+    --opacity-dimmed: 0.6;
 }
 :root[data-theme='dark'] {
     --bg-color: hsl(60, 70%, 0%);
@@ -50,6 +61,12 @@
     --border-hover: hsl(0, 0%, 40%);
     --border-active: hsl(0, 0%, 60%);
     --timer-pause-color: var(--pause-color);
+    --timer-icon-play: url('data:image/svg+xml,\
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="greenyellow"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
+    --timer-icon-pause: url('data:image/svg+xml,\
+<svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="orange"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="lightblue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
+    --timer-icon-remove: url('data:image/svg+xml, <svg fill="red" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
 }
 
 * {
@@ -68,6 +85,7 @@ html {
 }
 body {
     min-width: calc(320px + 1rem);
+    overflow-y: scroll;
 }
 .form-name {
     font-weight: 800;
@@ -103,7 +121,7 @@ body {
         opacity: 1;
     }
     50% {
-        opacity: 0.7;
+        opacity: var(--opacity-dimmed);
     }
     100% {
         opacity: 1;
@@ -131,25 +149,11 @@ body {
     /*★ ☆ */
     content: '⚡';
     color: var(--play-icon-color);
+    background-image: var(--timer-icon-play);
     display: block;
     float: left;
     width: 1em;
     height: auto;
-}
-.top-buttons {
-    .text-btn {
-        border: 1px dotted var(--border-inactive);
-        border-bottom: 0;
-        color: var(--settings-fg);
-        &:hover {
-            border-color: var(--border-hover);
-        }
-    }
-    .expanded,
-    .text-btn.expanded:hover {
-        border-style: solid;
-        border-color: var(--border-active);
-    }
 }
 #settings_form {
     padding-right: 0.6rem;
@@ -158,10 +162,6 @@ body {
     .form-name {
         color: var(--fg-color);
     }
-}
-.timer {
-    padding: 1rem;
-    margin: -1rem;
 }
 .timer-name {
     margin: 0;
@@ -182,12 +182,12 @@ input[type='submit'] {
     background: var(--button-bg);
     color: var(--button-fg);
     font-weight: bold;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color var(--transition-time-short) ease-in-out;
 }
 button:hover,
 a.btn:hover,
 input[type='submit']:hover {
-    background: var(--button-bg-hover);
+    background-color: var(--button-bg-hover);
 }
 label {
     cursor: pointer;
@@ -272,23 +272,21 @@ form.dblock {
     height: 100%;
 }
 /* --------------------------- / FORM & INPUT */
-.timer button {
-    margin-bottom: 0;
-}
 a,
-button.text-btn,
-.btn.text-btn,
+button.text-btn,/* TODO still relevant? */
+.btn.text-btn, /* TODO still relevant? */
 button.icon {
     color: var(--text-button-fg);
     background: transparent;
     border: 0;
 }
-button.text-btn,
+button.text-btn,/* TODO still relevant? */
 .btn.text-btn {
     display: inline-block;
 }
 button {
     &.text-btn:after {
+        /* TODO still relevant? */
         font-size: 0.8em;
     }
     &.text-btn.expanded::after,
@@ -333,7 +331,7 @@ button {
 .submit-buttons .feedback {
     margin-left: 0.5em;
     opacity: 0;
-    animation: feedbackfade 1.5s;
+    animation: feedbackfade var(--transition-time-xlong);
     font-size: 0.9em;
 }
 @keyframes feedbackfade {
@@ -354,30 +352,53 @@ button {
 #timer_container {
     padding-top: 1rem;
 }
+.start_end_time_actions_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .timer {
+    padding: 1rem;
+    margin: 0 -1rem 0;
     border-bottom: 1px dashed var(--separation-border-color);
-    margin-top: 0;
-    margin-bottom: 0;
-    &.paused {
-        background-color: var(--timer-pause-color);
-        > *:not(.buttons),
-        .buttons .reset,
-        .buttons .remove {
-            opacity: 0.5;
-        }
-        .buttons {
-            .resume .dimmed,
-            .reset:hover,
-            .remove:hover {
+    opacity: 1;
+
+    button {
+        margin-bottom: 0;
+    }
+    .buttons {
+        justify-items: right;
+        justify-content: flex-start;
+        .control-btn {
+            padding: 0;
+            margin-left: 0;
+            transition: opacity var(--transition-time-short) ease-in-out,
+                background-size var(--transition-time-long) ease-in-out;
+            font-size: 2em;
+            width: 2em;
+            height: 2em;
+            border-radius: 50%;
+            &:hover {
                 opacity: 1;
             }
+            span {
+                display: none;
+            }
+        }
+    }
+    &.paused {
+        background-color: var(--timer-pause-color);
+        .timer-descr,
+        .timer-countdown-current,
+        .starttime_endtime_wrapper {
+            opacity: var(--opacity-dimmed);
         }
     }
 }
 .timer.finished {
     animation: blink-finished 1.5s infinite;
 }
-.timer.finished .buttons .text-btn.pause {
+.timer.finished .buttons .control-btn.pause {
     display: none;
 }
 @keyframes blink-finished {
@@ -391,75 +412,74 @@ button {
         background-color: transparent;
     }
 }
-.buttons .text-btn {
+.buttons .text-btn,
+.buttons .control-btn {
     text-decoration: none;
 }
-.timer {
-    .buttons {
-        justify-content: flex-start;
-        button {
-            padding: 0;
-            margin-left: 0;
-            margin-right: 1.6rem;
-        }
-    }
-}
-.timer .buttons .text-btn,
+.timer .buttons .control-btn,
 #audio_container .text-btn {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    /* gap: 0.3rem; */
 }
-.timer .buttons .text-btn::before,
-#audio_container .text-btn {
-    align-content: center;
-    content: '';
-    height: 1em;
-    bottom: 0.5em;
-    line-height: 1em;
-}
-.timer .buttons .text-btn.pause::before,
-#audio_container .text-btn.pause::before {
-    content: '=';
-    transform: rotate(90deg);
-    font-weight: 800;
-    font-size: 1.1rem;
-    margin-left: -0.05rem;
-    margin-right: -0.05rem;
-    padding-right: 0;
-    color: var(--play-icon-color);
-}
-.timer .buttons .text-btn.pause::before {
-    margin-bottom: -0.2rem;
-}
-#audio_container .text-btn.pause::before {
-    margin-bottom: -0.1rem;
-}
-.timer .buttons .resume::before,
-#audio_container .text-btn.play::before {
-    background: transparent;
+.timer .buttons button.control-btn {
     background-color: transparent;
-    content: '▶';
-    color: var(--text-button-fg);
-    font-size: 0.6rem;
-    margin-top: 0.2rem;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    display: flex;
+    height: 2em;
+    width: 2em;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    border: 0;
+    opacity: 0.7;
+    /* filter: brightness(70%); */
+    transition: opacity var(--transition-time-short) ease-in-out;
+    filter: brightness(1) grayscale(100%);
+    &:hover {
+        filter: none;
+        opacity: 1;
+        background-color: var(--pause-color);
+    }
+
+    &.resume {
+        background-image: var(--timer-icon-play);
+        background-size: 0.8em auto;
+        background-position: 55% 55%;
+    }
+    &.pause {
+        background-image: var(--timer-icon-pause);
+        background-size: 0.8em auto;
+        background-position: 53.9% 55%;
+    }
+    &.reset {
+        background-image: var(--timer-icon-reset);
+        background-size: 0.85em auto;
+    }
+    &.remove {
+        background-image: var(--timer-icon-remove);
+        filter: invert(100%) saturate(0);
+        background-size: 1.35em auto;
+        background-position: 63% 50% !important;
+        &:hover {
+            filter: none;
+        }
+    }
+}
+[data-theme='light'] .timer .buttons button.control-btn {
+    &.remove {
+        filter: none;
+    }
 }
 
-.timer .buttons button.text-btn {
-    &.reset::before {
-        content: '↺';
-        font-weight: bold;
-        font-size: 1.19rem;
-        color: var(--play-icon-color);
-    }
-    &.remove::before {
-        content: 'x';
-        font-size: 0.9em;
-        margin-top: 0.1em;
-        font-weight: 800;
-        color: var(--remove-icon-color);
+.timer.paused .buttons button.control-btn {
+    &:hover {
+        background-color: var(--bg-color);
     }
 }
+
 #timer_new_form .form-name {
     color: var(--fg-color);
 }
@@ -468,31 +488,59 @@ button {
     width: 49%;
     padding-top: 1rem;
     .text-btn {
+        padding-left: 2rem;
         color: var(--fg-color);
-        padding: 0;
+        padding: 0 0 0 1rem;
         margin: 0;
-    }
-    .text-btn.play::before {
-        color: var(--text-button-fg);
-    }
-    .text-btn.pause::before {
-        color: var(--remove-fg);
+        background-size: 0.5em;
+        background-position: 0 50%;
+        background-repeat: no-repeat;
+        background-color: transparent;
+
+        &.play {
+            color: var(--text-button-fg);
+            background-image: var(--timer-icon-play);
+        }
+        &.pause {
+            color: var(--remove-fg);
+            background-image: var(--timer-icon-pause);
+        }
     }
 }
 .buttons {
     display: flex;
 }
 .top-buttons {
-    justify-content: space-between;
+    justify-content: right;
+    .text-btn {
+        color: var(--settings-fg);
+        opacity: var(--opacity-dimmed);
+        transition: opacity var(--transition-time-short),width var(--transition-time-long);
+		justify-content: right;
+        span {
+            width: 0;
+			white-space:nowrap;
+            display:inline-flex;
+            overflow: hidden;
+            transition: width var(--transition-time-long) linear,overflow var(--transition-time-long);
+			&::after{
+				content:" "
+			}
+        }
+        &:hover,
+        &.expanded {
+            opacity: 1;
+            span {
+                width: 5rem;
+            }
+        }
+    }
 }
 .white,
 a.white,
 button.text-btn.white,
 .btn.text-btn.white {
     color: var(--fg-color);
-}
-.text-btn.remove {
-    color: var(--remove-fg);
 }
 .statusbar-alert + #wrapper .text-btn.remove {
     color: var(--fg-color);
@@ -516,14 +564,25 @@ button.text-btn.white,
 }
 /* miniclasses */
 .dnone,
-button.text-btn.dnone,
-.text-btn.dnone,
+button.control-btn.dnone,
+.control-btn.dnone, /* TODO redundant? */
 #audio_container .text-btn.dnone {
     display: none;
 }
 .dimmed {
-    opacity: 0.6;
+    opacity: var(--opacity-dimmed);
     &:hover {
         opacity: 1;
     }
+}
+
+.shown {
+    opacity: 1;
+    height: auto;
+    overflow: auto;
+}
+.hidden {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
 }

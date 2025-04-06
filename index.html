@@ -14,12 +14,12 @@
         <div id="statusbar"></div>
         <div id="wrapper">
             <div class="buttons top-buttons">
-                <button id="new_timer_btn" class="text-btn white expanded">New timer</button>
-                <button id="settings_btn" class="text-btn collapsed">⚙</button>
+				<button id="new_timer_btn" class="text-btn white expanded"><span>Add timer </span>+</button>
+				<button id="settings_btn" class="text-btn collapsed"><span>Settings </span>⚙</button>
                 <button id="clean_btn" class="text-btn">x</button>
             </div>
 
-            <form id="settings_form" class="dnone">
+            <form id="settings_form" class="dnone hidden">
                 <h2 class="form-name" id="general_settings_head">General settings</h2>
                 <select id="settings_form_countDown" name="settings_form_countDown">
                     <option value="true">Count down to 0</option>
@@ -64,7 +64,7 @@
                     <input type="submit" id="btn_update_settings" value="Update settings" />
                 </div>
             </form>
-            <form id="new_timer_form" class="dblock">
+            <form id="new_timer_form" class="dblock shown">
                 <div style="display: flex; align-items: center; justify-content: space-between">
                     <h2 class="form-name" id="new_timer_form_head">New timer</h2>
                     <a href="javascript:void(0)" id="new_timer_quick" class="white">Quick add</a>
