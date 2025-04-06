@@ -155,21 +155,6 @@ body {
     width: 1em;
     height: auto;
 }
-.top-buttons {
-    .text-btn {
-        border: 1px dotted var(--border-inactive);
-        border-bottom: 0;
-        color: var(--settings-fg);
-        &:hover {
-            border-color: var(--border-hover);
-        }
-    }
-    .expanded,
-    .text-btn.expanded:hover {
-        border-style: solid;
-        border-color: var(--border-active);
-    }
-}
 #settings_form {
     padding-right: 0.6rem;
     border-width: 0 2px 0 0;
@@ -526,7 +511,30 @@ button {
     display: flex;
 }
 .top-buttons {
-    justify-content: space-between;
+    justify-content: right;
+    .text-btn {
+        color: var(--settings-fg);
+        opacity: var(--opacity-dimmed);
+        transition: opacity var(--transition-time-short),width var(--transition-time-long);
+		justify-content: right;
+        span {
+            width: 0;
+			white-space:nowrap;
+            display:inline-flex;
+            overflow: hidden;
+            transition: width var(--transition-time-long) linear,overflow var(--transition-time-long);
+			&::after{
+				content:" "
+			}
+        }
+        &:hover,
+        &.expanded {
+            opacity: 1;
+            span {
+                width: 5rem;
+            }
+        }
+    }
 }
 .white,
 a.white,

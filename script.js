@@ -942,7 +942,7 @@ function setBgStatus(status = 'normal') {
  * @returns {string}
  */
 function getTranslation(langkey, stringkey) {
-    /** @type Settings.language */
+    /** @type {Settings['language']} */
     return translationMap[langkey][stringkey]
 }
 
