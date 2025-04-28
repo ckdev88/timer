@@ -463,13 +463,36 @@ function removeTimer(key) {
 // ----------------------------- RENDER TASKS - MAIN
 /**
  * @param {Timers} arr
- * @param {boolean} paused
  * @returns {void}
  */
-function renderTimers(arr, paused = false) {
+function renderTimers(arr) {
+    // TODO a part of timers can be reused if finished or paused, so no need to clean it up completely
+    let curtime = new Date()
+    curtime = curtime.getSeconds()
+
+    // TODO prebuild timers that are paused or finished
+    const pausedTimersHTMLElements = timer_container.getElementsByClassName('timer paused')
+    const finishedTimersHTMLElements = timer_container.getElementsByClassName('timer finished')
+
     timer_container.innerHTML = ''
+    if (pausedTimersHTMLElements.length > 0) timer_container.append(pausedTimersHTMLElements)
+    if (finishedTimersHTMLElements.length > 0) timer_container.append(finishedTimersHTMLElements)
+
+    for (let i = 0; i < pausedTimersHTMLElements.length; i++) {
+        timer_container.appendChild(pausedTimersHTMLElements[i])
+    }
+
+    // show running timers first, these need to be refreshed every second
     for (let i = 0; i < arr.length; i++) {
-        if (paused === false) timer_container.appendChild(renderTimer(arr[i], i))
+        if (arr[i].paused === false) {
+            timer_container.appendChild(renderTimer(arr[i], i))
+        }
+    }
+    // TODO finished & paused timers should be cached
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].finished === false && arr[i].paused === true) {
+            timer_container.appendChild(renderTimer(arr[i], i))
+        }
     }
 }
 
@@ -508,11 +531,13 @@ setCurrentDate()
 
 /**
  * Creates the rendering of the timer, serves as a base for showing in renders: first, paused
- * @param i {string} -- timer item
+ * @param i {string} timer item
  * @param key {number}
+ * @param paused {boolean} reduce rebuilding when timer is paused
  * @returns {HTMLElement}
  */
-function renderTimer(i, key) {
+function renderTimer(i, key, paused = false) {
+    if (paused) return
     let settings = getSettings()
     let el = d.createElement('div')
     el.className = 'timer'
@@ -697,7 +722,6 @@ function pauseTimerToggleLink(key, paused = false) {
     el.className = 'control-btn'
     el.classList.add('pause')
     if (paused === true) {
-        // FIXME this condition is wrong, it works inverse (paused = false shows the resume button)
         el.innerHTML = '<span>' + getTranslation(getSettings().language, 'pause') + '</span>'
         el.id = 'pause-' + key
     } else {
