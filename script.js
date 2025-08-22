@@ -147,6 +147,44 @@ const translationMap = {
         Settings_updated: 'Settings updated',
         Select_time_unit: 'Select time unit',
         now: 'now',
+        Play_audio: 'Play audio',
+        Pause_audio: 'Pause audio'
+    },
+    nl: {
+        localeString: 'nl-NL',
+        pause: 'pauze',
+        reset: 'opnieuw',
+        resume: 'vervolg',
+        remove: 'verwijder',
+        New_timer: 'Nieuwe timer',
+        Quick_add: 'Snel nieuw',
+        Name: 'Naam',
+        Description: 'Beschrijving',
+        Time: 'Tijd',
+        Seconds: 'Seconden',
+        seconds: 'seconden',
+        s: 'seconden',
+        Minutes: 'Minuten',
+        minutes: 'minuten',
+        m: 'minuten',
+        Create_timer: 'Maak timer',
+        General_settings: 'Algemene instellingen',
+        Count_down: 'Tel af naar 0',
+        Count_up: 'Tel op van 0',
+        Update_settings: 'Instellingen bijwerken',
+        Quick_add_settings: 'Snel nieuw instellingen',
+        Starting_time: 'Starttijd',
+        Ending_time: 'Eindtijd',
+        Time_left: 'Tijd over',
+        Time_passed: 'Tijd gepasseerd',
+        Quick_timer_default_name: 'Rekken',
+        Quick_timer_default_description: 'Eten, lopen, strekken, zoiets.',
+        Timer_created: 'Timer gemaakt',
+        Settings_updated: 'Instellingen bijgewerkt',
+        Select_time_unit: 'Selecteer tijdseenheid',
+        now: 'nu',
+        Play_audio: 'Audio afspelen',
+        Pause_audio: 'Audio pauzeren'
     },
     pt: {
         localeString: 'pt-BR',
@@ -181,6 +219,8 @@ const translationMap = {
         Settings_updated: 'Configurações atualizadas',
         Select_time_unit: 'Selecione a unidade de tempo',
         now: 'agora',
+        Play_audio: 'Tocar audio',
+        Pause_audio: 'Pausar áudio'
     },
 }
 
@@ -1018,6 +1058,9 @@ function changeLanguage(lang) {
     newTextInElements('ending_time_text', getTranslation(lang, 'Ending_time'))
     newTextInElements('time_left_text', getTranslation(lang, 'Time_left'))
     newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
+
+    document.getElementById('audio_play').innerText=getTranslation(lang, 'Play_audio')
+    document.getElementById('audio_pause').innerText=getTranslation(lang, 'Pause_audio')
 
     setf_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
     new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
