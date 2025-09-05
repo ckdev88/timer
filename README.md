@@ -39,4 +39,4 @@ By default the following files are used from the ./audio/ directory:
 You can change the desired audio file by modifying const variables `backgroundAudio` and `alertAudio`.
 
 
-Time to get stuff done!
+**Time to get stuff done!**
