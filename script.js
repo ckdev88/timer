@@ -20,6 +20,7 @@ const trl = {
         reset: 'reset',
         resume: 'resume',
         remove: 'remove',
+        Settings: 'Settings',
         New_timer: 'New timer',
         Quick_add: 'Quick add',
         Name: 'Name',
@@ -57,6 +58,7 @@ const trl = {
         resume: 'vervolg',
         remove: 'verwijder',
         New_timer: 'Nieuwe timer',
+        Settings: 'Instellingen',
         Quick_add: 'Snel nieuw',
         Name: 'Naam',
         Description: 'Beschrijving',
@@ -93,6 +95,7 @@ const trl = {
         resume: 'continuar',
         remove: 'remover',
         New_timer: 'Novo timer',
+        Settings: 'Configurações',
         Quick_add: 'Adição rápida',
         Name: 'Nome',
         Description: 'Descrição',
@@ -1023,9 +1026,11 @@ function translateElements(lang = getSettings().language) {
     newTextInElements('reset', getTranslation(lang, 'reset'))
     newTextInElements('remove', getTranslation(lang, 'remove'))
 
-    new_timer_btn.innerText = getTranslation(lang, 'New_timer')
+    new_timer_btn.querySelector('span').innerText = getTranslation(lang, 'New_timer')
     new_timer_form_head.innerText = getTranslation(lang, 'New_timer')
     new_timer_quick.innerText = getTranslation(lang, 'Quick_add')
+
+    settings_btn.querySelector('span').innerText = getTranslation(lang, 'Settings')
 
     new_timer_name.setAttribute('placeholder', getTranslation(lang, 'Name') + '...')
     new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
