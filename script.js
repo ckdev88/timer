@@ -970,6 +970,7 @@ function getCurrentTimeSimple(seconds = false) {
 }
 
 /**
+ * Gives a simple time string-format for current time, like '12:59'
  * @param {boolean} seconds
  * @param {number} secondsToAdd
  * @returns {SimpleTime}
@@ -1067,6 +1068,9 @@ function translateElements(lang = getSettings().language) {
 }
 
 /**
+ * Searches for HTML elements that contain `classname` and places `newText` value in it.
+ * @param {string} classname
+ * @param {string} newText
  * @returns {void}
  */
 function newTextInElements(classname, newText) {

@@ -38,6 +38,7 @@
     --transition-time-xlong: 1s;
     --opacity-dimmed: 0.6;
 }
+
 :root[data-theme='dark'] {
     --bg-color: hsl(60, 70%, 0%);
     --fg-color: hsl(10, 10%, 90%);
@@ -72,27 +73,32 @@
 * {
     box-sizing: border-box;
 }
+
 html,
 body {
     padding: 0;
     margin: 0;
     height: 100%;
 }
+
 html {
     background: var(--bg-color);
     color: var(--fg-color);
     font-size: 14px;
 }
+
 body {
     min-width: calc(320px + 1rem);
     overflow-y: scroll;
 }
+
 .form-name {
     font-weight: 800;
     margin-top: 0;
     margin-bottom: 0;
     font-size: 1.2em;
 }
+
 #statusbar {
     height: 0.5rem;
     position: fixed;
@@ -106,34 +112,43 @@ body {
 .statusbar-default {
     background-color: var(--bg-color);
 }
+
 .statusbar-pause {
     background-color: var(--pause-color);
 }
+
 .statusbar-running {
     background-color: var(--running-bg);
 }
+
 .statusbar-alert {
     background-color: var(--alert-bg);
     animation: blink-statusbar 1.5s infinite;
 }
+
 @keyframes blink-statusbar-default {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: var(--opacity-dimmed);
     }
+
     100% {
         opacity: 1;
     }
 }
+
 @keyframes blink-statusbar {
     0% {
         background-color: transparent;
     }
+
     50% {
         background-color: var(--alert-bg);
     }
+
     100% {
         background-color: transparent;
     }
@@ -142,9 +157,11 @@ body {
 #timer_new_btn:after {
     color: var(--timer-border-fg);
 }
+
 #timer_new_quick {
     display: block;
 }
+
 #timer_new_quick::before {
     /*★ ☆ */
     content: '⚡';
@@ -155,19 +172,23 @@ body {
     width: 1em;
     height: auto;
 }
+
 #settings_form {
     padding-right: 0.6rem;
     border-width: 0 2px 0 0;
     border-color: var(--settings-fg);
+
     .form-name {
         color: var(--fg-color);
     }
 }
+
 .timer-name {
     margin: 0;
     padding: 0;
     font-weight: 800;
 }
+
 body,
 input,
 textarea,
@@ -175,6 +196,7 @@ button,
 select {
     font-family: 'Outfit', sans-serif;
 }
+
 button,
 a.btn,
 input[type='submit'] {
@@ -184,14 +206,17 @@ input[type='submit'] {
     font-weight: bold;
     transition: background-color var(--transition-time-short) ease-in-out;
 }
+
 button:hover,
 a.btn:hover,
 input[type='submit']:hover {
     background-color: var(--button-bg-hover);
 }
+
 label {
     cursor: pointer;
 }
+
 /* --------------------------- FORM & INPUT */
 input[type='text'],
 textarea,
@@ -206,14 +231,17 @@ select {
     display: block;
     border: 1px solid var(--input-border-color);
 }
+
 .top-buttons button {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+
 select {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
 }
+
 select,
 input[type='text'],
 textarea,
@@ -230,15 +258,18 @@ input[type='number'] {
         padding-right: 0.4rem;
     }
 }
+
 input[type='text'],
 textarea,
 input[type='number'],
 label {
     font-size: 0.9rem;
 }
+
 textarea {
     height: 5em;
 }
+
 form {
     height: 0;
     opacity: 0;
@@ -257,10 +288,12 @@ form {
     margin-top: -0.3rem;
     margin-bottom: -0.3rem;
 }
+
 #new_timer_interval,
 #settings_form_quickTimerInterval {
     max-width: 40%;
 }
+
 #new_timer_intervalUnit,
 #settings_form_intervalUnit {
     max-width: calc(60% - 0.3rem);
@@ -271,24 +304,31 @@ form.dblock {
     opacity: 1;
     height: 100%;
 }
+
 /* --------------------------- / FORM & INPUT */
 a,
-button.text-btn,/* TODO still relevant? */
-.btn.text-btn, /* TODO still relevant? */
+button.text-btn,
+/* TODO still relevant? */
+.btn.text-btn,
+/* TODO still relevant? */
 button.icon {
     color: var(--text-button-fg);
     background: transparent;
     border: 0;
 }
-button.text-btn,/* TODO still relevant? */
+
+button.text-btn,
+/* TODO still relevant? */
 .btn.text-btn {
     display: inline-block;
 }
+
 button {
     &.text-btn:after {
         /* TODO still relevant? */
         font-size: 0.8em;
     }
+
     &.text-btn.expanded::after,
     &.text-btn.collapsed::after,
     &.text-btn.expanded2::before,
@@ -296,20 +336,24 @@ button {
         font-size: 0.7em;
         display: inline-block;
     }
+
     &.text-btn.collapsed::after,
     &.text-btn.collapsed2::before {
         content: '  ▲';
         color: var(--play-icon-color);
     }
+
     &.text-btn.expanded::after,
     &.text-btn.expanded2::before {
         content: '▼  ';
         color: var(--play-icon-color);
     }
+
     &.text-btn.expanded:after,
     &.text-btn.collapsed:after {
         margin-left: 0.7em;
     }
+
     &.text-btn.collapsed2:before,
     &.text-btn.expanded2:before {
         margin-right: 0.7em;
@@ -324,26 +368,32 @@ button {
     margin: 0 auto;
     position: relative;
 }
+
 .submit-buttons {
     justify-content: flex-start;
     align-items: center;
+
+    .feedback {
+        margin-left: 0.5em;
+        opacity: 0;
+        animation: feedbackfade var(--transition-time-xlong);
+        font-size: 0.9em;
+    }
 }
-.submit-buttons .feedback {
-    margin-left: 0.5em;
-    opacity: 0;
-    animation: feedbackfade var(--transition-time-xlong);
-    font-size: 0.9em;
-}
+
 @keyframes feedbackfade {
     0% {
         opacity: 0%;
     }
+
     5% {
         opacity: 100%;
     }
+
     95% {
         opacity: 100%;
     }
+
     100% {
         opacity: 0;
     }
@@ -352,11 +402,13 @@ button {
 #timer_container {
     padding-top: 1rem;
 }
+
 .start_end_time_actions_wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .timer {
     padding: 1rem;
     margin: 0 -1rem 0;
@@ -366,9 +418,11 @@ button {
     button {
         margin-bottom: 0;
     }
+
     .buttons {
         justify-items: right;
         justify-content: flex-start;
+
         .control-btn {
             padding: 0;
             margin-left: 0;
@@ -378,50 +432,68 @@ button {
             width: 2em;
             height: 2em;
             border-radius: 50%;
+
             &:hover {
                 opacity: 1;
             }
+
             span {
                 display: none;
             }
         }
     }
+
     &.paused {
         background-color: var(--timer-pause-color);
+
         .timer-descr,
         .timer-countdown-current,
         .starttime_endtime_wrapper {
             opacity: var(--opacity-dimmed);
         }
     }
+
+    &.finished {
+        animation: blink-finished 1.5s infinite;
+
+        .buttons .control-btn.pause {
+            display: none;
+        }
+    }
+
 }
-.timer.finished {
-    animation: blink-finished 1.5s infinite;
-}
-.timer.finished .buttons .control-btn.pause {
-    display: none;
-}
+
+
 @keyframes blink-finished {
     0% {
         background-color: transparent;
     }
+
     50% {
         background-color: var(--finished-blink-bg);
     }
+
     100% {
         background-color: transparent;
     }
 }
-.buttons .text-btn,
-.buttons .control-btn {
-    text-decoration: none;
+
+.buttons {
+    display: flex;
+
+    .text-btn,
+    .control-btn {
+        text-decoration: none;
+    }
 }
+
 .timer .buttons .control-btn,
 #audio_container .text-btn {
     display: flex;
     align-items: center;
     /* gap: 0.3rem; */
 }
+
 .timer .buttons button.control-btn {
     background-color: transparent;
     background-repeat: no-repeat;
@@ -438,6 +510,7 @@ button {
     /* filter: brightness(70%); */
     transition: opacity var(--transition-time-short) ease-in-out;
     filter: brightness(1) grayscale(100%);
+
     &:hover {
         filter: none;
         opacity: 1;
@@ -449,25 +522,30 @@ button {
         background-size: 0.8em auto;
         background-position: 55% 55%;
     }
+
     &.pause {
         background-image: var(--timer-icon-pause);
         background-size: 0.8em auto;
         background-position: 53.9% 55%;
     }
+
     &.reset {
         background-image: var(--timer-icon-reset);
         background-size: 0.85em auto;
     }
+
     &.remove {
         background-image: var(--timer-icon-remove);
         filter: invert(100%) saturate(0);
         background-size: 1.35em auto;
         background-position: 63% 50% !important;
+
         &:hover {
             filter: none;
         }
     }
 }
+
 [data-theme='light'] .timer .buttons button.control-btn {
     &.remove {
         filter: none;
@@ -483,10 +561,12 @@ button {
 #timer_new_form .form-name {
     color: var(--fg-color);
 }
+
 #audio_container {
     float: left;
     width: 49%;
     padding-top: 1rem;
+
     .text-btn {
         padding-left: 2rem;
         color: var(--fg-color);
@@ -501,76 +581,145 @@ button {
             color: var(--text-button-fg);
             background-image: var(--timer-icon-play);
         }
+
         &.pause {
             color: var(--remove-fg);
             background-image: var(--timer-icon-pause);
         }
     }
 }
-.buttons {
-    display: flex;
-}
+
+
 .top-buttons {
     justify-content: right;
+
     .text-btn {
         color: var(--settings-fg);
         opacity: var(--opacity-dimmed);
-        transition: opacity var(--transition-time-short),width var(--transition-time-long);
-		justify-content: right;
+        transition: opacity var(--transition-time-short), width var(--transition-time-long);
+        justify-content: right;
+
         span {
             width: 0;
-			white-space:nowrap;
-            display:inline-flex;
+            white-space: nowrap;
+            display: inline-flex;
             overflow: hidden;
-            transition: width var(--transition-time-long) linear,overflow var(--transition-time-long);
-			&::after{
-				content:" "
-			}
+            transition: width var(--transition-time-long) linear, overflow var(--transition-time-long);
+
+            &::after {
+                content: " "
+            }
         }
+
         &:hover,
         &.expanded {
             opacity: 1;
+        }
+    }
+}
+
+html[lang="en"] .top-buttons {
+    .text-btn {
+
+        &#new_timer_btn:hover,
+        &#new_timer_btn.expanded {
             span {
-                width: 5rem;
+                width: 5rem
+            }
+        }
+
+        &#settings_btn:hover,
+        &#settings_btn.expanded {
+            span {
+                width: 4rem;
             }
         }
     }
 }
+
+html[lang="nl"] .top-buttons {
+    .text-btn {
+
+        &#new_timer_btn:hover,
+        &#new_timer_btn.expanded {
+            span {
+                width: 6.25rem
+            }
+        }
+
+        &#settings_btn:hover,
+        &#settings_btn.expanded {
+            span {
+                width: 5.5rem;
+            }
+        }
+    }
+}
+
+html[lang="pt"] .top-buttons {
+    .text-btn {
+
+        &#new_timer_btn:hover,
+        &#new_timer_btn.expanded {
+            span {
+                width: 5.25rem
+            }
+        }
+
+        &#settings_btn:hover,
+        &#settings_btn.expanded {
+            span {
+                width: 6.75rem;
+            }
+        }
+    }
+}
+
 .white,
 a.white,
 button.text-btn.white,
 .btn.text-btn.white {
     color: var(--fg-color);
 }
-.statusbar-alert + #wrapper .text-btn.remove {
+
+.statusbar-alert+#wrapper .text-btn.remove {
     color: var(--fg-color);
 }
+
 #clean_btn {
     display: none;
 }
+
 .timer-countdown-current,
 .timer-countdown-total {
     display: inline-block;
 }
+
 #current_time,
 #current_date {
     text-align: right;
 }
+
 #current_time {
     padding-top: 1rem;
 }
+
 #current_date {
     padding-bottom: 1rem;
 }
+
 /* miniclasses */
 .dnone,
 button.control-btn.dnone,
-.control-btn.dnone, /* TODO redundant? */
+.control-btn.dnone,
+/* TODO redundant? */
 #audio_container .text-btn.dnone {
     display: none;
 }
+
 .dimmed {
     opacity: var(--opacity-dimmed);
+
     &:hover {
         opacity: 1;
     }
@@ -581,6 +730,7 @@ button.control-btn.dnone,
     height: auto;
     overflow: auto;
 }
+
 .hidden {
     opacity: 0;
     height: 0;
