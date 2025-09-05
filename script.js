@@ -608,24 +608,24 @@ function renderTimer(i, key, paused = false) {
     el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
     el.appendChild(
         renderTimerElement(
-            (node = 'div'),
-            (className = 'timer-countdown-current'),
-            (content = countdownTimer(key, 'countdown-timer-' + key)),
-            (id = 'countdown-' + el.id),
-            (key = key),
-            (content_prefix =
-                settings.countDown === true
-                    ? '<span class="time_left_text">' +
+            'div',
+            'timer-countdown-current',
+            countdownTimer(key, 'countdown-timer-' + key),
+            'countdown-' + el.id,
+            key,
+
+            settings.countDown === true
+                ? '<span class="time_left_text">' +
                       getTranslation(settings.language, 'Time_left') +
                       '</span>: '
-                    : '<span class="time_passed_text">' +
+                : '<span class="time_passed_text">' +
                       getTranslation(settings.language, 'Time_passed') +
-                      '</span>: '),
-            (content_suffix =
-                '&nbsp;/ ' +
+                      '</span>: ',
+
+            '&nbsp;/ ' +
                 i.interval / i.intervalUnit +
                 ' ' +
-                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit)))
+                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit))
         )
     )
 
@@ -672,6 +672,11 @@ function renderTimer(i, key, paused = false) {
  * Render the timer element, meaning 1 per timer.
  * @param {string} node - HTML node
  * @param {string} className
+ * @param {any} content
+ * @param {string} id
+ * @param {number} key
+ * @param {string} contentPrefix
+ * @param {string} contentSuffix
  * @returns {void}
  */
 function renderTimerElement(
@@ -717,9 +722,9 @@ function countdownTimer(key, id) {
             timerspersec[key] === undefined ||
             timerspersec[key].paused === true ||
             timerspersec[key].paused === undefined
-        ) {
+        )
             stopit()
-        } else {
+        else {
             if (d.getElementById(id)) {
                 const settings = getSettings()
                 if (settings.countDown)
