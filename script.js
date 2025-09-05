@@ -20,6 +20,7 @@ const trl = {
         reset: 'reset',
         resume: 'resume',
         remove: 'remove',
+        Settings: 'Settings',
         New_timer: 'New timer',
         Quick_add: 'Quick add',
         Name: 'Name',
@@ -57,6 +58,7 @@ const trl = {
         resume: 'vervolg',
         remove: 'verwijder',
         New_timer: 'Nieuwe timer',
+        Settings: 'Instellingen',
         Quick_add: 'Snel nieuw',
         Name: 'Naam',
         Description: 'Beschrijving',
@@ -93,6 +95,7 @@ const trl = {
         resume: 'continuar',
         remove: 'remover',
         New_timer: 'Novo timer',
+        Settings: 'Configurações',
         Quick_add: 'Adição rápida',
         Name: 'Nome',
         Description: 'Descrição',
@@ -608,24 +611,24 @@ function renderTimer(i, key, paused = false) {
     el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
     el.appendChild(
         renderTimerElement(
-            (node = 'div'),
-            (className = 'timer-countdown-current'),
-            (content = countdownTimer(key, 'countdown-timer-' + key)),
-            (id = 'countdown-' + el.id),
-            (key = key),
-            (content_prefix =
-                settings.countDown === true
-                    ? '<span class="time_left_text">' +
+            'div',
+            'timer-countdown-current',
+            countdownTimer(key, 'countdown-timer-' + key),
+            'countdown-' + el.id,
+            key,
+
+            settings.countDown === true
+                ? '<span class="time_left_text">' +
                       getTranslation(settings.language, 'Time_left') +
                       '</span>: '
-                    : '<span class="time_passed_text">' +
+                : '<span class="time_passed_text">' +
                       getTranslation(settings.language, 'Time_passed') +
-                      '</span>: '),
-            (content_suffix =
-                '&nbsp;/ ' +
+                      '</span>: ',
+
+            '&nbsp;/ ' +
                 i.interval / i.intervalUnit +
                 ' ' +
-                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit)))
+                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit))
         )
     )
 
@@ -672,6 +675,11 @@ function renderTimer(i, key, paused = false) {
  * Render the timer element, meaning 1 per timer.
  * @param {string} node - HTML node
  * @param {string} className
+ * @param {any} content
+ * @param {string} id
+ * @param {number} key
+ * @param {string} contentPrefix
+ * @param {string} contentSuffix
  * @returns {void}
  */
 function renderTimerElement(
@@ -717,9 +725,9 @@ function countdownTimer(key, id) {
             timerspersec[key] === undefined ||
             timerspersec[key].paused === true ||
             timerspersec[key].paused === undefined
-        ) {
+        )
             stopit()
-        } else {
+        else {
             if (d.getElementById(id)) {
                 const settings = getSettings()
                 if (settings.countDown)
@@ -1018,9 +1026,11 @@ function translateElements(lang = getSettings().language) {
     newTextInElements('reset', getTranslation(lang, 'reset'))
     newTextInElements('remove', getTranslation(lang, 'remove'))
 
-    new_timer_btn.innerText = getTranslation(lang, 'New_timer')
+    new_timer_btn.querySelector('span').innerText = getTranslation(lang, 'New_timer')
     new_timer_form_head.innerText = getTranslation(lang, 'New_timer')
     new_timer_quick.innerText = getTranslation(lang, 'Quick_add')
+
+    settings_btn.querySelector('span').innerText = getTranslation(lang, 'Settings')
 
     new_timer_name.setAttribute('placeholder', getTranslation(lang, 'Name') + '...')
     new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
