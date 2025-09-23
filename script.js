@@ -3,6 +3,7 @@
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
 let pageInit = true
 
+const INTERVALAMOUNT_DEFAULT = 50 // in minutes, if INTERVALUNIT_DEFAULT is 60
 const INTERVALUNIT_DEFAULT = 60 // in seconds
 /** @typedef {'en'|'pt'|'nl'} LanguageOptions */
 const LANGUAGE_DEFAULT = 'en'
@@ -143,7 +144,7 @@ if (settings === null) {
         intervalUnit: INTERVALUNIT_DEFAULT,
         intervalUnitName: getIntervalUnitName(INTERVALUNIT_DEFAULT),
         countDown: true, // true: show time remaining, false: show time passed
-        quickTimerInterval: 45 * INTERVALUNIT_DEFAULT, // totals value multiplied by value of settings.intervalUnit
+        quickTimerInterval: INTERVALAMOUNT_DEFAULT * INTERVALUNIT_DEFAULT,
         quickTimerName: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_name'),
         quickTimerDescr: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_description'),
         language: LANGUAGE_DEFAULT
@@ -194,10 +195,10 @@ const audio_pause_button = d.getElementById('audio_pause')
 
 /**
  * @typedef {object} Settings
- * @property {number} [intervalUnit=60]
- * @property {string} [intervalUnitName]
- * @property {boolean} countDown
- * @property {number} quickTimerInterval
+ * @property {number} [intervalUnit=60] - Unit of interval per second (1 | 60)
+ * @property {string} [intervalUnitName] - Second or minute, depending on current language/locale
+ * @property {boolean} countDown - Count up (false) or count down (true)
+ * @property {number} quickTimerInterval - Totals value multiplied by value of settings.intervalUnit, e.g.: 45 * 60 will be 45 minutes
  * @property {string} quickTimerName
  * @property {string} quickTimerDescr
  * @property {LanguageOptions} language
@@ -473,6 +474,7 @@ function addTimer(name, description, interval) {
     /** @type {SimpleTime} */
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
+    const starttime_timestamp = new Date().now
 
     timerspersec.push({
         name: name,
