@@ -1,3 +1,5 @@
+// TODO: add countdown if only to test, i dont think this needs a web worker
+//
 // ----------------------------- GLOBAL CONSTANTS
 
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
@@ -6,6 +8,7 @@ let pageInit = true
 const INTERVALAMOUNT_DEFAULT = 50 // in minutes, if INTERVALUNIT_DEFAULT is 60
 const INTERVALUNIT_DEFAULT = 60 // in seconds
 /** @typedef {'en'|'pt'|'nl'} LanguageOptions */
+/** @type { LanguageOptions } LANGUAGE_DEFAULT */
 const LANGUAGE_DEFAULT = 'en'
 /** @type [LanguageOptions] */
 const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
@@ -35,6 +38,8 @@ const trl = {
         m: 'minutes',
         Create_timer: 'Create timer',
         General_settings: 'General settings',
+        Autoplay_on: 'Play audio automatically when timer starts',
+        Autoplay_off: "Don't automatically play audio",
         Count_down: 'Count down to 0',
         Count_up: 'Count up from 0',
         Update_settings: 'Update settings',
@@ -72,6 +77,8 @@ const trl = {
         m: 'minuten',
         Create_timer: 'Maak timer',
         General_settings: 'Algemene instellingen',
+        Autoplay_on: 'Audio automatisch starten bij hervatting timer',
+        Autoplay_off: 'Speel audio niet automatisch af',
         Count_down: 'Tel af naar 0',
         Count_up: 'Tel op van 0',
         Update_settings: 'Instellingen bijwerken',
@@ -109,6 +116,8 @@ const trl = {
         m: 'minutos',
         Create_timer: 'Criar timer',
         General_settings: 'Configurações gerais',
+        Autoplay_on: 'Comença audio se timer comença', // que?
+        Autoplay_off: 'Não comença audio automatico', // que?
         Count_down: 'Contagem regressiva até zero',
         Count_up: 'Contagem a partir do zero',
         Update_settings: 'Atualizar',
@@ -143,6 +152,7 @@ if (settings === null) {
     settings = {
         intervalUnit: INTERVALUNIT_DEFAULT,
         intervalUnitName: getIntervalUnitName(INTERVALUNIT_DEFAULT),
+        autoplay: true, // true: play audio, if not yet playing and a new timer is started/resumed
         countDown: true, // true: show time remaining, false: show time passed
         quickTimerInterval: INTERVALAMOUNT_DEFAULT * INTERVALUNIT_DEFAULT,
         quickTimerName: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_name'),
@@ -166,30 +176,45 @@ const new_timer_quick = d.getElementById('new_timer_quick')
 const timer_container = d.getElementById('timer_container')
 const new_timer_name = d.getElementById('new_timer_name')
 const settings_btn = d.getElementById('settings_btn')
-const settings_form = d.getElementById('settings_form')
-const clean_btn = d.getElementById('clean_btn')
+// const clean_btn = d.getElementById('clean_btn')
 const btn_create_timer = d.getElementById('btn_create_timer')
 
-const setf_quickTimerName = d.getElementById('settings_form_quickTimerName')
-const setf_quickTimerDescr = d.getElementById('settings_form_quickTimerDescr')
-const setf_quickTimerInterval = d.getElementById('settings_form_quickTimerInterval')
-const setf_intervalUnit = d.getElementById('settings_form_intervalUnit')
-const setf_countDown = d.getElementById('settings_form_countDown')
-const setf_language = d.getElementById('settings_form_language')
-const btn_update_settings = d.getElementById('btn_update_settings')
+const settings_form = {
+    root: d.getElementById('settings_form'),
+    quickTimerName: d.getElementById('settings_form_quickTimerName'),
+    quickTimerDescr: d.getElementById('settings_form_quickTimerDescr'),
+    quickTimerInterval: d.getElementById('settings_form_quickTimerInterval'),
+    intervalUnit: d.getElementById('settings_form_intervalUnit'),
+    autoplay: d.getElementById('settings_form_autoplay'),
+    countDown: d.getElementById('settings_form_countDown'),
+    language: d.getElementById('settings_form_language'),
+    btn_update_settings: d.getElementById('btn_update_settings')
+}
 
 const general_settings_head = d.getElementById('general_settings_head')
 const quick_add_settings_head = d.getElementById('quick_add_settings_head')
 
 const statusbar = d.getElementById('statusbar')
-
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
-const backgroundAudio = new Audio('./audio/waves.opus')
-const alertAudio = new Audio('./audio/alert.wav')
-const audio_play_button = d.getElementById('audio_play')
-const audio_pause_button = d.getElementById('audio_pause')
+const backgroundAudioFilesAmount = 7
+const audioDir = './audio/'
+
+function getRandomBackgroundAudio(max = backgroundAudioFilesAmount) {
+    const randomNumber = Math.ceil(Math.random() * max)
+    return audioDir + 'bg' + randomNumber + '.opus'
+}
+
+const audio = {
+    dir: './audio',
+    background: new Audio(getRandomBackgroundAudio()),
+    alert: new Audio(audioDir + 'alert.wav'),
+    btn_play: d.getElementById('audio_play'),
+    btn_pause: d.getElementById('audio_pause')
+}
+audio.btn_play.innerText = getTranslation(settings.language, 'Play_audio')
+audio.btn_pause.innerText = getTranslation(settings.language, 'Pause_audio')
 
 /** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
 
@@ -197,6 +222,7 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @typedef {object} Settings
  * @property {number} [intervalUnit=60] - Unit of interval per second (1 | 60)
  * @property {string} [intervalUnitName] - Second or minute, depending on current language/locale
+ * @property {boolean} autoplay - Autoplay audio on timer start (true) or don't (false)
  * @property {boolean} countDown - Count up (false) or count down (true)
  * @property {number} quickTimerInterval - Totals value multiplied by value of settings.intervalUnit, e.g.: 45 * 60 will be 45 minutes
  * @property {string} quickTimerName
@@ -204,20 +230,50 @@ const audio_pause_button = d.getElementById('audio_pause')
  * @property {LanguageOptions} language
  */
 
+const timers = [
+    {
+        0: {
+            descr: 'Eat, walk, push-up, drink, some or all.',
+            endtime: '23:41',
+            endtime_timestamp: null,
+            finished: false,
+            interval: 3000,
+            intervalUnit: 60,
+            name: 'stretch'
+        },
+        1: {
+            descr: 'Eat, walk, push-up, drink, some or all.',
+            endtime: '23:41',
+            endtime_timestamp: null,
+            finished: false,
+            interval: 3000,
+            intervalUnit: 60,
+            name: 'stretch'
+        }
+    }
+]
+
 /**
- * @typedef {[]} Timer
- * @property {string} name
- * @property {string} descr
- * @property {number} interval
+ * @typedef {Object} Timer
+ * @property {string} name - Timer name
+ * @property {string} descr - Timer description
+ * @property {number} interval - Interval value
  * @property {number} [intervalUnit=60]
  * @property {number} timepast
  * @property {boolean} [paused=false]
- * @property {boolean} finished
+ * @property {boolean} finished - Whether the timer is finished
  * @property {string} starttime
- * @property {string} endtime
+ * @property {string} endtime - End time in HH:MM format
+ * @property {number|null} endtime_timestamp - End time as timestamp (null if not set)
  */
 
-/** @typedef {Timer[]} Timers */
+/**
+ * @typedef {Object.<number, Timer>} Timers - Object with numeric keys mapping to Timer objects
+ */
+
+/**
+ * @type {Timers[]}
+ */
 
 /**
  * Turn localstorage-string containing timers into an array and return it.
@@ -232,11 +288,11 @@ function getTimers() {
     return timers
 }
 
-/** @type {Timers} timerspersec - Array of timers, refreshed every second */
+/** @type {Timers} timersArray - Array of timers, refreshed every second */
 // TODO should do nothing when anyActive is false
-let timerspersec = getTimers()
+let timersArray = getTimers()
 setInterval(() => {
-    timerspersec = getTimers()
+    timersArray = getTimers()
 }, 1000)
 
 /** @param {Timers} arr - state of localStorage.timerTimers */
@@ -245,8 +301,9 @@ function updateTimers(arr) {
     if (
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         arr.length === 0
-    )
+    ) {
         runTimers()
+    }
     renderTimers(arr)
 }
 
@@ -258,14 +315,14 @@ if (pageInit === true) {
 // ----------------------------- SETUP DEFAULTS & SETTINGS
 
 /** @returns {LanguageOptions} 2-letter value of language code used by browser */
-const getBrowserLanguage = () => {
+function getBrowserLanguage() {
     /** @type {LanguageOptions} */
     const langCode = navigator?.browserLanguage?.slice(0, 2)
     if (LANGUAGE_SUPPORTED.includes(langCode)) return langCode
     return LANGUAGE_DEFAULT
 }
-const browserLanguage = getBrowserLanguage()
 /** @type LanguageOptions */
+const browserLanguage = getBrowserLanguage()
 
 /** @returns {Settings} */
 function getSettings() {
@@ -277,7 +334,7 @@ const language = JSON.parse(localStorage.getItem('settings')).language ?? browse
  * @param {LanguageOptions} lang
  * @returns {void}
  */
-const setLanguage = (lang = getBrowserLanguage()) => {
+function setLanguage(lang = getBrowserLanguage()) {
     document.documentElement.lang = lang
     settings.language = lang
     translateElements(lang)
@@ -294,37 +351,38 @@ setLanguage(language)
 function settingsForm(what) {
     if (what === 'expand') {
         settings_btn.classList.replace('collapsed', 'expanded')
-        settings_form.className = 'dblock'
+        settings_form.root.className = 'dblock'
         new_timer_form.className = 'dnone'
         new_timer_btn.classList.replace('expanded', 'collapsed')
     } else {
         settings_btn.classList.replace('expanded', 'collapsed')
-        settings_form.className = 'dnone'
+        settings_form.root.className = 'dnone'
         new_timer_form.className = 'dblock'
         new_timer_btn.classList.replace('collapsed', 'expanded')
     }
 }
 
 /**
- * Sets the settings for timer added with `Quick add`
+ * Sets the settings for timer added with `Quick add` and general settings
  * @returns {void}
  */
 function settingsFormDefaults() {
-    setf_quickTimerName.setAttribute('value', settings.quickTimerName)
-    setf_quickTimerDescr.innerText = settings.quickTimerDescr
-    setf_quickTimerInterval.setAttribute(
+    settings_form.quickTimerName.setAttribute('value', settings.quickTimerName)
+    settings_form.quickTimerDescr.innerText = settings.quickTimerDescr
+    settings_form.quickTimerInterval.setAttribute(
         'value',
         settings.quickTimerInterval / settings.intervalUnit
     )
-    selectOption(setf_intervalUnit, settings.intervalUnit)
-    selectOption(setf_countDown, String(settings.countDown))
-    selectOption(setf_language, settings.language)
+    selectOption(settings_form.intervalUnit, settings.intervalUnit)
+    selectOption(settings_form.autoplay, settings.autoplay ? 'true' : '')
+    selectOption(settings_form.countDown, settings.countDown ? 'true' : '')
+    selectOption(settings_form.language, settings.language)
 }
 settingsFormDefaults()
 
 /**
  * Takes in either 1 or 60, returns s(econd) for 1, m(inute) for 60. Can further be handled by getTranslation
- * @param num {number}
+ * @param num {1|60}
  * @returns {'s'|'m'}
  */
 function getIntervalUnitName(num) {
@@ -340,6 +398,7 @@ function settingsFormSubmit(data) {
     /** @type { Settings } settings - Global settings config */
     const settings = {
         intervalUnit: Number(data.get('settings_form_intervalUnit')),
+        autoplay: Boolean(data.get('settings_form_autoplay')),
         countDown: Boolean(data.get('settings_form_countDown')),
         quickTimerInterval:
             Number(data.get('settings_form_quickTimerInterval')) *
@@ -348,12 +407,12 @@ function settingsFormSubmit(data) {
         quickTimerDescr: data.get('settings_form_quickTimerDescr'),
         language: data.get('settings_form_language')
     }
-    if (settings.language !== getSettings().language) {
-        setLanguage(settings.language)
-    }
+    console.log('settings:', settings)
+    if (settings.language !== getSettings().language) setLanguage(settings.language)
+
     updateSettings(settings)
 
-    showFeedback(btn_update_settings, 'Settings_updated')
+    showFeedback(settings_form.btn_update_settings, 'Settings_updated')
 }
 
 /**
@@ -396,7 +455,7 @@ function expandCollapseForm(what) {
     if (what === 'expand') {
         new_timer_btn.classList.replace('collapsed', 'expanded')
         new_timer_form.classList.replace('dnone', 'dblock')
-        settings_form.classList.replace('dblock', 'dnone')
+        settings_form.root.classList.replace('dblock', 'dnone')
         settings_btn.classList.replace('expanded', 'collapsed')
     }
     if (what === 'collapse') {
@@ -476,7 +535,7 @@ function addTimer(name, description, interval) {
     const endtime = getTimeSimple(false, interval)
     const starttime_timestamp = new Date().now
 
-    timerspersec.push({
+    timersArray.push({
         name: name,
         descr: description,
         interval: interval,
@@ -485,16 +544,19 @@ function addTimer(name, description, interval) {
         paused: false,
         finished: false,
         starttime: starttime,
-        endtime: endtime
+        starttime_timestamp: starttime_timestamp,
+        endtime: endtime,
+        endtime_timestamp: starttime_timestamp + interval * settings.intervalUnit * 1000
     })
-    updateTimers(timerspersec)
+    updateTimers(timersArray)
+    settings.autoplay === true && audioPlayer('play')
     showFeedback(btn_create_timer, 'Timer_created')
 }
 
 function runTimers() {
     if (
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
-        timerspersec.length === 0
+        timersArray.length === 0
     ) {
         countdownAll()
         localStorage.setItem('countDownAllStatus', 'active')
@@ -507,10 +569,14 @@ function runTimers() {
  * @returns {void}
  */
 function pauseTimerToggle(key) {
-    for (let i = 0; i < timerspersec.length; i++) {
-        if (i === key) timerspersec[i].paused = !timerspersec[i].paused
+    for (let i = 0; i < timersArray.length; i++) {
+        if (i === key) {
+            timersArray[i].paused = !timersArray[i].paused
+            !timersArray[i].paused && settings.autoplay === true && audioPlayer('play')
+            if (detectAllPaused()) audioPlayer('pause')
+        }
     }
-    updateTimers(timerspersec)
+    updateTimers(timersArray)
 }
 
 // ----------------------------- REMOVE TASKS
@@ -521,7 +587,8 @@ function pauseTimerToggle(key) {
  * @returns {void}
  */
 function removeTimer(key) {
-    const newTimers = timerspersec.filter((_i, index) => index !== key)
+    const newTimers = timersArray.filter((_i, index) => index !== key)
+    if (detectAnyActive() && settings.autoplay) audioPlayer()
     updateTimers(newTimers)
 }
 
@@ -724,11 +791,11 @@ function countdownTimer(key, id) {
     // individual per timer
     const tmpinterval = setInterval(() => {
         if (
-            timerspersec[key] === undefined ||
-            timerspersec[key].paused === true ||
-            timerspersec[key].paused === undefined
+            timersArray[key] === undefined ||
+            timersArray[key].paused === true ||
+            timersArray[key].paused === undefined
         )
-            stopit()
+            stopTimer()
         else {
             if (d.getElementById(id)) {
                 const settings = getSettings()
@@ -737,28 +804,28 @@ function countdownTimer(key, id) {
                 else
                     cPrefix = `<span class="time_passed_text">${getTranslation(settings.language, 'Time_passed')}</span>: `
 
-                const cSuffix = ` ${getTranslation(settings.language, getIntervalUnitName(timerspersec[key].intervalUnit))}`
+                const cSuffix = ` ${getTranslation(settings.language, getIntervalUnitName(timersArray[key].intervalUnit))}`
                 const c = d.getElementById(id)
 
-                if (timerspersec[key].timepast === timerspersec[key].interval) stopit()
+                if (timersArray[key].timepast === timersArray[key].interval) stopTimer()
 
-                if (timerspersec[key].paused === true) {
+                if (timersArray[key].paused === true) {
                     // console.log('arr paused');
                 } else {
                     if (settings.countDown) {
                         timeleft = Math.round(
-                            (timerspersec[key].interval - timerspersec[key].timepast) /
-                                timerspersec[key].intervalUnit
+                            (timersArray[key].interval - timersArray[key].timepast) /
+                                timersArray[key].intervalUnit
                         )
                         c.innerHTML =
                             cPrefix +
                             timeleft +
                             ' / ' +
-                            timerspersec[key].interval / timerspersec[key].intervalUnit +
+                            timersArray[key].interval / timersArray[key].intervalUnit +
                             cSuffix
                     } else {
                         timepast = Math.round(
-                            timerspersec[key].timepast / timerspersec[key].intervalUnit
+                            timersArray[key].timepast / timersArray[key].intervalUnit
                         )
                         c.innerHTML = cPrefix + timepast + cSuffix
                     }
@@ -766,7 +833,7 @@ function countdownTimer(key, id) {
             }
         }
     }, 1000)
-    function stopit() {
+    function stopTimer() {
         clearInterval(tmpinterval)
     }
 }
@@ -825,26 +892,36 @@ function resetTimerLink(key) {
 }
 
 function resetTimer(key) {
-    timerspersec[key].timepast = 0
-    timerspersec[key].starttime = getCurrentTimeSimple()
-    timerspersec[key].endtime = getTimeSimple(false, timerspersec[key].interval)
-    timerspersec[key].finished = false
+    // TODO apply proper types, Timer typedef is a bit murky
+    timersArray[key].timepast = 0
+    timersArray[key].starttime = getCurrentTimeSimple()
+    timersArray[key].endtime = getTimeSimple(false, timersArray[key].interval)
+    timersArray[key].finished = false
     document.title = 'Timer'
-    updateTimers(timerspersec)
+    if (
+        localStorage.getItem('audioPlay') === 'false' &&
+        settings.autoplay === true &&
+        timersArray[key].paused === false
+    ) {
+        audioPlayer('play')
+    }
+    updateTimers(timersArray)
 }
 
 // ----------------------------- DETECTIONS
+// TODO these should be replaced by webworker messages:
+
 /**
  * @param {Object} arr - array of localstorage.timerTimers
  */
-function detectAnyFinished(arr = timerspersec) {
+function detectAnyFinished(arr = timersArray) {
     for (i of arr) {
         if (i.finished === true) return true
     }
     return false
 }
 
-function detectAnyPaused(arr = timerspersec) {
+function detectAnyPaused(arr = timersArray) {
     for (i of arr) {
         if (i.paused === true) return true
     }
@@ -852,14 +929,14 @@ function detectAnyPaused(arr = timerspersec) {
 }
 
 // Detect any still running timers
-function detectAnyActive(arr = timerspersec) {
+function detectAnyActive(arr = timersArray) {
     for (i of arr) {
         if (i.finished === false) return true
     }
     return false
 }
 
-function detectAllPaused(arr = timerspersec) {
+function detectAllPaused(arr = timersArray) {
     let count = 0
     for (i = 0; i < arr.length; i++) {
         if (arr[i].paused === true) count++
@@ -876,20 +953,20 @@ function countdownAll() {
     let blinkFinishedOn = false
 
     const countdownAllPerSecond = setInterval(() => {
-        if (timerspersec) {
-            for (let i = 0; i < timerspersec.length; i++) {
-                if (timerspersec[i].paused === true || timerspersec[i].finished) continue
+        if (timersArray) {
+            for (let i = 0; i < timersArray.length; i++) {
+                if (timersArray[i].paused === true || timersArray[i].finished) continue
                 // re-render timers that are not paused or finished
                 if (
-                    timerspersec[i].timepast < timerspersec[i].interval &&
-                    timerspersec[i].paused === false
+                    timersArray[i].timepast < timersArray[i].interval &&
+                    timersArray[i].paused === false
                 )
-                    timerspersec[i].timepast++
+                    timersArray[i].timepast++
                 if (
-                    timerspersec[i].timepast === timerspersec[i].interval &&
-                    timerspersec[i].finished !== true
+                    timersArray[i].timepast === timersArray[i].interval &&
+                    timersArray[i].finished !== true
                 ) {
-                    timerspersec[i].finished = true
+                    timersArray[i].finished = true
                     setTimeout(() => {
                         audioPlayer('pause')
                         setTimeout(() => {
@@ -897,15 +974,18 @@ function countdownAll() {
                         }, TIMEOUT_SHORT)
                     }, TIMEOUT_SHORT)
                 }
-                if (timerspersec[i].finished === true) {
-                    finishedTimer = timerspersec[i].name
+                if (timersArray[i].finished === true) {
+                    finishedTimer = timersArray[i].name
                     d.getElementById('timer-' + i).classList.add('finished')
                 }
             }
-            updateTimers(timerspersec)
+
+            updateTimers(timersArray)
         }
         if (detectAllPaused() === true || !detectAnyActive()) {
-            stopit()
+            console.log('detected all paused or none active')
+            audioPlayer('pause')
+            stopTimer()
         }
 
         // tab/title manipulation for keepalive and notifying user, refreshed every second
@@ -922,32 +1002,69 @@ function countdownAll() {
         }
     }, 1000)
 
-    function stopit() {
+    function stopTimer() {
         clearInterval(countdownAllPerSecond)
         localStorage.setItem('countDownAllStatus', 'stopped')
     }
 }
 
 /**
- * Plays audio for the duration of a timer (only 1 at a time), when timer is up, stop audio and play alert
- * @param {'play'|'pause'} state - trigger play or stop, defaults to play
+ * Plays audio until an alert is played, signaling a break
+ * @param {'play'|'pause'} state - trigger play or pause, defaults to play
  * @returns {void}
  */
 function audioPlayer(state = 'play') {
-    if (state === 'play') {
-        backgroundAudio.loop = true
-        backgroundAudio.play()
-        audio_play_button.classList.add('dnone')
-        audio_pause_button.classList.remove('dnone')
-    } else {
-        audio_play_button.classList.remove('dnone')
-        audio_pause_button.classList.add('dnone')
-        backgroundAudio.pause()
+    switch (state) {
+        case 'play':
+            audio.background.loop = true
+            audio.background.play()
+            audio.btn_play.classList.add('dnone')
+            audio.btn_pause.classList.remove('dnone')
+            localStorage.setItem('audioPlay', true)
+            break
+        case 'pause':
+            audio.btn_play.classList.remove('dnone')
+            audio.btn_pause.classList.add('dnone')
+            audio.background.pause()
+            localStorage.setItem('audioPlay', false)
+            break
+        case 'volume_up':
+            if (audio.background.volume < 1) audio.background.volume += 0.2
+            break
+        case 'volume_down':
+            if (audio.background.volume < 0.21) {
+                audioPlayer('pause')
+                console.log('do pause')
+                break
+            }
+            audio.background.volume -= 0.2
+            break
     }
+    // loop volumes 0.2 to 1, sometimes value is a bit off, like 0.200001, so using 1.9 (0.19*10) as base and buffer
+    for (let i = 1.9; i < 11; i += 2) {
+        const rounded = i + 0.1
+        document.getElementById(`audio_volume_${rounded}`).classList.value =
+            Math.round(audio.background.volume * 10) > i ? 'active' : 'inactive'
+    }
+
+    if (!audio.background.paused)
+        document.getElementById('audio_volume_container').style.display = 'flex'
+    else document.getElementById('audio_volume_container').style.display = 'none'
+    if (audio.background.volume > 0.99)
+        document.getElementById('audio_volume_up').style.visibility = 'hidden'
+    else document.getElementById('audio_volume_up').style.visibility = 'visible'
+    console.log('audio.background.volume:', audio.background.volume)
 }
 
+// function audioVolAdjust(increaseVolume=true){
+//     let currentAudioVolume = audio.background.volume
+//     console.log('currentAudioVolume:',current)
+//     // if(increaseVolume)audio.background.volume = currentAudioVolume
+
+// }
+
 function playAlert() {
-    alertAudio.play()
+    audio.alert.play().catch((e) => console.log('Audio play failed:', e))
 }
 
 // ----------------------------- MISC METHODS
@@ -972,7 +1089,7 @@ function getCurrentTimeSimple(seconds = false) {
 }
 
 /**
- * Gives a simple time string-format for current time, like '12:59'
+ * Returns a simple time string-format for current time, like '12:59'
  * @param {boolean} seconds
  * @param {number} secondsToAdd
  * @returns {SimpleTime}
@@ -998,7 +1115,7 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
 // ----------------------------- BACKGROUND... LITERALLY
 
 /**
- * Interact with html body background status
+ * Interact with HTML body background status
  * @param {[]} arr - Pass parameters of said timer item, to pass those to HTML body class interaction
  * @returns {void}
  */
@@ -1039,31 +1156,33 @@ function translateElements(lang = getSettings().language) {
     new_timer_description.setAttribute('placeholder', getTranslation(lang, 'Description') + '...')
     new_timer_interval.setAttribute('placeholder', getTranslation(lang, 'Time') + '...')
     new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
-    setf_intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
+    settings_form.intervalUnit.options[0].innerText = getTranslation(lang, 'Seconds')
     new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
-    setf_intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
+    settings_form.intervalUnit.options[1].innerText = getTranslation(lang, 'Minutes')
     new_timer_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
-    setf_intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
+    settings_form.intervalUnit.options[0].innerText = getTranslation(lang, 'seconds')
     new_timer_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
-    setf_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
+    settings_form_intervalUnit.options[1].innerText = getTranslation(lang, 'minutes')
 
     btn_create_timer.setAttribute('value', getTranslation(lang, 'Create_timer'))
 
     general_settings_head.innerText = getTranslation(lang, 'General_settings')
-    setf_countDown.options[0].innerText = getTranslation(lang, 'Count_down')
-    setf_countDown.options[1].innerText = getTranslation(lang, 'Count_up')
+    settings_form.autoplay.options[0].innerText = getTranslation(lang, 'Autoplay_on')
+    settings_form.autoplay.options[1].innerText = getTranslation(lang, 'Autoplay_off')
+    settings_form.countDown.options[0].innerText = getTranslation(lang, 'Count_down')
+    settings_form.countDown.options[1].innerText = getTranslation(lang, 'Count_up')
     quick_add_settings_head.innerText = getTranslation(lang, 'Quick_add_settings')
-    btn_update_settings.setAttribute('value', getTranslation(lang, 'Update_settings'))
+    settings_form.btn_update_settings.setAttribute('value', getTranslation(lang, 'Update_settings'))
 
     newTextInElements('starting_time_text', getTranslation(lang, 'Starting_time'))
     newTextInElements('ending_time_text', getTranslation(lang, 'Ending_time'))
     newTextInElements('time_left_text', getTranslation(lang, 'Time_left'))
     newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
 
-    document.getElementById('audio_play').innerText = getTranslation(lang, 'Play_audio')
-    document.getElementById('audio_pause').innerText = getTranslation(lang, 'Pause_audio')
+    audio.btn_play.innerText = getTranslation(lang, 'Play_audio')
+    audio.btn_pause.innerText = getTranslation(lang, 'Pause_audio')
 
-    setf_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
+    settings_form.intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
     new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
 
     setCurrentDate(lang)
@@ -1106,11 +1225,11 @@ pageInit = false
 
 // global button event listeners
 settings_btn.addEventListener('click', () => {
-    settings_form.className === 'dblock' ? settingsForm('collapse') : settingsForm('expand')
+    settings_form.root.className === 'dblock' ? settingsForm('collapse') : settingsForm('expand')
 })
-settings_form.addEventListener('submit', (e) => {
+settings_form.root.addEventListener('submit', (e) => {
     e.preventDefault()
-    const data = new FormData(settings_form)
+    const data = new FormData(settings_form.root)
     settingsFormSubmit(data)
 })
 new_timer_btn.addEventListener('click', () => {
@@ -1124,4 +1243,5 @@ new_timer_form.addEventListener('submit', (e) => {
     const data = new FormData(new_timer_form)
     timerFormSubmit(data)
 })
+
 new_timer_quick.addEventListener('click', () => addQuickTimer())

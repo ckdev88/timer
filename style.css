@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'Outfit';
-    src: url('./Outfit.woff2') format('woff2');
+    font-family: "Outfit";
+    src: url("./Outfit.woff2") format("woff2");
 }
 
 :root {
@@ -39,7 +39,7 @@
     --opacity-dimmed: 0.6;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
     --bg-color: hsl(60, 70%, 0%);
     --fg-color: hsl(10, 10%, 90%);
     --pause-color: hsl(0, 0%, 15%);
@@ -164,7 +164,7 @@ body {
 
 #timer_new_quick::before {
     /*★ ☆ */
-    content: '⚡';
+    content: "⚡";
     color: var(--play-icon-color);
     background-image: var(--timer-icon-play);
     display: block;
@@ -194,12 +194,12 @@ input,
 textarea,
 button,
 select {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
 }
 
 button,
 a.btn,
-input[type='submit'] {
+input[type="submit"] {
     cursor: pointer;
     background: var(--button-bg);
     color: var(--button-fg);
@@ -209,7 +209,7 @@ input[type='submit'] {
 
 button:hover,
 a.btn:hover,
-input[type='submit']:hover {
+input[type="submit"]:hover {
     background-color: var(--button-bg-hover);
 }
 
@@ -218,10 +218,10 @@ label {
 }
 
 /* --------------------------- FORM & INPUT */
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'],
-input[type='submit'],
+input[type="number"],
+input[type="submit"],
 button,
 .btn,
 select {
@@ -243,9 +243,9 @@ select {
 }
 
 select,
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'] {
+input[type="number"] {
     width: 100%;
     display: block;
     background-color: var(--input-bg);
@@ -259,9 +259,9 @@ input[type='number'] {
     }
 }
 
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'],
+input[type="number"],
 label {
     font-size: 0.9rem;
 }
@@ -309,9 +309,9 @@ form.dblock {
 a,
 button.text-btn,
 /* TODO still relevant? */
-.btn.text-btn,
+    .btn.text-btn,
 /* TODO still relevant? */
-button.icon {
+    button.icon {
     color: var(--text-button-fg);
     background: transparent;
     border: 0;
@@ -319,7 +319,7 @@ button.icon {
 
 button.text-btn,
 /* TODO still relevant? */
-.btn.text-btn {
+    .btn.text-btn {
     display: inline-block;
 }
 
@@ -339,13 +339,13 @@ button {
 
     &.text-btn.collapsed::after,
     &.text-btn.collapsed2::before {
-        content: '  ▲';
+        content: "  ▲";
         color: var(--play-icon-color);
     }
 
     &.text-btn.expanded::after,
     &.text-btn.expanded2::before {
-        content: '▼  ';
+        content: "▼  ";
         color: var(--play-icon-color);
     }
 
@@ -426,8 +426,8 @@ button {
         .control-btn {
             padding: 0;
             margin-left: 0;
-            transition: opacity var(--transition-time-short) ease-in-out,
-                background-size var(--transition-time-long) ease-in-out;
+            transition: opacity var(--transition-time-short) ease-in-out, background-size
+                var(--transition-time-long) ease-in-out;
             font-size: 2em;
             width: 2em;
             height: 2em;
@@ -460,9 +460,7 @@ button {
             display: none;
         }
     }
-
 }
-
 
 @keyframes blink-finished {
     0% {
@@ -546,7 +544,7 @@ button {
     }
 }
 
-[data-theme='light'] .timer .buttons button.control-btn {
+[data-theme="light"] .timer .buttons button.control-btn {
     &.remove {
         filter: none;
     }
@@ -566,9 +564,9 @@ button {
     float: left;
     width: 49%;
     padding-top: 1rem;
+    display: flex;
 
     .text-btn {
-        padding-left: 2rem;
         color: var(--fg-color);
         padding: 0 0 0 1rem;
         margin: 0;
@@ -587,9 +585,77 @@ button {
             background-image: var(--timer-icon-pause);
         }
     }
+
+    .text-btn.dnone {
+        display: none;
+    }
 }
 
+#audio_volume_container {
+    display: flex;
+    width: 3.5rem;
+    justify-content: flex-end;
+    align-items: baseline;
 
+    .text-btn {
+        padding-left: 0;
+        opacity: 0.2;
+        cursor: pointer;
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+#audio_volume_icon {
+    margin-left: .2rem;
+    margin-right: .2rem;
+    display: flex;
+    align-self: center;
+    justify-content: space-evenly;
+    width: calc(1rem + 4px);
+    height: 0.75rem;
+    align-items: baseline;
+    gap: 1px;
+
+    span {
+        display: flex;
+        width: auto;
+        align-content: center;
+        width: .2rem;
+        height: .75rem;
+        background: white;
+        border-radius: 3px;
+
+        &.active {
+            opacity: 1;
+        }
+
+        &.inactive {
+            opacity: 0.3;
+        }
+    }
+
+    #audio_volume_2 {
+        height: .15rem;
+    }
+
+    #audio_volume_4 {
+        height: .3rem;
+    }
+
+    #audio_volume_6 {
+        height: .45rem;
+    }
+
+    #audio_volume_8 {
+        height: .6rem;
+    }
+
+    #audio_volume_10 {
+        height: .75rem;
+    }
+}
 .top-buttons {
     justify-content: right;
 
@@ -604,10 +670,11 @@ button {
             white-space: nowrap;
             display: inline-flex;
             overflow: hidden;
-            transition: width var(--transition-time-long) linear, overflow var(--transition-time-long);
+            transition: width var(--transition-time-long) linear, overflow
+                var(--transition-time-long);
 
             &::after {
-                content: " "
+                content: " ";
             }
         }
 
@@ -620,11 +687,10 @@ button {
 
 html[lang="en"] .top-buttons {
     .text-btn {
-
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 5rem
+                width: 5rem;
             }
         }
 
@@ -639,11 +705,10 @@ html[lang="en"] .top-buttons {
 
 html[lang="nl"] .top-buttons {
     .text-btn {
-
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 6.25rem
+                width: 6.25rem;
             }
         }
 
@@ -658,11 +723,10 @@ html[lang="nl"] .top-buttons {
 
 html[lang="pt"] .top-buttons {
     .text-btn {
-
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 5.25rem
+                width: 5.25rem;
             }
         }
 
@@ -682,7 +746,7 @@ button.text-btn.white,
     color: var(--fg-color);
 }
 
-.statusbar-alert+#wrapper .text-btn.remove {
+.statusbar-alert + #wrapper .text-btn.remove {
     color: var(--fg-color);
 }
 
@@ -713,11 +777,8 @@ button.text-btn.white,
 button.control-btn.dnone,
 .control-btn.dnone,
 /* TODO redundant? */
-#audio_container .text-btn.dnone {
-    display: none;
-}
 
-.dimmed {
+    .dimmed {
     opacity: var(--opacity-dimmed);
 
     &:hover {
