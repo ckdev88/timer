@@ -13,6 +13,10 @@ const LANGUAGE_DEFAULT = 'en'
 /** @type [LanguageOptions] */
 const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
 
+// define a default mood, this will refer to the subdirecty of ./audio/ with the same name.
+/** @type {"creativity"|"learning"|"deepwork"} MOOD_DEFAULT - Moods for the audio */
+const MOOD_DEFAULT = 'creativity' // TODO low prio, voor later
+
 /** @type {Settings} settings */
 let settings = {}
 
@@ -93,8 +97,8 @@ const trl = {
         Settings_updated: 'Instellingen bijgewerkt',
         Select_time_unit: 'Selecteer tijdseenheid',
         now: 'nu',
-        Play_audio: 'Audio afspelen',
-        Pause_audio: 'Audio pauzeren'
+        Play_audio: 'Speel audio',
+        Pause_audio: 'Pauzeer audio'
     },
     pt: {
         localeString: 'pt-BR',
@@ -157,7 +161,8 @@ if (settings === null) {
         quickTimerInterval: INTERVALAMOUNT_DEFAULT * INTERVALUNIT_DEFAULT,
         quickTimerName: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_name'),
         quickTimerDescr: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_description'),
-        language: LANGUAGE_DEFAULT
+        language: LANGUAGE_DEFAULT,
+        mood: MOOD_DEFAULT
     }
     localStorage.setItem('settings', JSON.stringify(settings))
 }
@@ -198,23 +203,26 @@ const statusbar = d.getElementById('statusbar')
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
-const backgroundAudioFilesAmount = 7
+/** @type {number} backgroundAudioFilesAmount - the amount of audio files is current "mood" directory */
+const backgroundAudioFilesAmount = 157 // TODO make dynamic via Settings, at the same time of mood/moods
 const audioDir = './audio/'
 
 function getRandomBackgroundAudio(max = backgroundAudioFilesAmount) {
     const randomNumber = Math.ceil(Math.random() * max)
-    return audioDir + 'bg' + randomNumber + '.opus'
+    return audioDir + settings.mood + '/' + randomNumber + '.mp3' // TODO file extension should be dynamic via settings
 }
 
+console.log('getRandomBackgroundAudio():', getRandomBackgroundAudio())
 const audio = {
-    dir: './audio',
+    dir: audioDir,
     background: new Audio(getRandomBackgroundAudio()),
     alert: new Audio(audioDir + 'alert.wav'),
     btn_play: d.getElementById('audio_play'),
-    btn_pause: d.getElementById('audio_pause')
+    btn_pause: d.getElementById('audio_pause'),
+    btn_next: d.getElementById('audio_next') // FIXME to use or not to use.. not really used right now
 }
 audio.btn_play.innerText = getTranslation(settings.language, 'Play_audio')
-audio.btn_pause.innerText = getTranslation(settings.language, 'Pause_audio')
+audio.btn_pause.innerText = settings.mood
 
 /** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
 
@@ -228,6 +236,7 @@ audio.btn_pause.innerText = getTranslation(settings.language, 'Pause_audio')
  * @property {string} quickTimerName
  * @property {string} quickTimerDescr
  * @property {LanguageOptions} language
+ * @property {string} mood
  */
 
 const timers = [
@@ -583,12 +592,12 @@ function pauseTimerToggle(key) {
 
 /**
  * Remove a timer block
- * @param key {number} key of block containing a single timer
+ * @param key {number} - key of block containing a single timer
  * @returns {void}
  */
 function removeTimer(key) {
     const newTimers = timersArray.filter((_i, index) => index !== key)
-    if (detectAnyActive() && settings.autoplay) audioPlayer()
+    // if (detectAnyActive() && settings.autoplay) audioPlayer() // TODO to keep or to remove?
     updateTimers(newTimers)
 }
 
@@ -1014,6 +1023,7 @@ function countdownAll() {
  * @returns {void}
  */
 function audioPlayer(state = 'play') {
+    const wasPaused = audio.background.paused
     switch (state) {
         case 'play':
             audio.background.loop = true
@@ -1027,6 +1037,13 @@ function audioPlayer(state = 'play') {
             audio.btn_pause.classList.add('dnone')
             audio.background.pause()
             localStorage.setItem('audioPlay', false)
+            break
+        case 'next':
+            audio.background.pause()
+            audio.background.currentTime = 0 // Reset position
+            audio.background.src = getRandomBackgroundAudio() // Clear source
+            audio.background.load() // Force browser to release resources
+            if (!wasPaused) audioPlayer('play')
             break
         case 'volume_up':
             if (audio.background.volume < 1) audio.background.volume += 0.2
@@ -1180,7 +1197,7 @@ function translateElements(lang = getSettings().language) {
     newTextInElements('time_passed_text', getTranslation(lang, 'Time_passed'))
 
     audio.btn_play.innerText = getTranslation(lang, 'Play_audio')
-    audio.btn_pause.innerText = getTranslation(lang, 'Pause_audio')
+    audio.btn_pause.innerText = settings.mood
 
     settings_form.intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
     new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))

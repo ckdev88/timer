@@ -27,9 +27,11 @@
     --border-active: hsl(0, 0%, 40%);
     --timer-pause-color: var(--pause-color);
     --timer-icon-play: url('data:image/svg+xml,\
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
     --timer-icon-pause: url('data:image/svg+xml,\
 <svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-next: url('data:image/svg+xml,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 8.5 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322 M298,3606.5 C297.448,3606.5 297,3606.948 297,3607.5 L297,3611.5 C297,3612.052 297.448,3612.5 298,3612.5 C298.552,3612.5 299,3612.052 299,3611.5 L299,3607.5 C299,3606.948 298.552,3606.5 298,3606.5"></path></g></g></svg>');
     --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
     --timer-icon-remove: url('data:image/svg+xml, <svg fill="black" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
     /* non-theme related */
@@ -62,10 +64,13 @@
     --border-hover: hsl(0, 0%, 40%);
     --border-active: hsl(0, 0%, 60%);
     --timer-pause-color: var(--pause-color);
+    --timer-next-color: var(--pause-color);
     --timer-icon-play: url('data:image/svg+xml,\
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="greenyellow"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
     --timer-icon-pause: url('data:image/svg+xml,\
 <svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="orange"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-next: url('data:image/svg+xml,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 8.5 7"><g transform="translate(-347.000000, -3766.000000)" fill="lightblue"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322 M298,3606.5 C297.448,3606.5 297,3606.948 297,3607.5 L297,3611.5 C297,3612.052 297.448,3612.5 298,3612.5 C298.552,3612.5 299,3612.052 299,3611.5 L299,3607.5 C299,3606.948 298.552,3606.5 298,3606.5"></path></g></g></svg>');
     --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="lightblue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
     --timer-icon-remove: url('data:image/svg+xml, <svg fill="red" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
 }
@@ -581,8 +586,16 @@ button {
         }
 
         &.pause {
-            color: var(--remove-fg);
+            color: var(--text-button-fg);
             background-image: var(--timer-icon-pause);
+            text-transform: capitalize;
+        }
+        &.next {
+            background-size: .6em;
+            margin-left: .35rem;
+            padding-left: 0.35rem;
+            color: var(--remove-fg);
+            background-image: var(--timer-icon-next);
         }
     }
 
@@ -599,7 +612,7 @@ button {
 
     .text-btn {
         padding-left: 0;
-        opacity: 0.2;
+        opacity: var(--opacity-dimmed);
         cursor: pointer;
         &:hover {
             opacity: 1;
@@ -632,7 +645,7 @@ button {
         }
 
         &.inactive {
-            opacity: 0.3;
+            opacity: var(--opacity-dimmed);
         }
     }
 
@@ -773,6 +786,9 @@ button.text-btn.white,
 }
 
 /* miniclasses */
+.dnone.shown {
+    height: 0; /* FIXME hack for when dnone and shown are both loaded */
+}
 .dnone,
 button.control-btn.dnone,
 .control-btn.dnone,
