@@ -13,8 +13,24 @@ const LANGUAGE_DEFAULT = 'en'
 /** @type [LanguageOptions] */
 const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
 
-// define a default mood, this will refer to the subdirecty of ./audio/ with the same name.
-/** @type {"creativity"|"learning"|"deepwork"|"rain"} MOOD_DEFAULT - Moods for the audio */
+/**
+ * @typedef {Object} Mood
+ * @property {string} mood - name of the mood (rain, creativity, recharge)
+ * @property {number} amount - number of audio files for this mood
+ * @property {string} ext - file extension for mood-related audio file
+ */
+
+/**
+ * Array of available mood configurations with associated metadata
+ * @type {Array<Mood>}
+ * @constant
+ */
+const moods = [
+    { mood: 'rain', amount: 42, ext: 'mp3' },
+    { mood: 'creativity', amount: 156, ext: 'mp3' },
+    { mood: 'recharge', amount: 112, ext: 'mp3' }
+]
+
 const MOOD_DEFAULT = 'rain' // TODO low prio, voor later
 
 /** @type {Settings} settings */
@@ -203,13 +219,14 @@ const statusbar = d.getElementById('statusbar')
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
-/** @type {number} backgroundAudioFilesAmount - the amount of audio files is current "mood" directory */
-const backgroundAudioFilesAmount = 42 // TODO make dynamic via Settings, at the same time of mood/moods
 const audioDir = './audio/'
 
-function getRandomBackgroundAudio(max = backgroundAudioFilesAmount) {
+function getRandomBackgroundAudio() {
+    const themood = moods[moods.findIndex((item) => settings.mood === item.mood)]
+    const max = themood.amount
+    const ext = '.' + themood.ext
     const randomNumber = Math.ceil(Math.random() * max)
-    return audioDir + settings.mood + '/' + randomNumber + '.mp3' // TODO file extension should be dynamic via settings
+    return audioDir + settings.mood + '/' + randomNumber + ext
 }
 
 console.log('getRandomBackgroundAudio():', getRandomBackgroundAudio())
@@ -219,7 +236,8 @@ const audio = {
     alert: new Audio(audioDir + 'alert.wav'),
     btn_play: d.getElementById('audio_play'),
     btn_pause: d.getElementById('audio_pause'),
-    btn_next: d.getElementById('audio_next') // FIXME to use or not to use.. not really used right now
+    btn_next: d.getElementById('audio_next'), // FIXME to use or not to use.. not really used right now
+    btn_change_mood: d.getElementById('audio_change_mood') // FIXME to use or not to use.. not really used right now
 }
 audio.btn_play.innerText = getTranslation(settings.language, 'Play_audio')
 audio.btn_pause.innerText = settings.mood
@@ -570,6 +588,7 @@ function runTimers() {
     if (
         (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
         timersArray.length === 0
+        // 2025-10-02 TODO dit lijkt me niet heel logisch
     ) {
         countdownAll()
         localStorage.setItem('countDownAllStatus', 'active')
@@ -1014,7 +1033,6 @@ function countdownAll() {
     }
     const countdownAllPerSecond = setInterval(() => {
         if (timersArray) {
-            console.log('asdfasdfas')
             for (let i = 0; i < timersArray.length; i++) {
                 if (timersArray[i].paused === true || timersArray[i].finished) continue
                 // re-render timers that are not paused or finished
@@ -1073,7 +1091,7 @@ function countdownAll() {
 
 /**
  * Plays audio until an alert is played, signaling a break
- * @param {'play'|'pause'} state - trigger play or pause, defaults to play
+ * @param {'play'|'pause'|'next'|'volume_up'|'volume_down'|'change_mood'} state - trigger play or pause, defaults to play
  * @returns {void}
  */
 function audioPlayer(state = 'play') {
@@ -1110,6 +1128,15 @@ function audioPlayer(state = 'play') {
                 break
             }
             audio.background.volume -= 0.2
+            break
+        case 'change_mood':
+            settings.mood =
+                moods[
+                    (moods.findIndex((item) => item.mood === settings.mood) + 1) % moods.length
+                ].mood
+            updateSettings(settings)
+            audio.btn_pause.innerText = settings.mood
+            audioPlayer('next')
             break
     }
     // loop volumes 0.2 to 1, sometimes value is a bit off, like 0.200001, so using 1.9 (0.19*10) as base and buffer
