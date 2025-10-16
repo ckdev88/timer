@@ -28,7 +28,9 @@ const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
 const moods = [
     { mood: 'rain', amount: 42, ext: 'mp3' },
     { mood: 'creativity', amount: 156, ext: 'mp3' },
-    { mood: 'recharge', amount: 112, ext: 'mp3' }
+    { mood: 'recharge', amount: 112, ext: 'mp3' },
+    { mood: 'meditate', amount: 67, ext: 'mp3' },
+    { mood: 'deepwork', amount: 222, ext: 'mp3' }
 ]
 
 const MOOD_DEFAULT = 'rain' // TODO low prio, voor later
@@ -1098,8 +1100,7 @@ function audioPlayer(state = 'play') {
     const wasPaused = audio.background.paused
     switch (state) {
         case 'play':
-            audio.background.loop = true
-            console.log(audio.background)
+            audio.background.loop = false // TODO make this a setting
             audio.background.play()
             audio.btn_play.classList.add('dnone')
             audio.btn_pause.classList.remove('dnone')
