@@ -785,6 +785,11 @@ button.text-btn.white,
     padding-bottom: 1rem;
 }
 
+.timer_actions_wrapper {
+    position: absolute;
+    right: 0;
+}
+
 /* miniclasses */
 .dnone.shown {
     height: 0; /* FIXME hack for when dnone and shown are both loaded */

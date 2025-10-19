@@ -12,6 +12,7 @@ const INTERVALUNIT_DEFAULT = 60 // in seconds
 const LANGUAGE_DEFAULT = 'en'
 /** @type [LanguageOptions] */
 const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
+const SHOW_STARTING_TIME = false
 
 /**
  * @typedef {Object} Mood
@@ -68,6 +69,7 @@ const trl = {
         Quick_add_settings: 'Quick add settings',
         Starting_time: 'Starting time',
         Ending_time: 'Ending time',
+        Ending_estimate: 'Ending estimate',
         Time_left: 'Time left',
         Time_passed: 'Time passed',
         Quick_timer_default_name: 'Stretch',
@@ -107,6 +109,7 @@ const trl = {
         Quick_add_settings: 'Snel nieuw instellingen',
         Starting_time: 'Starttijd',
         Ending_time: 'Eindtijd',
+        Ending_estimate: 'Einde verwacht',
         Time_left: 'Tijd over',
         Time_passed: 'Tijd gepasseerd',
         Quick_timer_default_name: 'Rekken',
@@ -742,28 +745,55 @@ function renderTimer(i, key, paused = false) {
 
     const startTimeEndTimeWrapper = document.createElement('div')
     startTimeEndTimeWrapper.className = 'starttime_endtime_wrapper'
-
-    startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
-    startTimeEndTimeWrapper.appendChild(
-        renderTimerElement(
-            'div',
-            'starttime',
-            '<span class="starting_time_text">' +
-                getTranslation(settings.language, 'Starting_time') +
-                '</span>: ' +
-                i.starttime
+    if (i.paused) {
+        startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
+        if (SHOW_STARTING_TIME) {
+            startTimeEndTimeWrapper.appendChild(
+                renderTimerElement(
+                    'div',
+                    'starttime',
+                    '<span class="starting_time_text">' +
+                        getTranslation(settings.language, 'Starting_time') +
+                        '</span>: ' +
+                        i.starttime
+                )
+            )
+        }
+        startTimeEndTimeWrapper.appendChild(
+            renderTimerElement(
+                'div',
+                'endtime',
+                '<span class="ending_time_text">' +
+                    getTranslation(settings.language, 'Ending_time') +
+                    '</span>: ' +
+                    i.endtime
+            )
         )
-    )
-    startTimeEndTimeWrapper.appendChild(
-        renderTimerElement(
-            'div',
-            'endtime',
-            '<span class="ending_time_text">' +
-                getTranslation(settings.language, 'Ending_time') +
-                '</span>: ' +
-                i.endtime
+    } else {
+        startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
+        if (SHOW_STARTING_TIME) {
+            startTimeEndTimeWrapper.appendChild(
+                renderTimerElement(
+                    'div',
+                    'starttime',
+                    '<span class="starting_time_text">' +
+                        getTranslation(settings.language, 'Starting_time') +
+                        '</span>: ' +
+                        i.starttime
+                )
+            )
+        }
+        startTimeEndTimeWrapper.appendChild(
+            renderTimerElement(
+                'div',
+                'endtime',
+                '<span class="ending_time_text">' +
+                    getTranslation(settings.language, 'Ending_estimate') +
+                    '</span>: ' +
+                    i.endtime
+            )
         )
-    )
+    }
     const timerActionsWrapper = document.createElement('div')
     timerActionsWrapper.className = 'timer_actions_wrapper buttons'
 
@@ -1123,8 +1153,9 @@ function audioPlayer(state = 'play') {
             if (audio.background.volume < 1) audio.background.volume += 0.2
             break
         case 'volume_down':
-            if (audio.background.volume < 0.21) {
-                audioPlayer('pause')
+            if (audio.background.volume < 0.25) {
+                // audioPlayer('pause')
+                audio.background.volume = 0.01 // temporary hack to prevent need for webworker (for now), just keep te music going on, just very soft
                 console.log('do pause')
                 break
             }
