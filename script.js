@@ -571,7 +571,7 @@ function addTimer(name, description, interval) {
     /** @type {SimpleTime} */
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
-    const starttime_timestamp = new Date().now
+    const starttime_timestamp = Date().now
 
     timersArray.push({
         name: name,
@@ -802,7 +802,7 @@ function renderTimer(i, key, paused = false) {
 
     if (!i.finished) timerActionsWrapper.appendChild(pauseTimerToggleLink(key, !i.paused))
     timerActionsWrapper.appendChild(resetTimerLink(key))
-    if (i.finished) timerActionsWrapper.appendChild(doneTimerLink(key))
+    if (i.finished && !i.done) timerActionsWrapper.appendChild(doneTimerLink(key))
     timerActionsWrapper.appendChild(removeTimerLink(key))
     startEndTimeActionsWrapper.appendChild(timerActionsWrapper)
 
@@ -845,7 +845,7 @@ function renderTimerElement(
     }
 
     timerEl.innerHTML = contentPrefix + contentProp + contentSuffix
-    if (idProp !== undefined) timerEl.idProp = idProp
+    if (idProp !== undefined) timerEl.id = idProp
     return timerEl
 }
 
@@ -878,6 +878,10 @@ function countdownTimer(key, id) {
 
                 if (timersArray[key].timepast === timersArray[key].interval) stopTimer()
 
+                /** @type {undefined|number} - time left on this timer */
+                let timeleft
+                /** @type {undefined|number} - time past on this timer */
+                let timepast
                 if (timersArray[key].paused === true) {
                     // console.log('arr paused');
                 } else {
@@ -1074,8 +1078,9 @@ function countdownAll() {
                 if (
                     timersArray[i].timepast < timersArray[i].interval &&
                     timersArray[i].paused === false
-                )
+                ) {
                     timersArray[i].timepast++
+                }
                 if (
                     timersArray[i].timepast === timersArray[i].interval &&
                     timersArray[i].finished !== true
@@ -1090,9 +1095,9 @@ function countdownAll() {
                 }
                 if (timersArray[i].finished === true) {
                     finishedTimer = timersArray[i].name
-                    d.getElementById('timer-' + i).classList.add('finished')
-                    if (timersArray[i].done === true)
-                        d.getElementById('timer-' + i).classList.add('done')
+                    const timerEl = d.getElementById('timer-' + i)
+                    if (timerEl) timerEl.classList.add('finished')
+                    if (timersArray[i].done === true) timerEl.classList.add('done')
                 }
             }
 
@@ -1268,7 +1273,7 @@ function bgStatus(arr) {
  */
 function setBgStatus(status = 'normal') {
     if (status === 'alert') statusbar.className = 'statusbar-alert'
-    else if (status === 'paused') statusbar.className = 'statusbar-pause'
+    else if (status === 'paused') statusbar.className = 'statusbar-paused'
     else if (status === 'running') statusbar.className = 'statusbar-running'
     else statusbar.className = 'statusbar-default'
 }
