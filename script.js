@@ -5,6 +5,8 @@
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
 let pageInit = true
 
+const RUN_ONLINE = window.location.protocol === 'https:' || window.location.protocol === 'http:'
+const TESTING = false
 const INTERVALAMOUNT_DEFAULT = 50 // in minutes, if INTERVALUNIT_DEFAULT is 60
 const INTERVALUNIT_DEFAULT = 60 // in seconds
 /** @typedef {'en'|'pt'|'nl'} LanguageOptions */
@@ -1385,3 +1387,37 @@ new_timer_form.addEventListener('submit', (e) => {
 })
 
 new_timer_quick.addEventListener('click', () => addQuickTimer())
+
+function registerServiceWorker() {
+    if (window.location.protocol === 'https:' || window.location.protocol === 'http:') {
+        const manifestLink = document.createElement('link')
+        manifestLink.rel = 'manifest'
+        manifestLink.href = 'manifest.json'
+        document.head.appendChild(manifestLink)
+
+        if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+            navigator.serviceWorker
+                .register('./sw.js')
+                .then((registration) => {
+                    if (TESTING) {
+                        console.log('Service worker registered: ', registration)
+                        // Check if PWA is installable
+                        if (registration.installing) {
+                            console.log('Service worker installing')
+                        } else if (registration.waiting) {
+                            console.log('Service worker installed')
+                        } else if (registration.active) {
+                            console.log('Service worker active')
+                        }
+                    }
+                })
+                .catch((registrationError) => {
+                    if (TESTING) console.log('Service worker registration failed: ', registrationError)
+                    // TODO something smart to log this error, like a load of a script, that can be "fetched" with stats, like GA
+                })
+        }
+    }
+}
+
+// run service worker on app load
+if (RUN_ONLINE) registerServiceWorker()

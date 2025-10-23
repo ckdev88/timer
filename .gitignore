@@ -2,3 +2,4 @@ release.sh
 notes.md
 audio/
 dist/
+*.sh
