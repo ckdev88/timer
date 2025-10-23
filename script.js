@@ -197,6 +197,7 @@ function getTranslation(langkey, stringkey) {
 
 /** @interface {Settings} settings */
 settings = JSON.parse(localStorage.getItem('settings'))
+
 if (settings === null) {
     /** @interface {Settings} global settings used by default either per timer of for the entire application  */
     settings = {
@@ -353,38 +354,37 @@ audio.background.addEventListener('ended', () => {
  * @typedef {Object.<number, Timer>} Timers - Object with numeric keys mapping to Timer objects
  */
 
-/**
- * @type {Timers[]}
- */
-let timersArray = getTimers() || [] // Fallback to empty array if null
 
+// First, declare timersArray as empty array
+let timersArray = []
+
+// Then define getTimers to NOT call updateTimers
 /**
  * Turn localstorage-string containing timers into an array and return it.
  * @returns {Array} timers
  */
-const getTimers = () => {
+function getTimers() {
     /** @type {Array} timers */
     const timers = JSON.parse(localStorage.getItem('timerTimers'))
     if (!timers) {
-        updateTimers([])
-        return []
+        return [] // Just return empty array, don't call updateTimers
     }
-    bgStatus(timers) // TODO should just trigger whenever state of timer changes
+    bgStatus(timers)
     return timers
 }
 
 /** @type {Timers} timersArray - Array of timers, refreshed every second */
-// TODO should do nothing when anyActive is false
 timersArray = getTimers()
-// setInterval(() => {
-//     timersArray = getTimers()
-// }, 1000)
 
 /** @param {Timers} arr - state of localStorage.timerTimers */
+/** @param {Array} arr - state of localStorage.timerTimers */
 function updateTimers(arr) {
     // prevent recursion
     if (isUpdatingTimers) return false
     isUpdatingTimers = true
+
+    // Ensure arr is always an array
+    if (!arr) arr = []
 
     // log('Updating timers, count:', arr.length)
     localStorage.setItem('timerTimers', JSON.stringify(arr))
