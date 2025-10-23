@@ -1,7 +1,7 @@
 {
   "name": "Timi Tertje!",
   "short_name": "Timer",
-  "version": "0.8",
+  "version": "0.15",
   "manifest_version": 2,
   "description": "A simple and customizable timer application with audio features. Version 2025-10-23",
   "start_url": "https://ckdev88.github.io/timer/",

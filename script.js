@@ -4,9 +4,11 @@
 
 /** @type {boolean} pageInit starts with true value, is set to false after first run */
 let pageInit = true
+let isUpdatingTimers = false // global flag to prevent recursion / infinite loop
 
 const RUN_ONLINE = window.location.protocol === 'https:' || window.location.protocol === 'http:'
 const TESTING = false
+const AUDIO_SHUFFLE = !RUN_ONLINE
 const INTERVALAMOUNT_DEFAULT = 50 // in minutes, if INTERVALUNIT_DEFAULT is 60
 const INTERVALUNIT_DEFAULT = 60 // in seconds
 /** @typedef {'en'|'pt'|'nl'} LanguageOptions */
@@ -14,13 +16,13 @@ const INTERVALUNIT_DEFAULT = 60 // in seconds
 const LANGUAGE_DEFAULT = 'en'
 /** @type [LanguageOptions] */
 const LANGUAGE_SUPPORTED = ['en', 'nl', 'pt']
-const SHOW_STARTING_TIME = false
+// const SHOW_STARTING_TIME = false
 
 /**
  * @typedef {Object} Mood
  * @property {string} mood - name of the mood (rain, creativity, recharge)
  * @property {number} amount - number of audio files for this mood
- * @property {string} ext - file extension for mood-related audio file
+ * @property {string} filetype - file extension for mood-related audio file
  */
 
 /**
@@ -28,18 +30,36 @@ const SHOW_STARTING_TIME = false
  * @type {Array<Mood>}
  * @constant
  */
-const moods = [
-    { mood: 'rain', amount: 42, ext: 'mp3' },
-    { mood: 'creativity', amount: 156, ext: 'mp3' },
-    { mood: 'recharge', amount: 112, ext: 'mp3' },
-    { mood: 'meditate', amount: 67, ext: 'mp3' },
-    { mood: 'deepwork', amount: 222, ext: 'mp3' }
-]
+let moods = []
+let audioDir = './audio/'
+if (RUN_ONLINE) {
+    // demo-audio files for online use
+    audioDir += 'demo/'
+    moods = [
+        {mood: 'brownnoise', amount: 2, filetype: 'opus', loop: true},
+        {mood: 'lofi', amount: 4, filetype: 'opus', loop: false},
+        {mood: 'rain', amount: 4, filetype: 'opus', loop: true}
+    ]
+} else {
+    // locally stored audio
+    moods = [
+        {mood: 'lofi', amount: 4, filetype: 'opus', loop: false},
+        {mood: 'creativity', amount: 156, filetype: 'mp3', loop: false},
+        {mood: 'deepwork', amount: 222, filetype: 'mp3', loop: false},
+        {mood: 'meditate', amount: 67, filetype: 'mp3', loop: true},
+        {mood: 'rain', amount: 42, filetype: 'mp3', loop: true},
+        {mood: 'recharge', amount: 112, filetype: 'mp3', loop: false}
+    ]
+}
 
-const MOOD_DEFAULT = 'rain' // TODO low prio, voor later
+const MOOD_DEFAULT = moods[0].mood // TODO low prio, voor later
 
 /** @type {Settings} settings */
 let settings = {}
+
+// keep track of active timers
+const activeIntervals = new Map() // key -> intervalId for individual timers
+let countdownAllInterval = null // main timer interval
 
 /** @type {{[string]:{[string]:string}}} - map with translations, strings */
 const trl = {
@@ -188,7 +208,7 @@ if (settings === null) {
         quickTimerName: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_name'),
         quickTimerDescr: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_description'),
         language: LANGUAGE_DEFAULT,
-        mood: MOOD_DEFAULT
+        mood: moods[0].mood
     }
     localStorage.setItem('settings', JSON.stringify(settings))
 }
@@ -229,17 +249,31 @@ const statusbar = d.getElementById('statusbar')
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
-const audioDir = './audio/'
-
 function getRandomBackgroundAudio() {
-    const themood = moods[moods.findIndex((item) => settings.mood === item.mood)]
+    // static first
+    if (!settings.mood) {
+        settings.mood = moods[0].mood
+        updateSettings(settings)
+    }
+    // let themood = moods[moods.findIndex((item) => settings.mood === item.mood)]
+    themood = moods.find((item) => settings.mood === item.mood)
+
+    if (!themood) {
+        themood = moods[0]
+        settings.mood = themood.mood
+        updateSettings(settings)
+    }
+
+    const filetype = '.' + themood.filetype
     const max = themood.amount
-    const ext = '.' + themood.ext
     const randomNumber = Math.ceil(Math.random() * max)
-    return audioDir + settings.mood + '/' + randomNumber + ext
+    const track = randomNumber + filetype
+
+    // return audioDir + settings.mood + '/' + randomNumber + filetype
+    return audioDir + settings.mood + '/' + track
 }
 
-console.log('getRandomBackgroundAudio():', getRandomBackgroundAudio())
+// log('getRandomBackgroundAudio():', getRandomBackgroundAudio())
 const audio = {
     dir: audioDir,
     background: new Audio(getRandomBackgroundAudio()),
@@ -247,10 +281,27 @@ const audio = {
     btn_play: d.getElementById('audio_play'),
     btn_pause: d.getElementById('audio_pause'),
     btn_next: d.getElementById('audio_next'), // FIXME to use or not to use.. not really used right now
-    btn_change_mood: d.getElementById('audio_change_mood') // FIXME to use or not to use.. not really used right now
+    btn_change_mood: d.getElementById('audio_change_mood'), // FIXME to use or not to use.. not really used right now
+    currentTrack: 1 // TODO communicate with localstorage 
+
 }
 audio.btn_play.innerText = getTranslation(settings.language, 'Play_audio')
-audio.btn_pause.innerText = settings.mood
+audio.btn_pause.innerText = settings.mood || moods[0].mood
+
+audio.background.addEventListener('ended', () => {
+    log('audio ended');
+    const currentMood = moods.find((item) => settings.mood === item.mood);
+    if (!currentMood) return;
+    console.log('currentMood:', currentMood)
+
+    if (currentMood.loop) {
+        // TODO check if `audio.background.loop = true` doesnt just suffice
+        audio.background.currentTime = 0;
+        audio.background.play();
+        return;
+    }
+    audioPlayer('next');
+});
 
 /** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
 
@@ -267,30 +318,21 @@ audio.btn_pause.innerText = settings.mood
  * @property {string} mood
  */
 
-const timers = [
-    {
-        0: {
-            descr: 'Eat, walk, push-up, drink, some or all.',
-            endtime: '23:41',
-            endtime_timestamp: null,
-            finished: false,
-            done: false,
-            interval: 3000,
-            intervalUnit: 60,
-            name: 'stretch'
-        },
-        1: {
-            descr: 'Eat, walk, push-up, drink, some or all.',
-            endtime: '23:41',
-            endtime_timestamp: null,
-            finished: false,
-            done: false,
-            interval: 3000,
-            intervalUnit: 60,
-            name: 'stretch'
-        }
-    }
-]
+// Below is kept (for now) as an example
+// const timers = [
+//     {
+//         0: {
+//             descr: 'Eat, walk, push-up, drink, some or all.',
+//             endtime: '23:41',
+//             endtime_timestamp: null,
+//             finished: false,
+//             done: false,
+//             interval: 3000,
+//             intervalUnit: 60,
+//             name: 'stretch'
+//         },
+//     }
+// ]
 
 /**
  * @typedef {Object} Timer
@@ -314,17 +356,20 @@ const timers = [
 /**
  * @type {Timers[]}
  */
-let timersArray = []
+let timersArray = getTimers() || [] // Fallback to empty array if null
+
 /**
  * Turn localstorage-string containing timers into an array and return it.
- * @var {String} timers
- * @returns {Timers} timers
+ * @returns {Array} timers
  */
 const getTimers = () => {
-    /** @type {[]} timers */
+    /** @type {Array} timers */
     const timers = JSON.parse(localStorage.getItem('timerTimers'))
-    if (!timers) updateTimers([])
-    else bgStatus(timers) // TODO should just trigger whenever state of timer changes
+    if (!timers) {
+        updateTimers([])
+        return []
+    }
+    bgStatus(timers) // TODO should just trigger whenever state of timer changes
     return timers
 }
 
@@ -337,14 +382,40 @@ timersArray = getTimers()
 
 /** @param {Timers} arr - state of localStorage.timerTimers */
 function updateTimers(arr) {
+    // prevent recursion
+    if (isUpdatingTimers) return false
+    isUpdatingTimers = true
+
+    // log('Updating timers, count:', arr.length)
     localStorage.setItem('timerTimers', JSON.stringify(arr))
-    if (
-        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
-        arr.length === 0
-    ) {
-        runTimers()
+
+    // Update status bar based on timer states
+    bgStatus(arr)
+
+    // Always render when timers array changes (length or content)
+    const shouldRender =
+        arr.length !== timersArray.length || JSON.stringify(arr) !== JSON.stringify(timersArray)
+
+    if (shouldRender) {
+        // log('Rendering timers due to changes')
+        renderTimers(arr)
+    } else {
+        // log('No render needed - timers unchanged')
     }
-    renderTimers(arr)
+
+    // Update the global reference
+    timersArray = arr
+
+    // Only start countdown if needed - use detectAnyRunning instead of detectAnyActive
+    const currentStatus = localStorage.getItem('countDownAllStatus')
+    const anyRunning = getTimerState().anyRunning
+
+    if (anyRunning && (currentStatus === 'stopped' || !countdownAllInterval)) {
+        // log('Starting countdown from updateTimers')
+        countdownAll()
+    }
+
+    isUpdatingTimers = false
 }
 
 if (pageInit === true) {
@@ -447,7 +518,7 @@ function settingsFormSubmit(data) {
         quickTimerDescr: data.get('settings_form_quickTimerDescr'),
         language: data.get('settings_form_language')
     }
-    console.log('settings:', settings)
+    // log('settings:', settings)
     if (settings.language !== getSettings().language) setLanguage(settings.language)
 
     updateSettings(settings)
@@ -462,7 +533,7 @@ function settingsFormSubmit(data) {
  * @param option {FormData.option}
  */
 function selectOption(el, option) {
-    optionProp = option.toString()
+    const optionProp = option.toString()
     for (let i = 0; i < el.options.length; i++) {
         if (el.options[i].getAttribute('value') === optionProp) {
             el.options[i].setAttribute('selected', 'selected')
@@ -478,7 +549,10 @@ function updateSettings(arr) {
     localStorage.setItem('settings', JSON.stringify(arr))
     selectOption(new_timer_intervalUnit, getSettings().intervalUnit)
 
-    if (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') {
+    if (
+        getTimerState().anyActive === true &&
+        localStorage.getItem('countDownAllStatus') === 'stopped'
+    ) {
         countdownAll()
         localStorage.setItem('countDownAllStatus', 'active')
     }
@@ -573,7 +647,7 @@ function addTimer(name, description, interval) {
     /** @type {SimpleTime} */
     const starttime = getCurrentTimeSimple()
     const endtime = getTimeSimple(false, interval)
-    const starttime_timestamp = Date().now
+    const starttime_timestamp = Date.now()
 
     timersArray.push({
         name: name,
@@ -589,20 +663,19 @@ function addTimer(name, description, interval) {
         endtime: endtime,
         endtime_timestamp: starttime_timestamp + interval * settings.intervalUnit * 1000
     })
-    updateTimers(timersArray)
-    settings.autoplay === true && audioPlayer('play')
-    showFeedback(btn_create_timer, 'Timer_created')
-}
 
-function runTimers() {
-    if (
-        (detectAnyActive() === true && localStorage.getItem('countDownAllStatus') === 'stopped') ||
-        timersArray.length === 0
-        // 2025-10-02 TODO dit lijkt me niet heel logisch
-    ) {
-        countdownAll()
-        localStorage.setItem('countDownAllStatus', 'active')
-    }
+    // Force update and render
+    updateTimers(timersArray)
+
+    // Ensure the timer is visible in the DOM
+    renderTimers(timersArray)
+
+    log('settings.autoplay', settings.autoplay)
+    if (settings.autoplay === true) audioPlayer('play')
+    showFeedback(btn_create_timer, 'Timer_created')
+
+    // Debug log
+    // log('Added timer, total timers:', timersArray.length)
 }
 
 // ----------------------------- PAUSE/RESUME TASK
@@ -611,14 +684,67 @@ function runTimers() {
  * @returns {void}
  */
 function pauseTimerToggle(key) {
-    for (let i = 0; i < timersArray.length; i++) {
-        if (i === key) {
-            timersArray[i].paused = !timersArray[i].paused
-            !timersArray[i].paused && settings.autoplay === true && audioPlayer('play')
-            if (detectAllPaused()) audioPlayer('pause')
+    const timer = timersArray[key]
+    if (!timer) return
+
+    timer.paused = !timer.paused
+
+    // Update audio based on state
+    if (!timer.paused && settings.autoplay === true) {
+        // Timer is being resumed/unpaused
+        audioPlayer('play')
+    } else if (timer.paused) {
+        // Timer is being paused - check if this was the last running timer
+        const newState = getTimerState()
+        if (!newState.anyRunning) {
+            audioPlayer('pause')
         }
     }
-    updateTimers(timersArray)
+
+    // Update the DOM
+    const timerEl = document.getElementById('timer-' + key)
+    if (timerEl) {
+        // Toggle the paused class
+        if (timer.paused) timerEl.classList.add('paused')
+        else timerEl.classList.remove('paused')
+
+        // Update the button
+        updatePauseButton(key)
+    }
+
+    // CRITICAL: Restart countdown if we're resuming a timer and countdown isn't running
+    if (!timer.paused) {
+        const currentStatus = localStorage.getItem('countDownAllStatus')
+        if (currentStatus === 'stopped' || !countdownAllInterval) {
+            log('Resuming timer, restarting countdown...')
+            countdownAll()
+        }
+    }
+
+    bgStatus(timersArray)
+    localStorage.setItem('timerTimers', JSON.stringify(timersArray))
+}
+
+/**
+ * Updates just the pause/resume button for a specific timer without full re-render
+ * @param {number} key
+ */
+function updatePauseButton(key) {
+    const timer = timersArray[key]
+    if (!timer) return
+
+    // Remove existing pause/resume button
+    const oldPauseBtn = document.getElementById('pause-' + key)
+    const oldResumeBtn = document.getElementById('resume-' + key)
+    if (oldPauseBtn) oldPauseBtn.remove()
+    if (oldResumeBtn) oldResumeBtn.remove()
+
+    // Create and insert the correct button
+    const timerActionsWrapper = document.querySelector(`#timer-${key} .timer_actions_wrapper`)
+    if (timerActionsWrapper) {
+        const newButton = pauseTimerToggleLink(key, !timer.paused)
+        timerActionsWrapper.insertBefore(newButton, timerActionsWrapper.firstChild)
+    }
 }
 
 // ----------------------------- REMOVE TASKS
@@ -629,9 +755,83 @@ function pauseTimerToggle(key) {
  * @returns {void}
  */
 function removeTimer(key) {
+    // Store state before removal to check if we're removing the last running timer
+    const stateBeforeRemoval = getTimerState()
+
+    //clean up interval for this timer
+    if (activeIntervals.has(key)) {
+        clearInterval(activeIntervals.get(key))
+        activeIntervals.delete(key)
+    }
     const newTimers = timersArray.filter((_i, index) => index !== key)
     // if (detectAnyActive() && settings.autoplay) audioPlayer() // TODO to keep or to remove?
+
+    // If we removed the last running timer, pause audio
+    if (stateBeforeRemoval.anyRunning) {
+        const stateAfterRemoval = getTimerState(newTimers)
+        if (!stateAfterRemoval.anyRunning) audioPlayer('pause')
+    }
+
     updateTimers(newTimers)
+}
+
+// add cleanup function for page unload
+function cleanupAllIntervals() {
+    // clear individual timer intervals
+    for (const intervalId of activeIntervals.values()) {
+        clearInterval(intervalId)
+    }
+    activeIntervals.clear()
+
+    // clear main interval
+    if (countdownAllInterval) {
+        clearInterval(countdownAllInterval)
+        countdownAllInterval = null
+    }
+}
+
+// add event listener for page unload
+window.addEventListener('beforeunload', cleanupAllIntervals)
+window.addEventListener('unload', cleanupAllIntervals)
+
+/**
+ * Update timer display without full DOM rebuild
+ * @param {number} key - Timer index
+ */
+function updateTimerDisplay(key) {
+    const displayEl = document.getElementById('countdown-timer-' + key)
+    if (displayEl) {
+        const timer = timersArray[key]
+        if (!timer) return
+
+        const settings = getSettings()
+        let displayText
+        let prefixText = ''
+        const unitName = getTranslation(settings.language, getIntervalUnitName(timer.intervalUnit))
+
+        if (settings.countDown) {
+            const timeleft = Math.round((timer.interval - timer.timepast) / timer.intervalUnit)
+            const totalUnits = timer.interval / timer.intervalUnit
+            displayText = timeleft + ' / ' + totalUnits + ' ' + unitName
+            prefixText =
+                '<span class="time_left_text">' +
+                getTranslation(settings.language, 'Time_left') +
+                '</span>: '
+        } else {
+            const timepast = Math.round(timer.timepast / timer.intervalUnit)
+            displayText = timepast + ' ' + unitName
+            prefixText =
+                '<span class="time_passed_text">' +
+                getTranslation(settings.language, 'Time_passed') +
+                '</span>: '
+        }
+
+        // Only update if changed
+        const newContent = prefixText + displayText
+        if (displayEl.innerHTML !== newContent) {
+            displayEl.innerHTML = newContent
+        }
+    }
 }
 
 // ----------------------------- RENDER TASKS - MAIN
@@ -640,34 +840,32 @@ function removeTimer(key) {
  * @returns {void}
  */
 function renderTimers(arr) {
-    // TODO a part of timers can be reused if finished or paused, so no need to clean it up completely
-    let curtime = new Date()
-    curtime = curtime.getSeconds()
+    log('Rendering timers:', arr.length)
 
-    // TODO prebuild timers that are paused or finished
-    const pausedTimersHTMLElements = timer_container.getElementsByClassName('timer paused')
-    const finishedTimersHTMLElements = timer_container.getElementsByClassName('timer finished')
-
+    // clear container completely for simplicity
     timer_container.innerHTML = ''
-    if (pausedTimersHTMLElements.length > 0) timer_container.append(pausedTimersHTMLElements)
-    if (finishedTimersHTMLElements.length > 0) timer_container.append(finishedTimersHTMLElements)
 
-    for (let i = 0; i < pausedTimersHTMLElements.length; i++) {
-        timer_container.appendChild(pausedTimersHTMLElements[i])
+    if (!arr || arr.length === 0) {
+        // log('No timers to render')
+        return
     }
+    // Render all timers
+    for (let i = 0; i < arr.length; i++) {
+        const timerEl = renderTimer(arr[i], i)
+        timer_container.appendChild(timerEl)
+        // log('Rendered timer:', arr[i].name)
+    }
+    log('Finished rendering all timers')
+}
 
-    // show running timers first, these need to be refreshed every second
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].paused === false) {
-            timer_container.appendChild(renderTimer(arr[i], i))
-        }
-    }
-    // TODO finished & paused timers should be cached
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].finished === false && arr[i].paused === true) {
-            timer_container.appendChild(renderTimer(arr[i], i))
-        }
-    }
+/**
+ * str {string} - first arg: string to describe what value is about
+ * val {unknown|undefined} - second arg: value to test
+ */
+function log(str, val) {
+    if (RUN_ONLINE || !TESTING) return
+    if (val) console.log(str, val)
+    else console.log(str)
 }
 
 function runCurrentTime() {
@@ -711,36 +909,35 @@ setCurrentDate()
  * @returns {HTMLElement}
  */
 function renderTimer(i, key, paused = false) {
+    log('Rendering timer:', i.name, 'key:', key, 'paused:', paused, 'done:', i.done)
+
     if (paused) return
     const settings = getSettings()
     const el = d.createElement('div')
     el.className = 'timer'
     if (i.paused) el.classList.add('paused')
     if (i.finished) el.classList.add('finished')
-    if (i.done) el.classList.add('done')
+    if (i.done) el.classList.add('done') // Make sure done class is added
     el.id = 'timer-' + key
+
+    // ... rest of the timer content ...
     el.appendChild(renderTimerElement('h3', 'timer-name', i.name))
     el.appendChild(renderTimerElement('div', 'timer-descr', i.descr))
     el.appendChild(
         renderTimerElement(
             'div',
             'timer-countdown-current',
-            countdownTimer(key, 'countdown-timer-' + key),
-            'countdown-' + el.id,
+            countdownTimer(key),
+            'countdown-timer-' + key,
             key,
-
             settings.countDown === true
                 ? '<span class="time_left_text">' +
-                      getTranslation(settings.language, 'Time_left') +
-                      '</span>: '
+                getTranslation(settings.language, 'Time_left') +
+                '</span>: '
                 : '<span class="time_passed_text">' +
-                      getTranslation(settings.language, 'Time_passed') +
-                      '</span>: ',
-
-            '&nbsp;/ ' +
-                i.interval / i.intervalUnit +
-                ' ' +
-                getTranslation(settings.language, getIntervalUnitName(i.intervalUnit))
+                getTranslation(settings.language, 'Time_passed') +
+                '</span>: ',
+            ''
         )
     )
 
@@ -750,61 +947,24 @@ function renderTimer(i, key, paused = false) {
 
     const startTimeEndTimeWrapper = document.createElement('div')
     startTimeEndTimeWrapper.className = 'starttime_endtime_wrapper'
-    if (i.paused) {
-        startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
-        if (SHOW_STARTING_TIME) {
-            startTimeEndTimeWrapper.appendChild(
-                renderTimerElement(
-                    'div',
-                    'starttime',
-                    '<span class="starting_time_text">' +
-                        getTranslation(settings.language, 'Starting_time') +
-                        '</span>: ' +
-                        i.starttime
-                )
-            )
-        }
-        startTimeEndTimeWrapper.appendChild(
-            renderTimerElement(
-                'div',
-                'endtime',
-                '<span class="ending_time_text">' +
-                    getTranslation(settings.language, 'Ending_time') +
-                    '</span>: ' +
-                    i.endtime
-            )
-        )
-    } else {
-        startEndTimeActionsWrapper.appendChild(startTimeEndTimeWrapper)
-        if (SHOW_STARTING_TIME) {
-            startTimeEndTimeWrapper.appendChild(
-                renderTimerElement(
-                    'div',
-                    'starttime',
-                    '<span class="starting_time_text">' +
-                        getTranslation(settings.language, 'Starting_time') +
-                        '</span>: ' +
-                        i.starttime
-                )
-            )
-        }
-        startTimeEndTimeWrapper.appendChild(
-            renderTimerElement(
-                'div',
-                'endtime',
-                '<span class="ending_time_text">' +
-                    getTranslation(settings.language, 'Ending_estimate') +
-                    '</span>: ' +
-                    i.endtime
-            )
-        )
-    }
+    // ... start/end time logic ...
+
     const timerActionsWrapper = document.createElement('div')
     timerActionsWrapper.className = 'timer_actions_wrapper buttons'
 
-    if (!i.finished) timerActionsWrapper.appendChild(pauseTimerToggleLink(key, !i.paused))
+    // Only show pause/resume if not finished AND not done
+    if (!i.finished && !i.done) {
+        // This will show "resume" button because i.paused is true after reset
+        timerActionsWrapper.appendChild(pauseTimerToggleLink(key, !i.paused))
+    }
+
     timerActionsWrapper.appendChild(resetTimerLink(key))
-    if (i.finished && !i.done) timerActionsWrapper.appendChild(doneTimerLink(key))
+
+    // Only show done button if finished but not done
+    if (i.finished && !i.done) {
+        timerActionsWrapper.appendChild(doneTimerLink(key))
+    }
+
     timerActionsWrapper.appendChild(removeTimerLink(key))
     startEndTimeActionsWrapper.appendChild(timerActionsWrapper)
 
@@ -856,60 +1016,23 @@ function renderTimerElement(
  * Creates and renders the individual timer block
  * @param key {number} - key in timer in localStorage.timerTimers
  * @param id {string} - id of timer HTMLelement
+ * @returns {string} - The display text for the timer
  * @returns {void}
  */
-function countdownTimer(key, id) {
-    // individual per timer
-    const tmpinterval = setInterval(() => {
-        if (
-            timersArray[key] === undefined ||
-            timersArray[key].paused === true ||
-            timersArray[key].paused === undefined
-        )
-            stopTimer()
-        else {
-            if (d.getElementById(id)) {
-                const settings = getSettings()
-                if (settings.countDown)
-                    cPrefix = `<span class="time_left_text">${getTranslation(settings.language, 'Time_left')}</span>: `
-                else
-                    cPrefix = `<span class="time_passed_text">${getTranslation(settings.language, 'Time_passed')}</span>: `
+function countdownTimer(key) {
+    const timer = timersArray[key]
+    if (!timer) return '0'
 
-                const cSuffix = ` ${getTranslation(settings.language, getIntervalUnitName(timersArray[key].intervalUnit))}`
-                const c = d.getElementById(id)
+    const settings = getSettings()
+    const unitName = getTranslation(settings.language, getIntervalUnitName(timer.intervalUnit))
 
-                if (timersArray[key].timepast === timersArray[key].interval) stopTimer()
-
-                /** @type {undefined|number} - time left on this timer */
-                let timeleft
-                /** @type {undefined|number} - time past on this timer */
-                let timepast
-                if (timersArray[key].paused === true) {
-                    // console.log('arr paused');
-                } else {
-                    if (settings.countDown) {
-                        timeleft = Math.round(
-                            (timersArray[key].interval - timersArray[key].timepast) /
-                                timersArray[key].intervalUnit
-                        )
-                        c.innerHTML =
-                            cPrefix +
-                            timeleft +
-                            ' / ' +
-                            timersArray[key].interval / timersArray[key].intervalUnit +
-                            cSuffix
-                    } else {
-                        timepast = Math.round(
-                            timersArray[key].timepast / timersArray[key].intervalUnit
-                        )
-                        c.innerHTML = cPrefix + timepast + cSuffix
-                    }
-                }
-            }
-        }
-    }, 1000)
-    function stopTimer() {
-        clearInterval(tmpinterval)
+    if (settings.countDown) {
+        const timeleft = Math.round((timer.interval - timer.timepast) / timer.intervalUnit)
+        const totalUnits = timer.interval / timer.intervalUnit
+        return timeleft + ' / ' + totalUnits + ' ' + unitName
+    } else {
+        const timepast = Math.round(timer.timepast / timer.intervalUnit)
+        return timepast + ' ' + unitName
     }
 }
 
@@ -964,21 +1087,71 @@ function doneTimerLink(key) {
     el.setAttribute('onClick', `doneTimer(${key})`)
     return el
 }
+
 function doneTimer(key) {
-    // TODO apply proper types, Timer typedef is a bit murky
-    timersArray[key].finished = true
-    timersArray[key].done = true
-    document.title = 'Timer' // TODO this should become (in order) the first running timer, or the previous finished-without-done timer
-    console.log('doneit')
-    if (
-        localStorage.getItem('audioPlay') === 'false' &&
-        settings.autoplay === true &&
-        detectAnyActive() &&
-        audio.background.paused
-    ) {
-        audioPlayer('play')
+    // log('Marking timer as done:', key)
+
+    if (timersArray[key]) {
+        timersArray[key].finished = true
+        timersArray[key].done = true
+        timersArray[key].paused = true
+
+        // Check if this was the last running timer
+        const newState = getTimerState()
+        if (!newState.anyRunning) {
+            audioPlayer('pause')
+        }
+
+        // Remove the old timer element
+        const oldTimerEl = document.getElementById('timer-' + key)
+        if (oldTimerEl) {
+            oldTimerEl.remove()
+        }
+
+        // Re-render the timer
+        const newTimerEl = renderTimer(timersArray[key], key)
+        timer_container.appendChild(newTimerEl)
+
+        // Update storage
+        localStorage.setItem('timerTimers', JSON.stringify(timersArray))
+
+        // Update status bar
+        bgStatus(timersArray)
+
+        document.title = 'Timer'
+
+        // log('Timer re-rendered as done')
     }
-    updateTimers(timersArray)
+}
+
+/**
+ * Updates the DOM to reflect the done state of a specific timer
+ * @param {number} key
+ */
+function updateTimerDoneState(key) {
+    const timer = timersArray[key]
+    if (!timer) return
+
+    const timerEl = document.getElementById('timer-' + key)
+    if (!timerEl) return
+
+    // Update classes
+    timerEl.classList.add('finished', 'done')
+    timerEl.classList.remove('paused') // Remove paused class since it's done
+
+    // Remove the done button since it's no longer needed
+    const doneBtn = document.getElementById('done-' + key)
+    if (doneBtn) {
+        doneBtn.remove()
+    }
+
+    // remove pause button if exists on done timer TODO dit kan beter met css
+    const pauseBtn = document.getElementById('pause-' + key)
+    const resumeBtn = document.getElementById('resume-' + key)
+    if (pauseBtn) pauseBtn.remove()
+    if (resumeBtn) resumeBtn.remove()
+
+    log('DOM updated for done timer:', key)
 }
 
 /**
@@ -997,97 +1170,117 @@ function resetTimerLink(key) {
 }
 
 function resetTimer(key) {
-    // TODO apply proper types, Timer typedef is a bit murky
-    timersArray[key].timepast = 0
-    timersArray[key].starttime = getCurrentTimeSimple()
-    timersArray[key].endtime = getTimeSimple(false, timersArray[key].interval)
-    timersArray[key].finished = false
-    timersArray[key].done = false
-    document.title = 'Timer'
-    if (
-        localStorage.getItem('audioPlay') === 'false' &&
-        settings.autoplay === true &&
-        timersArray[key].paused === false
-    ) {
-        audioPlayer('play')
+    log('Resetting timer:', key)
+
+    if (timersArray[key]) {
+        // reset all timer properties but keep the current paused state
+        timersArray[key].timepast = 0
+        timersArray[key].starttime = getCurrentTimeSimple()
+        timersArray[key].endtime = getTimeSimple(false, timersArray[key].interval)
+        timersArray[key].finished = false
+        timersArray[key].done = false
+
+        // remove the old timer element
+        const oldTimerEl = document.getElementById('timer-' + key)
+        if (oldTimerEl) oldTimerEl.remove()
+
+        // re-render the timer
+        const newTimerEl = renderTimer(timersArray[key], key)
+        timer_container.appendChild(newTimerEl)
+
+        // Update storage
+        localStorage.setItem('timerTimers', JSON.stringify(timersArray))
+
+        // Update status bar
+        bgStatus(timersArray)
+
+        document.title = 'Timer'
+
+        log('Timer reset and re-rendered successfully')
     }
-    updateTimers(timersArray)
 }
 
 // ----------------------------- DETECTIONS
-// TODO these should be replaced by webworker messages:
+function getTimerState(timers = timersArray) {
+    if (timers === null) return false
+    const anyRunning = timers.some((t) => !t.finished && !t.paused && !t.done)
+    const anyFinished = timers.some((t) => t.finished && !t.done)
+    const allPaused = timers.length > 0 && timers.every((t) => t.paused || t.finished || t.done)
+    const anyActive = timers.some((t) => !t.finished)
 
-/**
- * @param {Timers} arr - array of localstorage.timerTimers
- */
-function detectAnyFinished(arr = timersArray) {
-    for (i of arr) {
-        if (i.finished === true) return true
-    }
-    return false
-}
-
-function detectAnyDone(arr = timersArray) {
-    for (i of arr) {
-        if (i.done === true) return true
-    }
-    return false
-}
-
-function detectAnyPaused(arr = timersArray) {
-    for (i of arr) {
-        if (i.paused === true) return true
-    }
-    return false
-}
-
-// Detect any still running timers
-function detectAnyActive(arr = timersArray) {
-    for (i of arr) {
-        if (i.finished === false) return true
-    }
-    return false
-}
-
-function detectAllPaused(arr = timersArray) {
-    let count = 0
-    for (i = 0; i < arr.length; i++) {
-        if (arr[i].paused === true) count++
-    }
-    if (count === arr.length) {
-        console.log('all paused')
-        return true
-    }
-    return false
+    return {anyRunning, anyFinished, allPaused, anyActive}
 }
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
 function countdownAll() {
-    let blinkRunningOn = false
-    /** @type {string|undefined} finishedTimer */
-    let finishedTimer
-    let blinkFinishedOn = false
+    log('Starting countdownAll...')
 
-    if (detectAllPaused()) {
-        console.log('alle pauserr')
+    // Clear existing interval first
+    if (countdownAllInterval) {
+        clearInterval(countdownAllInterval)
+        countdownAllInterval = null
+    }
+
+    // Don't start if no active timers or all are paused
+    const state = getTimerState()
+    const anyRunning = state.anyRunning // detectAnyRunning()
+    const allPaused = state.allPaused //  detectAllPaused()
+
+    if (!anyRunning || allPaused) {
+        log('No running timers or all paused, stopping countdown')
+        localStorage.setItem('countDownAllStatus', 'stopped')
+        if (allPaused || !anyRunning) audioPlayer('pause') // Ensure audio is paused when no timers are running
         return
     }
-    const countdownAllPerSecond = setInterval(() => {
-        if (timersArray) {
+
+    let lastUpdateTime = Date.now()
+    let blinkRunningOn = false
+    let finishedTimer = null
+    let blinkFinishedOn = false
+    const timerTitleBasic = 'Timer'
+
+    log('Starting countdown interval with running timers')
+
+    countdownAllInterval = setInterval(() => {
+        const currentTime = Date.now()
+        const elapsedSeconds = Math.floor((currentTime - lastUpdateTime) / 1000)
+        lastUpdateTime = currentTime
+
+        let needsFullRender = false
+        let anyTimerChanged = false
+        let currentFinishedTimer = null
+
+        if (timersArray && timersArray.length > 0) {
             for (let i = 0; i < timersArray.length; i++) {
-                if (timersArray[i].paused === true || timersArray[i].finished) continue
-                // re-render timers that are not paused or finished
-                if (
-                    timersArray[i].timepast < timersArray[i].interval &&
-                    timersArray[i].paused === false
-                ) {
-                    timersArray[i].timepast++
+                const timer = timersArray[i]
+
+                // Skip paused or finished timers
+                if (timer.paused === true || timer.finished || timer.done) continue
+
+                // log(`Updating timer ${i}: ${timer.name}, timepast: ${timer.timepast}`)
+
+                // Store previous state to detect changes
+                const previousTimepast = timer.timepast
+                const previousFinished = timer.finished // TODO check if can be removed or used
+
+                // Update timer progress based on actual elapsed time
+                if (timer.timepast < timer.interval && timer.paused === false) {
+                    timer.timepast = Math.min(timer.timepast + elapsedSeconds, timer.interval)
+                    anyTimerChanged = true
+                    // log(`Timer ${i} updated: ${timer.timepast}/${timer.interval}`)
                 }
-                if (
-                    timersArray[i].timepast === timersArray[i].interval &&
-                    timersArray[i].finished !== true
-                ) {
-                    timersArray[i].finished = true
+
+                // Check if timer finished
+                if (timer.timepast >= timer.interval && timer.finished !== true) {
+                    timer.finished = true
+                    timer.timepast = timer.interval // Ensure we don't exceed the interval
+                    needsFullRender = true
+                    currentFinishedTimer = timer.name
+                    log(`Timer ${i} finished: ${timer.name}`)
+
+                    bgStatus(timersArray)
+
+                    // Play alert when timer finishes
                     setTimeout(() => {
                         audioPlayer('pause')
                         setTimeout(() => {
@@ -1095,39 +1288,68 @@ function countdownAll() {
                         }, TIMEOUT_SHORT)
                     }, TIMEOUT_SHORT)
                 }
-                if (timersArray[i].finished === true) {
-                    finishedTimer = timersArray[i].name
-                    const timerEl = d.getElementById('timer-' + i)
-                    if (timerEl) timerEl.classList.add('finished')
-                    if (timersArray[i].done === true) timerEl.classList.add('done')
+
+                // Update display for running timers if time changed
+                if (timer.timepast !== previousTimepast && !timer.finished) {
+                    updateTimerDisplay(i)
+                }
+
+                // Update finished state in DOM
+                if (timer.finished === true) {
+                    const timerEl = document.getElementById('timer-' + i)
+                    if (timerEl) {
+                        timerEl.classList.add('finished')
+                        if (timer.done === true) timerEl.classList.add('done')
+                    }
                 }
             }
 
-            updateTimers(timersArray)
-        }
-        if (detectAllPaused() === true || !detectAnyActive()) {
-            console.log('detected all paused or none active')
-            audioPlayer('pause')
-            stopTimer()
+            // Update storage and render if something important changed
+            if (anyTimerChanged || needsFullRender) {
+                // log('Updating timers storage due to changes')
+                localStorage.setItem('timerTimers', JSON.stringify(timersArray))
+
+                if (needsFullRender) {
+                    // log('Full render needed, updating...')
+                    renderTimers(timersArray)
+                }
+            }
+
+            // Update finished timer reference for blinking
+            if (currentFinishedTimer) {
+                finishedTimer = currentFinishedTimer
+            }
         }
 
-        // tab/title manipulation for keepalive and notifying user, refreshed every second
-        if (finishedTimer !== undefined && detectAnyFinished() === true) {
+        // Check if we should stop the interval
+        const shouldStop = !state.anyRunning || state.allPaused
+        if (shouldStop) {
+            log('Stopping countdown - no running timers or all paused')
+            audioPlayer('pause')
+            stopTimer()
+            return
+        }
+
+        // Tab/title manipulation for user feedback
+        // if (finishedTimer !== null && detectAnyFinished() === true) {
+        if (finishedTimer !== null && state.anyFinished) {
             blinkFinishedOn = !blinkFinishedOn
-            if (!blinkFinishedOn) document.title = finishedTimer + '!'
-            else document.title = finishedTimer
+            document.title = blinkFinishedOn ? finishedTimer + '!' : finishedTimer
         } else {
             blinkRunningOn = !blinkRunningOn
-            timerTitleBasic = 'Timer'
-            if (!blinkRunningOn && document.title === timerTitleBasic)
-                document.title = timerTitleBasic + '.'
-            else document.title = timerTitleBasic
+            document.title = blinkRunningOn ? timerTitleBasic + '.' : timerTitleBasic
         }
     }, 1000)
 
+    localStorage.setItem('countDownAllStatus', 'active')
+
     function stopTimer() {
-        clearInterval(countdownAllPerSecond)
+        if (countdownAllInterval) {
+            clearInterval(countdownAllInterval)
+            countdownAllInterval = null
+        }
         localStorage.setItem('countDownAllStatus', 'stopped')
+        document.title = 'Timer' // Reset title when stopped
     }
 }
 
@@ -1137,11 +1359,10 @@ function countdownAll() {
  * @returns {void}
  */
 function audioPlayer(state = 'play') {
-    const wasPaused = audio.background.paused
     switch (state) {
         case 'play':
-            audio.background.loop = false // TODO make this a setting
-            audio.background.play()
+            audio.background.loop = false // TODO apply `loop` property in `mood` object
+            audio.background.play().catch(e => log('Audio play failed:', e));
             audio.btn_play.classList.add('dnone')
             audio.btn_pause.classList.remove('dnone')
             localStorage.setItem('audioPlay', true)
@@ -1153,25 +1374,41 @@ function audioPlayer(state = 'play') {
             localStorage.setItem('audioPlay', false)
             break
         case 'next':
-            audio.background.pause()
-            audio.background.currentTime = 0 // Reset position
-            audio.background.src = getRandomBackgroundAudio() // Clear source
-            audio.background.load() // Force browser to release resources
-            if (!wasPaused) audioPlayer('play')
+            audio.background.pause();
+
+            const currentMood = moods.find((item) => settings.mood === item.mood);
+            if (!currentMood) return;
+
+            let nextTrackNumber;
+
+            if (AUDIO_SHUFFLE) nextTrackNumber = Math.ceil(Math.random() * currentMood.amount);
+            else {
+                audio.currentTrack = (audio.currentTrack % currentMood.amount) + 1;
+                nextTrackNumber = audio.currentTrack;
+            }
+
+            const filetype = '.' + currentMood.filetype;
+            const track = nextTrackNumber + filetype;
+            const newSrc = audioDir + settings.mood + '/' + track;
+
+            audio.background.src = newSrc;
+            audio.background.load();
+
+            audioPlayer('play')
+
             break
         case 'volume_up':
-            if (audio.background.volume < 1) audio.background.volume += 0.2
+            log('voluming up')
+            audio.background.volume = Math.min(audio.background.volume + 0.2, 1)
+            log('volume to', audio.background.volume)
             break
         case 'volume_down':
-            if (audio.background.volume < 0.25) {
-                // audioPlayer('pause')
-                audio.background.volume = 0.01 // temporary hack to prevent need for webworker (for now), just keep te music going on, just very soft
-                console.log('do pause')
-                break
-            }
-            audio.background.volume -= 0.2
+            log('voluming down')
+            audio.background.volume = Math.max(audio.background.volume - 0.2, 0.01) // 0.01 is temporary hack to prevent need for webworker (for now), just keep te music going on, just very soft
+            log('volume to', audio.background.volume)
             break
         case 'change_mood':
+            log('changing mood')
             settings.mood =
                 moods[
                     (moods.findIndex((item) => item.mood === settings.mood) + 1) % moods.length
@@ -1181,31 +1418,48 @@ function audioPlayer(state = 'play') {
             audioPlayer('next')
             break
     }
+
+    // Update volume container visibility based on whether audio is playing
+    if (!audio.background.paused) {
+        document.getElementById('audio_volume_container').style.visibility = 'visible'
+    } else {
+        document.getElementById('audio_volume_container').style.visibility = 'hidden'
+    }
+
     // loop volumes 0.2 to 1, sometimes value is a bit off, like 0.200001, so using 1.9 (0.19*10) as base and buffer
+    const currentVolume = audio.background.volume
     for (let i = 1.9; i < 11; i += 2) {
         const rounded = i + 0.1
         document.getElementById(`audio_volume_${rounded}`).classList.value =
-            Math.round(audio.background.volume * 10) > i ? 'active' : 'inactive'
+            Math.round(currentVolume * 10) > i ? 'active' : 'inactive'
     }
-
-    if (!audio.background.paused)
-        document.getElementById('audio_volume_container').style.display = 'flex'
-    else document.getElementById('audio_volume_container').style.display = 'none'
-    if (audio.background.volume > 0.99)
+    // Update volume button visibility
+    if (currentVolume >= 0.99)
         document.getElementById('audio_volume_up').style.visibility = 'hidden'
     else document.getElementById('audio_volume_up').style.visibility = 'visible'
-    console.log('audio.background.volume:', audio.background.volume)
+
+    if (currentVolume <= 0.01)
+        document.getElementById('audio_volume_down').style.visibility = 'hidden'
+    else document.getElementById('audio_volume_down').style.visibility = 'visible'
+
+    // TODO: check if can be improved with pure CSS / disabled html attribute on -/+ volume
+    if (!audio.background.paused) {
+        document.getElementById('audio_volume_container').style.visibility = 'visible'
+    } else {
+        document.getElementById('audio_volume_container').style.visibility = 'hidden'
+        // Reset individual button visibility when hiding container
+        document.getElementById('audio_volume_up').style.visibility = ''
+        document.getElementById('audio_volume_down').style.visibility = ''
+    }
+
+    if (audio.background.volume >= 1)
+        document.getElementById('audio_volume_up').style.visibility = 'hidden'
+    else document.getElementById('audio_volume_up').style.visibility = 'visible'
+    log('audio.background.volume:', audio.background.volume)
 }
 
-// function audioVolAdjust(increaseVolume=true){
-//     let currentAudioVolume = audio.background.volume
-//     console.log('currentAudioVolume:',current)
-//     // if(increaseVolume)audio.background.volume = currentAudioVolume
-
-// }
-
 function playAlert() {
-    audio.alert.play().catch((e) => console.log('Audio play failed:', e))
+    audio.alert.play().catch((e) => log('Audio play failed:', e))
 }
 
 // ----------------------------- MISC METHODS
@@ -1261,11 +1515,20 @@ function getTimeSimple(seconds = false, secondsToAdd = 0) {
  * @returns {void}
  */
 function bgStatus(arr) {
-    if (!detectAnyActive() || detectAnyDone()) setBgStatus('normal')
-    else if (detectAnyFinished(arr)) setBgStatus('alert')
-    else if (detectAllPaused(arr)) setBgStatus('paused')
-    else if (detectAnyActive(arr)) setBgStatus('running')
+    if (!arr || arr.length === 0) {
+        setBgStatus('normal')
+        return
+    }
+    const state = getTimerState()
+    if (state.anyFinished) setBgStatus('alert')
+    else if (state.allPaused) setBgStatus('paused')
+    else if (state.anyRunning) setBgStatus('running')
     else setBgStatus('normal')
+    // if (!detectAnyActive() || detectAnyDone()) setBgStatus('normal')
+    // else if (detectAnyFinished(arr)) setBgStatus('alert')
+    // else if (detectAllPaused(arr)) setBgStatus('paused')
+    // else if (detectAnyActive(arr)) setBgStatus('running')
+    // else setBgStatus('normal')
 }
 
 /**
@@ -1281,7 +1544,6 @@ function setBgStatus(status = 'normal') {
 }
 
 // ----------------------------- LANGUAGE DETECTION & SELECTION
-
 function translateElements(lang = getSettings().language) {
     newTextInElements('pause', getTranslation(lang, 'pause'))
     newTextInElements('resume', getTranslation(lang, 'resume'))
@@ -1324,6 +1586,7 @@ function translateElements(lang = getSettings().language) {
     audio.btn_play.innerText = getTranslation(lang, 'Play_audio')
     audio.btn_pause.innerText = settings.mood
 
+
     settings_form.intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
     new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
 
@@ -1338,7 +1601,7 @@ function translateElements(lang = getSettings().language) {
  */
 function newTextInElements(classname, newText) {
     const elements = d.getElementsByClassName(classname)
-    for (i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elements.length; i++) {
         elements[i].innerText = newText
     }
 }
