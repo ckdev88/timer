@@ -1,132 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Timer</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="style.css" rel="stylesheet" />
-        <link rel="icon" href="img/favicon-32.png" />
-        <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
-        <meta name="color-scheme" content="light dark" />
-    </head>
 
-    <body>
-        <div id="statusbar"></div>
-        <div id="wrapper">
-            <div class="buttons top-buttons">
-                <button id="new_timer_btn" class="text-btn white expanded">
-                    <span>Add timer </span>+
-                </button>
-                <button id="settings_btn" class="text-btn collapsed">
-                    <span>Settings </span>⚙
-                </button>
-                <button id="clean_btn" class="text-btn">x</button>
-            </div>
+<head>
+    <title>Timer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="style.css" rel="stylesheet" />
+    <link rel="icon" href="img/favicon-48.png" />
+    <!-- PWA Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+    <meta name="color-scheme" content="light dark" />
+</head>
 
-            <form id="settings_form" class="dnone hidden">
-                <h2 class="form-name" id="general_settings_head">General settings</h2>
-                <select id="settings_form_countDown" name="settings_form_countDown">
-                    <option value="true">Count down to 0</option>
-                    <option value="">Count up from 0</option>
-                </select>
-                <select id="settings_form_language" name="settings_form_language">
-                    <option value="nl">Nederlands</option>
-                    <option value="en">English</option>
-                    <option value="pt">Português</option>
-                </select>
-                <br />
-                <h2 class="form-name" id="quick_add_settings_head">Quick add Settings</h2>
-                <input
-                    id="settings_form_quickTimerName"
-                    name="settings_form_quickTimerName"
-                    type="text"
-                    placeholder="Quick timer name..."
-                    pattern="[^!]+"
-                />
-                <textarea
-                    id="settings_form_quickTimerDescr"
-                    name="settings_form_quickTimerDescr"
-                    placeholder="Quick timer description..."
-                ></textarea>
-                <div class="form-inputs-wrapper">
-                    <input
-                        id="settings_form_quickTimerInterval"
-                        name="settings_form_quickTimerInterval"
-                        type="number"
-                        placeholder="Quick timer interval..."
-                        min="1"
-                    />
-                    <select
-                        id="settings_form_intervalUnit"
-                        name="settings_form_intervalUnit"
-                        aria-label="Select time unit"
-                    >
-                        <option value="1">Seconds</option>
-                        <option value="60">Minutes</option>
-                    </select>
-                </div>
-                <div class="buttons submit-buttons">
-                    <input type="submit" id="btn_update_settings" value="Update settings" />
-                </div>
-            </form>
-            <form id="new_timer_form" class="dblock shown">
-                <div style="display: flex; align-items: center; justify-content: space-between">
-                    <h2 class="form-name" id="new_timer_form_head">New timer</h2>
-                    <a href="javascript:void(0)" id="new_timer_quick" class="white">Quick add</a>
-                </div>
-                <input
-                    id="new_timer_name"
-                    name="timer_name"
-                    type="text"
-                    placeholder="Name..."
-                    pattern="[^!]+"
-                    required
-                />
-                <textarea
-                    id="new_timer_description"
-                    name="timer_description"
-                    placeholder="Description..."
-                ></textarea>
-                <div class="form-inputs-wrapper">
-                    <input
-                        id="new_timer_interval"
-                        name="timer_interval"
-                        type="number"
-                        placeholder="Time..."
-                        min="1"
-                        required
-                    />
-                    <select
-                        id="new_timer_intervalUnit"
-                        name="timer_intervalUnit"
-                        aria-label="Select time unit"
-                    >
-                        <option value="1">Seconds</option>
-                        <option value="60">Minutes</option>
-                    </select>
-                </div>
-                <div class="buttons submit-buttons">
-                    <input type="submit" id="btn_create_timer" value="Create timer" />
-                </div>
-            </form>
-            <div id="timer_container"></div>
-            <div id="audio_container">
-                <button onclick="audioPlayer('play')" class="text-btn play" id="audio_play">
-                    <span class="dimmed">Play audio</span>
-                </button>
-                <button
-                    onclick="audioPlayer('pause')"
-                    class="text-btn pause dnone"
-                    id="audio_pause"
-                >
-                    <span class="dimmed">Pause audio</span>
-                </button>
-            </div>
-            <div>
-                <div id="current_time"></div>
-                <div id="current_date"></div>
-            </div>
+<body>
+    <div id="statusbar"></div>
+    <div id="wrapper">
+        <div class="buttons top-buttons">
+            <button id="new_timer_btn" class="text-btn white expanded">
+                <span>Add timer </span>+
+            </button>
+            <button id="settings_btn" class="text-btn collapsed">
+                <span>Settings </span>⚙
+            </button>
+            <button id="clean_btn" class="text-btn">x</button>
         </div>
-        <script src="script.js"></script>
-    </body>
+
+        <form id="settings_form" class="dnone hidden">
+            <h2 class="form-name" id="general_settings_head">General settings</h2>
+            <select id="settings_form_autoplay" name="settings_form_autoplay">
+                <option value="true">Play audio automatically when timer starts</option>
+                <option value="">Don't automatically play audio</option>
+            </select>
+            <select id="settings_form_countDown" name="settings_form_countDown">
+
+                <option value="true">Count down to 0</option>
+                <option value="">Count up from 0</option>
+            </select>
+            <select id="settings_form_language" name="settings_form_language">
+                <option value="nl">Nederlands</option>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+            </select>
+            <br />
+            <h2 class="form-name" id="quick_add_settings_head">Quick add Settings</h2>
+            <input id="settings_form_quickTimerName" name="settings_form_quickTimerName" type="text"
+                placeholder="Quick timer name..." pattern="[^!]+" />
+            <textarea id="settings_form_quickTimerDescr" name="settings_form_quickTimerDescr"
+                placeholder="Quick timer description..."></textarea>
+            <div class="form-inputs-wrapper">
+                <input id="settings_form_quickTimerInterval" name="settings_form_quickTimerInterval" type="number"
+                    placeholder="Quick timer interval..." min="1" />
+                <select id="settings_form_intervalUnit" name="settings_form_intervalUnit" aria-label="Select time unit">
+                    <option value="1">Seconds</option>
+                    <option value="60">Minutes</option>
+                </select>
+            </div>
+            <div class="buttons submit-buttons">
+                <input type="submit" id="btn_update_settings" value="Update settings" />
+            </div>
+        </form>
+        <form id="new_timer_form" class="dblock shown">
+            <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 class="form-name" id="new_timer_form_head">New timer</h2>
+                <a href="javascript:void(0)" id="new_timer_quick" class="white">Quick add</a>
+            </div>
+            <input id="new_timer_name" name="timer_name" type="text" placeholder="Name..." pattern="[^!]+" required />
+            <textarea id="new_timer_description" name="timer_description" placeholder="Description..."></textarea>
+            <div class="form-inputs-wrapper">
+                <input id="new_timer_interval" name="timer_interval" type="number" placeholder="Time..." min="1"
+                    required />
+                <select id="new_timer_intervalUnit" name="timer_intervalUnit" aria-label="Select time unit">
+                    <option value="1">Seconds</option>
+                    <option value="60">Minutes</option>
+                </select>
+            </div>
+            <div class="buttons submit-buttons">
+                <input type="submit" id="btn_create_timer" value="Create timer" />
+            </div>
+        </form>
+        <div id="timer_container"></div>
+        <div id="audio_container">
+            <button onclick="audioPlayer('play')" class="text-btn play" id="audio_play">
+                <span class="dimmed">Play audio</span>
+            </button>
+            <button onclick="audioPlayer('pause')" class="text-btn pause dnone" id="audio_pause">
+                <span class="dimmed">Pause audio</span>
+            </button>
+            <button onclick="audioPlayer('next')" class="text-btn next" id="audio_next">&nbsp;</button>
+            <div id="audio_volume_container">
+                <button onclick="audioPlayer('volume_down')" class="text-btn" id="audio_volume_down">-</button>
+                <div id="audio_volume_icon">
+                    <span id="audio_volume_2"></span>
+                    <span id="audio_volume_4"></span>
+                    <span id="audio_volume_6"></span>
+                    <span id="audio_volume_8"></span>
+                    <span id="audio_volume_10"></span>
+                </div>
+                <button onclick="audioPlayer('volume_up')" class="text-btn" id="audio_volume_up">+</button>
+            </div>
+            <button onclick="audioPlayer('change_mood')" id="audio_change_mood">Change mood</button>
+            <!-- TODO apply translation -->
+            <!-- TODO apply proper styling -->
+        </div>
+        <div>
+            <div id="current_time"></div>
+            <div id="current_date"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
 </html>

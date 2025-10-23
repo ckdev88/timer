@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'Outfit';
-    src: url('./Outfit.woff2') format('woff2');
+    font-family: "Outfit";
+    src: url("./Outfit.woff2") format("woff2");
 }
 
 :root {
@@ -27,11 +27,15 @@
     --border-active: hsl(0, 0%, 40%);
     --timer-pause-color: var(--pause-color);
     --timer-icon-play: url('data:image/svg+xml,\
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
     --timer-icon-pause: url('data:image/svg+xml,\
 <svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-next: url('data:image/svg+xml,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 8.5 7"><g transform="translate(-347.000000, -3766.000000)" fill="black"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322 M298,3606.5 C297.448,3606.5 297,3606.948 297,3607.5 L297,3611.5 C297,3612.052 297.448,3612.5 298,3612.5 C298.552,3612.5 299,3612.052 299,3611.5 L299,3607.5 C299,3606.948 298.552,3606.5 298,3606.5"></path></g></g></svg>');
     --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
     --timer-icon-remove: url('data:image/svg+xml, <svg fill="black" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+    --timer-icon-done: url('data:image/svg+xml, <svg fill="black" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+
     /* non-theme related */
     --transition-time-short: 0.12s;
     --transition-time-long: 0.19s;
@@ -39,7 +43,7 @@
     --opacity-dimmed: 0.6;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
     --bg-color: hsl(60, 70%, 0%);
     --fg-color: hsl(10, 10%, 90%);
     --pause-color: hsl(0, 0%, 15%);
@@ -62,12 +66,16 @@
     --border-hover: hsl(0, 0%, 40%);
     --border-active: hsl(0, 0%, 60%);
     --timer-pause-color: var(--pause-color);
+    --timer-next-color: var(--pause-color);
     --timer-icon-play: url('data:image/svg+xml,\
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 7 7"><g transform="translate(-347.000000, -3766.000000)" fill="greenyellow"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322"></path></g></g></svg>');
     --timer-icon-pause: url('data:image/svg+xml,\
 <svg viewBox="-1 0 8 8" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-227.000000, -3765.000000)" fill="orange"><g transform="translate(56.000000, 160.000000)"><path d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"></path></g></g></svg>');
+    --timer-icon-next: url('data:image/svg+xml,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 8.5 7"><g transform="translate(-347.000000, -3766.000000)" fill="lightblue"><g transform="translate(56.000000, 160.000000)"><path d="M296.494737,3608.57322 L292.500752,3606.14219 C291.83208,3605.73542 291,3606.25002 291,3607.06891 L291,3611.93095 C291,3612.7509 291.83208,3613.26444 292.500752,3612.85767 L296.494737,3610.42771 C297.168421,3610.01774 297.168421,3608.98319 296.494737,3608.57322 M298,3606.5 C297.448,3606.5 297,3606.948 297,3607.5 L297,3611.5 C297,3612.052 297.448,3612.5 298,3612.5 C298.552,3612.5 299,3612.052 299,3611.5 L299,3607.5 C299,3606.948 298.552,3606.5 298,3606.5"></path></g></g></svg>');
     --timer-icon-reset: url('data:image/svg+xml, <svg viewBox="0 0 16.399999 19.400002" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m 1.2000001,11.2 c 0,3.866 3.13401,7 7,7 C 12.066,18.2 15.2,15.066 15.2,11.2 c 0,-3.86599 -3.134,-7 -6.9999999,-7 h -5 m 0,0 3,-3 m -3,3 3,3" stroke="lightblue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke-width:2.4;stroke-dasharray:none" /></svg>');
     --timer-icon-remove: url('data:image/svg+xml, <svg fill="red" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/></svg>');
+    --timer-icon-done: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.341 12.247a1 1 0 0 0 1.317 1.505l4-3.5a1 1 0 0 0 .028-1.48l-9-8.5A1 1 0 0 0 .313 1.727l8.2 7.745Z" transform="translate(19 6.5) rotate(90)" fill="green"/></svg>');
 }
 
 * {
@@ -113,7 +121,7 @@ body {
     background-color: var(--bg-color);
 }
 
-.statusbar-pause {
+.statusbar-paused {
     background-color: var(--pause-color);
 }
 
@@ -164,7 +172,7 @@ body {
 
 #timer_new_quick::before {
     /*★ ☆ */
-    content: '⚡';
+    content: "⚡";
     color: var(--play-icon-color);
     background-image: var(--timer-icon-play);
     display: block;
@@ -194,12 +202,12 @@ input,
 textarea,
 button,
 select {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
 }
 
 button,
 a.btn,
-input[type='submit'] {
+input[type="submit"] {
     cursor: pointer;
     background: var(--button-bg);
     color: var(--button-fg);
@@ -209,7 +217,7 @@ input[type='submit'] {
 
 button:hover,
 a.btn:hover,
-input[type='submit']:hover {
+input[type="submit"]:hover {
     background-color: var(--button-bg-hover);
 }
 
@@ -218,10 +226,10 @@ label {
 }
 
 /* --------------------------- FORM & INPUT */
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'],
-input[type='submit'],
+input[type="number"],
+input[type="submit"],
 button,
 .btn,
 select {
@@ -243,15 +251,16 @@ select {
 }
 
 select,
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'] {
+input[type="number"] {
     width: 100%;
     display: block;
     background-color: var(--input-bg);
     color: #222;
 }
 
+/* biome-ignore lint/correctness/noUnknownMediaFeatureName: <TODO: check this out> */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
     select {
         padding-left: 0.4rem;
@@ -259,9 +268,9 @@ input[type='number'] {
     }
 }
 
-input[type='text'],
+input[type="text"],
 textarea,
-input[type='number'],
+input[type="number"],
 label {
     font-size: 0.9rem;
 }
@@ -339,13 +348,13 @@ button {
 
     &.text-btn.collapsed::after,
     &.text-btn.collapsed2::before {
-        content: '  ▲';
+        content: "  ▲";
         color: var(--play-icon-color);
     }
 
     &.text-btn.expanded::after,
     &.text-btn.expanded2::before {
-        content: '▼  ';
+        content: "▼  ";
         color: var(--play-icon-color);
     }
 
@@ -362,11 +371,17 @@ button {
 
 /* --------------------------- general class definitions */
 #wrapper {
-    max-width: 320px;
-    min-width: 300px;
-    padding: 0.5rem;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 1rem;
     margin: 0 auto;
     position: relative;
+    overflow-x: hidden;
+
+    @media screen and (min-width: 470px) {
+        /* background: red; */
+        max-width: 420px;
+    }
 }
 
 .submit-buttons {
@@ -404,9 +419,15 @@ button {
 }
 
 .start_end_time_actions_wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: absolute;
+    height: 100%;
+    min-width: 6rem;
+    top: 0;
+    right: .6rem;
+
+    .buttons {
+        align-self: anchor-center;
+    }
 }
 
 .timer {
@@ -414,6 +435,7 @@ button {
     margin: 0 -1rem 0;
     border-bottom: 1px dashed var(--separation-border-color);
     opacity: 1;
+    position: relative;
 
     button {
         margin-bottom: 0;
@@ -426,7 +448,8 @@ button {
         .control-btn {
             padding: 0;
             margin-left: 0;
-            transition: opacity var(--transition-time-short) ease-in-out,
+            transition:
+                opacity var(--transition-time-short) ease-in-out,
                 background-size var(--transition-time-long) ease-in-out;
             font-size: 2em;
             width: 2em;
@@ -456,13 +479,18 @@ button {
     &.finished {
         animation: blink-finished 1.5s infinite;
 
-        .buttons .control-btn.pause {
-            display: none;
+        .buttons .control-btn {
+            &.pause {
+                display: none;
+            }
+        }
+
+        &.done {
+            animation: none;
+            background-color: green;
         }
     }
-
 }
-
 
 @keyframes blink-finished {
     0% {
@@ -534,10 +562,23 @@ button {
         background-size: 0.85em auto;
     }
 
+    &.done {
+        background-image: var(--timer-icon-done);
+        filter: invert(100%) saturate(0);
+
+        /* color:red; */
+        /* background-color: lime; */
+        /* TODO apply an icon */
+        &:hover {
+            filter: none;
+        }
+    }
+
     &.remove {
         background-image: var(--timer-icon-remove);
         filter: invert(100%) saturate(0);
         background-size: 1.35em auto;
+        /* biome-ignore lint/complexity/noImportantStyles: <TODO check if necessary> */
         background-position: 63% 50% !important;
 
         &:hover {
@@ -546,7 +587,7 @@ button {
     }
 }
 
-[data-theme='light'] .timer .buttons button.control-btn {
+[data-theme="light"] .timer .buttons button.control-btn {
     &.remove {
         filter: none;
     }
@@ -566,9 +607,11 @@ button {
     float: left;
     width: 49%;
     padding-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    /* #audio_change_mood{break-before: column;} */
 
     .text-btn {
-        padding-left: 2rem;
         color: var(--fg-color);
         padding: 0 0 0 1rem;
         margin: 0;
@@ -583,12 +626,98 @@ button {
         }
 
         &.pause {
-            color: var(--remove-fg);
+            color: var(--text-button-fg);
             background-image: var(--timer-icon-pause);
+            text-transform: capitalize;
+        }
+
+        &.next {
+            background-size: 0.6em;
+            margin-left: 0.35rem;
+            padding-left: 0.35rem;
+            color: var(--remove-fg);
+            background-image: var(--timer-icon-next);
+        }
+    }
+
+    .text-btn.dnone {
+        display: none;
+    }
+}
+
+#audio_volume_container {
+    display: flex;
+    width: 3.5rem;
+    justify-content: flex-end;
+    align-items: baseline;
+
+    .text-btn {
+        padding-left: 0;
+        opacity: var(--opacity-dimmed);
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
         }
     }
 }
 
+#audio_container .text-btn.pause.dnone+#audio_volume_container {
+    visibility: hidden;
+}
+
+#audio_container .text-btn.pause:not(.dnone)+#audio_volume_container {
+    visibility: visible;
+}
+
+#audio_volume_icon {
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    display: flex;
+    align-self: center;
+    justify-content: space-evenly;
+    width: calc(1rem + 4px);
+    height: 0.75rem;
+    align-items: baseline;
+    gap: 1px;
+
+    span {
+        display: flex;
+        align-content: center;
+        width: 0.2rem;
+        height: 0.75rem;
+        background: white;
+        border-radius: 3px;
+
+        &.active {
+            opacity: 1;
+        }
+
+        &.inactive {
+            opacity: var(--opacity-dimmed);
+        }
+    }
+
+    #audio_volume_2 {
+        height: 0.15rem;
+    }
+
+    #audio_volume_4 {
+        height: 0.3rem;
+    }
+
+    #audio_volume_6 {
+        height: 0.45rem;
+    }
+
+    #audio_volume_8 {
+        height: 0.6rem;
+    }
+
+    #audio_volume_10 {
+        height: 0.75rem;
+    }
+}
 
 .top-buttons {
     justify-content: right;
@@ -596,7 +725,9 @@ button {
     .text-btn {
         color: var(--settings-fg);
         opacity: var(--opacity-dimmed);
-        transition: opacity var(--transition-time-short), width var(--transition-time-long);
+        transition:
+            opacity var(--transition-time-short),
+            width var(--transition-time-long);
         justify-content: right;
 
         span {
@@ -604,10 +735,12 @@ button {
             white-space: nowrap;
             display: inline-flex;
             overflow: hidden;
-            transition: width var(--transition-time-long) linear, overflow var(--transition-time-long);
+            transition:
+                width var(--transition-time-long) linear,
+                overflow var(--transition-time-long);
 
             &::after {
-                content: " "
+                content: " ";
             }
         }
 
@@ -624,7 +757,7 @@ html[lang="en"] .top-buttons {
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 5rem
+                width: 5rem;
             }
         }
 
@@ -643,7 +776,7 @@ html[lang="nl"] .top-buttons {
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 6.25rem
+                width: 6.25rem;
             }
         }
 
@@ -662,7 +795,7 @@ html[lang="pt"] .top-buttons {
         &#new_timer_btn:hover,
         &#new_timer_btn.expanded {
             span {
-                width: 5.25rem
+                width: 5.25rem;
             }
         }
 
@@ -708,14 +841,21 @@ button.text-btn.white,
     padding-bottom: 1rem;
 }
 
+.timer_actions_wrapper {
+    position: absolute;
+    right: 0;
+}
+
 /* miniclasses */
+.dnone.shown {
+    height: 0;
+    /* FIXME hack for when dnone and shown are both loaded */
+}
+
 .dnone,
 button.control-btn.dnone,
 .control-btn.dnone,
 /* TODO redundant? */
-#audio_container .text-btn.dnone {
-    display: none;
-}
 
 .dimmed {
     opacity: var(--opacity-dimmed);
