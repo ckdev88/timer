@@ -8,7 +8,8 @@ let isUpdatingTimers = false // global flag to prevent recursion / infinite loop
 
 const RUN_ONLINE = window.location.protocol === 'https:' || window.location.protocol === 'http:'
 const TESTING = false
-const AUDIO_SHUFFLE = !RUN_ONLINE
+// const AUDIO_SHUFFLE = !RUN_ONLINE
+const AUDIO_SHUFFLE = false
 const INTERVALAMOUNT_DEFAULT = 50 // in minutes, if INTERVALUNIT_DEFAULT is 60
 const INTERVALUNIT_DEFAULT = 60 // in seconds
 /** @typedef {'en'|'pt'|'nl'} LanguageOptions */
@@ -209,7 +210,8 @@ if (settings === null) {
         quickTimerName: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_name'),
         quickTimerDescr: getTranslation(LANGUAGE_DEFAULT, 'Quick_timer_default_description'),
         language: LANGUAGE_DEFAULT,
-        mood: moods[0].mood
+        mood: moods[0].mood,
+        moodTrack: '1.' + moods[0].filetype // always have 1.ext as first audio track, ext can be any audio format extension supported by browser
     }
     localStorage.setItem('settings', JSON.stringify(settings))
 }
@@ -250,7 +252,8 @@ const statusbar = d.getElementById('statusbar')
 const current_time = d.getElementById('current_time')
 const current_date = d.getElementById('current_date')
 
-function getRandomBackgroundAudio() {
+function getStartingAudioFile() {
+    const randomize = false
     // static first
     if (!settings.mood) {
         settings.mood = moods[0].mood
@@ -266,34 +269,33 @@ function getRandomBackgroundAudio() {
     }
 
     const filetype = '.' + themood.filetype
-    const max = themood.amount
-    const randomNumber = Math.ceil(Math.random() * max)
-    const track = randomNumber + filetype
+    const randomNumber = Math.ceil(Math.random() * themood.amount)
 
-    // return audioDir + settings.mood + '/' + randomNumber + filetype
+    let trackNumber = 1
+    if (settings.moodTrack) trackNumber = cleanFileName(settings.moodTrack)
+    if (randomize) trackNumber = randomNumber
+    const track = trackNumber + filetype
+
     return audioDir + settings.mood + '/' + track
 }
 
-// log('getRandomBackgroundAudio():', getRandomBackgroundAudio())
 const audio = {
     dir: audioDir,
-    background: new Audio(getRandomBackgroundAudio()),
+    background: new Audio(getStartingAudioFile()), // FIXME should not be randomized when settings.moodTrack exists
     alert: new Audio(audioDir + 'alert.wav'),
     btn_play: d.getElementById('audio_play'),
     btn_pause: d.getElementById('audio_pause'),
     btn_next: d.getElementById('audio_next'), // FIXME to use or not to use.. not really used right now
     btn_change_mood: d.getElementById('audio_change_mood'), // FIXME to use or not to use.. not really used right now
-    currentTrack: 1 // TODO communicate with localstorage 
-
+    moodTrack: 1 // TODO communicate with localstorage
 }
 audio.btn_play.innerText = getTranslation(settings.language, 'Play_audio')
 audio.btn_pause.innerText = settings.mood || moods[0].mood
 
 audio.background.addEventListener('ended', () => {
-    log('audio ended');
-    const currentMood = moods.find((item) => settings.mood === item.mood);
-    if (!currentMood) return;
-    console.log('currentMood:', currentMood)
+    log('audio ended')
+    const currentMood = moods.find((item) => settings.mood === item.mood)
+    if (!currentMood) return
 
     if (currentMood.loop) {
         // TODO check if `audio.background.loop = true` doesnt just suffice
@@ -317,6 +319,7 @@ audio.background.addEventListener('ended', () => {
  * @property {string} quickTimerDescr
  * @property {LanguageOptions} language
  * @property {string} mood
+ * @property {string} moodTrack
  */
 
 // Below is kept (for now) as an example
@@ -1208,7 +1211,7 @@ function getTimerState(timers = timersArray) {
     const allPaused = timers.length > 0 && timers.every((t) => t.paused || t.finished || t.done)
     const anyActive = timers.some((t) => !t.finished)
 
-    return {anyRunning, anyFinished, allPaused, anyActive}
+    return { anyRunning, anyFinished, allPaused, anyActive }
 }
 
 // ----------------------------- ALWAYS RUNNING & WHEN DONE...
@@ -1354,6 +1357,17 @@ function countdownAll() {
 }
 
 /**
+ * Returns a clean file name, meaning it returns a shallow copy without file extension. Forced to number to prevent weirdness in skipping
+ * @param {string} filename
+ * @returns {number}
+ * */
+function cleanFileName(filename) {
+    // 3.mp3 --> 3 // superfile.opus --> superfile ... however just use numbers, otherwise "next" will be confused
+    const lastindex = filename.lastIndexOf('.')
+    return Number(filename.slice(0, lastindex))
+}
+
+/**
  * Plays audio until an alert is played, signaling a break
  * @param {'play'|'pause'|'next'|'volume_up'|'volume_down'|'change_mood'} state - trigger play or pause, defaults to play
  * @returns {void}
@@ -1362,37 +1376,39 @@ function audioPlayer(state = 'play') {
     switch (state) {
         case 'play':
             audio.background.loop = false // TODO apply `loop` property in `mood` object
-            audio.background.play().catch(e => log('Audio play failed:', e));
+            audio.background.play().catch((e) => log('Audio play failed:', e))
             audio.btn_play.classList.add('dnone')
             audio.btn_pause.classList.remove('dnone')
+            audio.btn_next.classList.remove('dnone')
             localStorage.setItem('audioPlay', true)
+            audio.btn_pause.innerText = settings.mood + ' ' + cleanFileName(settings.moodTrack)
             break
         case 'pause':
             audio.btn_play.classList.remove('dnone')
             audio.btn_pause.classList.add('dnone')
+            audio.btn_next.classList.add('dnone')
             audio.background.pause()
             localStorage.setItem('audioPlay', false)
             break
-        case 'next':
-            audio.background.pause();
+        case 'next': // just dont show next when none is playing
+            // FIXME switch-case contains conditions, not great, refactor to if-else instead of switch-case
+            audio.background.pause()
 
-            const currentMood = moods.find((item) => settings.mood === item.mood);
-            if (!currentMood) return;
+            const currentMood = moods.find((item) => settings.mood === item.mood) // TODO simplify, next is not needed when moodTrack is empty anyway
+            if (!currentMood) return
 
-            let nextTrackNumber;
+            let nextTrackNumber = 1 // default, assuming we change mood or playing none yet
+            if (AUDIO_SHUFFLE) nextTrackNumber = Math.ceil(Math.random() * currentMood.amount)
+            else if (cleanFileName(settings.moodTrack) < currentMood.amount) nextTrackNumber = cleanFileName(settings.moodTrack) + 1
+            
+            const track = nextTrackNumber + '.' + currentMood.filetype
+            const newSrc = audioDir + settings.mood + '/' + track
 
-            if (AUDIO_SHUFFLE) nextTrackNumber = Math.ceil(Math.random() * currentMood.amount);
-            else {
-                audio.currentTrack = (audio.currentTrack % currentMood.amount) + 1;
-                nextTrackNumber = audio.currentTrack;
-            }
+            audio.background.src = newSrc
+            audio.background.load()
 
-            const filetype = '.' + currentMood.filetype;
-            const track = nextTrackNumber + filetype;
-            const newSrc = audioDir + settings.mood + '/' + track;
-
-            audio.background.src = newSrc;
-            audio.background.load();
+            settings.moodTrack = track
+            updateSettings(settings)
 
             audioPlayer('play')
 
@@ -1585,7 +1601,6 @@ function translateElements(lang = getSettings().language) {
 
     audio.btn_play.innerText = getTranslation(lang, 'Play_audio')
     audio.btn_pause.innerText = settings.mood
-
 
     settings_form.intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
     new_timer_intervalUnit.setAttribute('aria-label', getTranslation(lang, 'Select_time_unit'))
