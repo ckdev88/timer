@@ -37,9 +37,9 @@ if (RUN_ONLINE) {
     // demo-audio files for online use
     audioDir += 'demo/'
     moods = [
-        {mood: 'brownnoise', amount: 2, filetype: 'opus', loop: true},
-        {mood: 'lofi', amount: 4, filetype: 'opus', loop: false},
-        {mood: 'rain', amount: 4, filetype: 'opus', loop: true}
+        { mood: 'brownnoise', amount: 2, filetype: 'opus', loop: true },
+        { mood: 'lofi', amount: 4, filetype: 'opus', loop: false },
+        { mood: 'rain', amount: 4, filetype: 'opus', loop: true }
     ]
 } else {
     // locally stored audio
@@ -299,12 +299,12 @@ audio.background.addEventListener('ended', () => {
 
     if (currentMood.loop) {
         // TODO check if `audio.background.loop = true` doesnt just suffice
-        audio.background.currentTime = 0;
-        audio.background.play();
-        return;
+        audio.background.currentTime = 0
+        audio.background.play()
+        return
     }
-    audioPlayer('next');
-});
+    audioPlayer('next')
+})
 
 /** @typedef {string} SimpleTime - Simple time in string format, like '12:59' */
 
@@ -356,7 +356,6 @@ audio.background.addEventListener('ended', () => {
 /**
  * @typedef {Object.<number, Timer>} Timers - Object with numeric keys mapping to Timer objects
  */
-
 
 // First, declare timersArray as empty array
 let timersArray = []
@@ -935,11 +934,11 @@ function renderTimer(i, key, paused = false) {
             key,
             settings.countDown === true
                 ? '<span class="time_left_text">' +
-                getTranslation(settings.language, 'Time_left') +
-                '</span>: '
+                      getTranslation(settings.language, 'Time_left') +
+                      '</span>: '
                 : '<span class="time_passed_text">' +
-                getTranslation(settings.language, 'Time_passed') +
-                '</span>: ',
+                      getTranslation(settings.language, 'Time_passed') +
+                      '</span>: ',
             ''
         )
     )
@@ -1400,8 +1399,9 @@ function audioPlayer(state = 'play') {
 
             let nextTrackNumber = 1 // default, assuming we change mood or playing none yet
             if (AUDIO_SHUFFLE) nextTrackNumber = Math.ceil(Math.random() * currentMood.amount)
-            else if (cleanFileName(settings.moodTrack) < currentMood.amount) nextTrackNumber = cleanFileName(settings.moodTrack) + 1
-            
+            else if (cleanFileName(settings.moodTrack) < currentMood.amount)
+                nextTrackNumber = cleanFileName(settings.moodTrack) + 1
+
             const track = nextTrackNumber + '.' + currentMood.filetype
             const newSrc = audioDir + settings.mood + '/' + track
 
@@ -1691,7 +1691,8 @@ function registerServiceWorker() {
                     }
                 })
                 .catch((registrationError) => {
-                    if (TESTING) console.log('Service worker registration failed: ', registrationError)
+                    if (TESTING)
+                        console.log('Service worker registration failed: ', registrationError)
                     // TODO something smart to log this error, like a load of a script, that can be "fetched" with stats, like GA
                 })
         }
