@@ -1363,6 +1363,7 @@ function countdownAll() {
  * */
 function cleanFileName(filename) {
     // 3.mp3 --> 3 // superfile.opus --> superfile ... however just use numbers, otherwise "next" will be confused
+    if (filename === undefined) return 1
     const lastindex = filename.lastIndexOf('.')
     return Number(filename.slice(0, lastindex))
 }
