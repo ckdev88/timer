@@ -241,6 +241,8 @@ const settings_form = {
     intervalUnit: d.getElementById('settings_form_intervalUnit'),
     autoplay: d.getElementById('settings_form_autoplay'),
     countDown: d.getElementById('settings_form_countDown'),
+    /** true: Always play alert when a timer finishes. -- false: Only play alert when no audio is playing */
+    playAlert: d.getElementById('settings_form_playAlert'),
     language: d.getElementById('settings_form_language'),
     btn_update_settings: d.getElementById('btn_update_settings')
 }
@@ -489,6 +491,7 @@ function settingsFormDefaults() {
     selectOption(settings_form.intervalUnit, settings.intervalUnit)
     selectOption(settings_form.autoplay, settings.autoplay ? 'true' : '')
     selectOption(settings_form.countDown, settings.countDown ? 'true' : '')
+    selectOption(settings_form.playAlert, settings.playAlert ? 'true' : '')
     selectOption(settings_form.language, settings.language)
 }
 settingsFormDefaults()
@@ -513,6 +516,7 @@ function settingsFormSubmit(data) {
         intervalUnit: Number(data.get('settings_form_intervalUnit')),
         autoplay: Boolean(data.get('settings_form_autoplay')),
         countDown: Boolean(data.get('settings_form_countDown')),
+        playAlert: Boolean(data.get('settings_form_playAlert')),
         quickTimerInterval:
             Number(data.get('settings_form_quickTimerInterval')) *
             Number(data.get('settings_form_intervalUnit')),
@@ -1284,10 +1288,16 @@ function countdownAll() {
 
                     // Play alert when timer finishes
                     setTimeout(() => {
-                        audioPlayer('pause')
-                        setTimeout(() => {
-                            playAlert()
-                        }, TIMEOUT_SHORT)
+                        let musicWasPlaying = false
+                        if (!audio.background.paused) {
+                            musicWasPlaying = true
+                            audioPlayer('pause')
+                        }
+                        if (getSettings().playAlert === true || !musicWasPlaying) {
+                            setTimeout(() => {
+                                playAlert()
+                            }, TIMEOUT_SHORT)
+                        }
                     }, TIMEOUT_SHORT)
                 }
 
