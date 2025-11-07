@@ -40,7 +40,7 @@
     --transition-time-short: 0.12s;
     --transition-time-long: 0.19s;
     --transition-time-xlong: 1s;
-    --opacity-dimmed: 0.6;
+    --opacity-dimmed: 0.4;
 }
 
 :root[data-theme="dark"] {
@@ -852,14 +852,12 @@ button.text-btn.white,
     /* FIXME hack for when dnone and shown are both loaded */
 }
 
+/* TODO: check if .dimmed is redundant */
 .dnone,
 button.control-btn.dnone,
 .control-btn.dnone,
-/* TODO redundant? */
-
 .dimmed {
     opacity: var(--opacity-dimmed);
-
     &:hover {
         opacity: 1;
     }
