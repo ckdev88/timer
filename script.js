@@ -1186,6 +1186,8 @@ function resetTimer(key) {
         timersArray[key].finished = false
         timersArray[key].done = false
 
+        if (settings.autoplay && audio.background.paused && !timersArray[key].paused) audioPlayer('play')
+
         // remove the old timer element
         const oldTimerEl = document.getElementById('timer-' + key)
         if (oldTimerEl) oldTimerEl.remove()
