@@ -1379,6 +1379,17 @@ function cleanFileName(filename) {
     return Number(filename.slice(0, lastindex))
 }
 
+document.body.addEventListener('keydown', (event) => {
+    if (event.target.nodeName === 'BODY') {
+        if (event.key === '9') audioPlayer('volume_down')
+        else if (event.key === '0') audioPlayer('volume_up')
+        else if (event.key === ' ') {
+            if (audio.background.paused) audioPlayer('play')
+            else audioPlayer('pause')
+        }
+    }
+})
+
 /**
  * Plays audio until an alert is played, signaling a break
  * @param {'play'|'pause'|'next'|'volume_up'|'volume_down'|'change_mood'} state - trigger play or pause, defaults to play
